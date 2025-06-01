@@ -1,10 +1,84 @@
 import React, { useState, useEffect } from 'react';
-import questionData from './questionData.json';
+
+// Try to import actual data, fallback to mock data
+let questionData;
+try {
+  questionData = require('./questionData.json');
+} catch (error) {
+  // Fallback mock data with dummy questions
+  questionData = {
+    "sectionName": "Practice Test - Development Mode",
+    "adaptiveMode": true,
+    "targetQuestions": 3,
+    "bufferQuestions": 1,
+    "firstSevenStrategy": "controlled challenge",
+    "questions": [
+      {
+        "id": 1,
+        "questionText": "What is your favorite color?",
+        "difficulty": "easy",
+        "options": {
+          "A": "Red",
+          "B": "Blue", 
+          "C": "Green",
+          "D": "Yellow",
+          "E": "Purple"
+        },
+        "correctAnswer": "B",
+        "buffer": false
+      },
+      {
+        "id": 2,
+        "questionText": "Which animal says 'meow'?",
+        "difficulty": "medium",
+        "options": {
+          "A": "Dog",
+          "B": "Cat", 
+          "C": "Bird",
+          "D": "Fish",
+          "E": "Horse"
+        },
+        "correctAnswer": "B",
+        "buffer": false
+      },
+      {
+        "id": 3,
+        "questionText": "If a^2 + b^2 = dummy, what is dummy? (Test math formatting)",
+        "difficulty": "hard",
+        "options": {
+          "A": "x^2",
+          "B": "y^3", 
+          "C": "z^4",
+          "D": "Test formatting",
+          "E": "sqrt(25)"
+        },
+        "correctAnswer": "D",
+        "buffer": false
+      },
+      {
+        "id": 4,
+        "questionText": "What comes after Monday?",
+        "difficulty": "easy",
+        "options": {
+          "A": "Sunday",
+          "B": "Tuesday", 
+          "C": "Wednesday",
+          "D": "Thursday",
+          "E": "Friday"
+        },
+        "correctAnswer": "B",
+        "buffer": true
+      }
+    ]
+  };
+  console.log('Using fallback mock data - questionData.json not found');
+}
 
 const GMATInterface = () => {
-  // Calculate time limit: 2 minutes per question (120 seconds each)
-  const timeLimit = questionData.questions.length * 120;
-
+  // Calculate GMAT timing dynamically from JSON: 45 minutes for targetQuestions (2.14 mins per question)
+  const targetQuestions = questionData.targetQuestions || 21;
+  const timeLimit = Math.round((45 * 60 * targetQuestions) / 21); // Scale 45 mins proportionally
+  
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState({});
   const [timeRemaining, setTimeRemaining] = useState(timeLimit);
@@ -12,6 +86,8 @@ const GMATInterface = () => {
   const [isCompleted, setIsCompleted] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
   const [showTimeWarning, setShowTimeWarning] = useState(false);
+  const [adaptiveQuestions, setAdaptiveQuestions] = useState([]);
+  const [performanceLevel, setPerformanceLevel] = useState('medium'); // 'easy', 'medium', 'hard'
 
   // Timer effect
   useEffect(() => {
@@ -43,6 +119,84 @@ const GMATInterface = () => {
     }
   }, [timeRemaining, timeLimit]);
 
+  // Initialize adaptive questions when test starts
+  const initializeAdaptiveQuestions = () => {
+    // Get non-buffer and buffer questions from JSON
+    const coreQuestions = questionData.questions.filter(q => !q.buffer);
+    const bufferQuestions = questionData.questions.filter(q => q.buffer);
+    
+    // Take exactly targetQuestions number of questions
+    const questionsToUse = [];
+    
+    // Start with first 7 core questions (First Seven Fortress strategy)
+    questionsToUse.push(...coreQuestions.slice(0, 7));
+    
+    // Add remaining questions up to targetQuestions
+    const remainingSlots = targetQuestions - 7;
+    const remainingCore = coreQuestions.slice(7);
+    
+    // Fill remaining slots with core questions first, then buffer if needed
+    if (remainingCore.length >= remainingSlots) {
+      questionsToUse.push(...remainingCore.slice(0, remainingSlots));
+    } else {
+      questionsToUse.push(...remainingCore);
+      const stillNeed = remainingSlots - remainingCore.length;
+      questionsToUse.push(...bufferQuestions.slice(0, stillNeed));
+    }
+    
+    setAdaptiveQuestions(questionsToUse);
+  };
+
+  // Update performance level based on recent answers
+  const updatePerformanceLevel = () => {
+    if (currentQuestionIndex >= 7) {
+      const recentAnswers = adaptiveQuestions.slice(Math.max(0, currentQuestionIndex - 5), currentQuestionIndex);
+      let correctCount = 0;
+      
+      recentAnswers.forEach(question => {
+        if (selectedAnswers[question.id] === question.correctAnswer) {
+          correctCount++;
+        }
+      });
+      
+      const recentAccuracy = correctCount / recentAnswers.length;
+      
+      if (recentAccuracy >= 0.8) {
+        setPerformanceLevel('hard');
+      } else if (recentAccuracy >= 0.6) {
+        setPerformanceLevel('medium');
+      } else {
+        setPerformanceLevel('easy');
+      }
+    }
+  };
+
+  // Format mathematical expressions
+  const formatMath = (text) => {
+    if (!text) return text;
+    
+    // Replace common mathematical notation
+    return text
+      // Superscripts
+      .replace(/\^(\d+)/g, '<sup>$1</sup>')
+      .replace(/\^(\w+)/g, '<sup>$1</sup>')
+      // Subscripts  
+      .replace(/_(\d+)/g, '<sub>$1</sub>')
+      .replace(/_(\w+)/g, '<sub>$1</sub>')
+      // Square root
+      .replace(/sqrt\(([^)]+)\)/g, '√($1)')
+      // Fractions (simple pattern)
+      .replace(/(\d+)\/(\d+)/g, '<sup>$1</sup>⁄<sub>$2</sub>')
+      // Degree symbol
+      .replace(/degrees?/g, '°')
+      // Mathematical symbols
+      .replace(/\*\*/g, '×')
+      .replace(/\+\-/g, '±')
+      .replace(/!=/g, '≠')
+      .replace(/<=/g, '≤')
+      .replace(/>=/g, '≥');
+  };
+
   // Format time display
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
@@ -53,6 +207,7 @@ const GMATInterface = () => {
   // Start the test
   const startTest = () => {
     setHasStarted(true);
+    initializeAdaptiveQuestions();
   };
 
   // Handle answer selection
@@ -65,26 +220,36 @@ const GMATInterface = () => {
 
   // Navigate to next question
   const handleNext = () => {
-    if (currentQuestionIndex < questionData.questions.length - 1) {
+    updatePerformanceLevel();
+    
+    if (currentQuestionIndex < adaptiveQuestions.length - 1) {
       setCurrentQuestionIndex(prev => prev + 1);
     } else {
       setIsCompleted(true);
     }
   };
 
-  // Calculate score with weighted difficulty
+  // Calculate score with GMAT adaptive scoring (60-90 scale)
   const calculateScore = () => {
     let totalPoints = 0;
     let maxPossiblePoints = 0;
     let correctByDifficulty = { easy: 0, medium: 0, hard: 0 };
     let totalByDifficulty = { easy: 0, medium: 0, hard: 0 };
     
-    // Point values for each difficulty level
-    const pointValues = { easy: 1, medium: 2, hard: 3 };
+    // Enhanced point values for adaptive scoring
+    const pointValues = { easy: 1, medium: 2.5, hard: 4 };
     
-    questionData.questions.forEach(question => {
+    // First seven questions get bonus weighting (adaptive algorithm impact)
+    const firstSevenBonus = 1.2;
+    
+    adaptiveQuestions.forEach((question, index) => {
       const difficulty = question.difficulty;
-      const points = pointValues[difficulty];
+      let points = pointValues[difficulty];
+      
+      // Apply first seven bonus
+      if (index < 7) {
+        points *= firstSevenBonus;
+      }
       
       // Count totals by difficulty
       totalByDifficulty[difficulty]++;
@@ -97,21 +262,60 @@ const GMATInterface = () => {
       }
     });
     
-    const percentage = Math.round((totalPoints / maxPossiblePoints) * 100);
+    // Calculate raw percentage
+    const rawPercentage = totalPoints / maxPossiblePoints;
+    
+    // Convert to GMAT scale (60-90)
+    // Use adaptive performance level to adjust scaling
+    let scalingFactor = 1.0;
+    if (performanceLevel === 'hard') scalingFactor = 1.1;
+    else if (performanceLevel === 'easy') scalingFactor = 0.9;
+    
+    const adjustedPercentage = Math.min(rawPercentage * scalingFactor, 1.0);
+    
+    // GMAT scoring: 60-90 scale
+    const gmatScore = Math.round(60 + (adjustedPercentage * 30));
+    const accuracyPercentage = Math.round((Object.values(correctByDifficulty).reduce((a, b) => a + b, 0) / adaptiveQuestions.length) * 100);
     
     return {
-      totalPoints,
-      maxPossiblePoints,
-      percentage,
+      gmatScore,
+      accuracyPercentage,
+      totalPoints: Math.round(totalPoints),
+      maxPossiblePoints: Math.round(maxPossiblePoints),
       correctByDifficulty,
       totalByDifficulty,
       totalCorrect: Object.values(correctByDifficulty).reduce((a, b) => a + b, 0),
-      totalQuestions: questionData.questions.length
+      totalQuestions: adaptiveQuestions.length,
+      performanceLevel
     };
   };
 
-  const currentQuestion = questionData.questions[currentQuestionIndex];
+  const currentQuestion = adaptiveQuestions[currentQuestionIndex];
   const isTimeWarning = timeRemaining <= timeLimit / 9; // Last 1/9th of time
+
+  // Don't render question area until adaptive questions are initialized
+  if (hasStarted && adaptiveQuestions.length === 0) {
+    return (
+      <div style={{ fontFamily: 'Arial, sans-serif', height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ textAlign: 'center', padding: '20px' }}>
+          <div style={{ fontSize: '18px', color: '#3498db', marginBottom: '10px' }}>Initializing Adaptive Test...</div>
+          <div style={{ fontSize: '14px', color: '#666' }}>Setting up questions based on your profile</div>
+        </div>
+      </div>
+    );
+  }
+
+  // Safety check for currentQuestion
+  if (hasStarted && (!currentQuestion || currentQuestionIndex >= adaptiveQuestions.length)) {
+    return (
+      <div style={{ fontFamily: 'Arial, sans-serif', height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ textAlign: 'center', padding: '20px' }}>
+          <div style={{ fontSize: '18px', color: '#e74c3c', marginBottom: '10px' }}>Test Error</div>
+          <div style={{ fontSize: '14px', color: '#666' }}>Unable to load question. Please restart the test.</div>
+        </div>
+      </div>
+    );
+  }
 
   // Start screen
   if (!hasStarted) {
@@ -128,6 +332,9 @@ const GMATInterface = () => {
         }}>
           <span style={{ fontSize: '14px', fontWeight: '500' }}>
             GMAT™ Practice Test - Practice Session
+            {questionData.sectionName.includes('Development Mode') && 
+              <span style={{ color: '#f39c12', marginLeft: '8px' }}>(DEV MODE)</span>
+            }
           </span>
           <span style={{ fontSize: '14px' }}>
             Ready to Begin
@@ -165,12 +372,18 @@ const GMATInterface = () => {
           }}>
             <h2 style={{ color: '#2c3e50', marginBottom: '20px' }}>
               {questionData.sectionName}
+              {questionData.sectionName.includes('Development Mode') && 
+                <div style={{ fontSize: '14px', color: '#e74c3c', marginTop: '5px' }}>
+                  (Using fallback data - questionData.json not found)
+                </div>
+              }
             </h2>
             <div style={{ fontSize: '16px', color: '#666', marginBottom: '25px', lineHeight: '1.6' }}>
               <p>You are about to begin the {questionData.sectionName} section.</p>
               <p><strong>Time Limit:</strong> {Math.floor(timeLimit / 60)} minutes</p>
-              <p><strong>Questions:</strong> {questionData.questions.length}</p>
+              <p><strong>Questions:</strong> {targetQuestions} (Adaptive)</p>
               <p style={{ marginTop: '20px', fontSize: '14px', color: '#888' }}>
+                This is an adaptive test. Question difficulty will adjust based on your performance.
                 Once you start, the timer will begin and you cannot go back to previous questions.
               </p>
             </div>
@@ -214,6 +427,9 @@ const GMATInterface = () => {
         }}>
           <span style={{ fontSize: '14px', fontWeight: '500' }}>
             GMAT™ Practice Test - Practice Session
+            {questionData.sectionName.includes('Development Mode') && 
+              <span style={{ color: '#f39c12', marginLeft: '8px' }}>(DEV MODE)</span>
+            }
           </span>
           <span style={{ fontSize: '14px' }}>
             Test Complete
@@ -251,17 +467,24 @@ const GMATInterface = () => {
           }}>
             <h2 style={{ color: '#2c3e50', marginBottom: '20px' }}>Test Results</h2>
             
-            {/* Overall Score */}
+            {/* GMAT Score */}
             <div style={{ fontSize: '48px', color: '#27ae60', fontWeight: 'bold', marginBottom: '10px' }}>
-              {score.percentage}%
+              {score.gmatScore}
             </div>
-            <div style={{ fontSize: '18px', color: '#666', marginBottom: '30px' }}>
-              {score.totalPoints} out of {score.maxPossiblePoints} points
+            <div style={{ fontSize: '18px', color: '#666', marginBottom: '10px' }}>
+              GMAT Quantitative Score (60-90 scale)
+            </div>
+            <div style={{ fontSize: '16px', color: '#666', marginBottom: '30px' }}>
+              Accuracy: {score.accuracyPercentage}% ({score.totalCorrect}/{score.totalQuestions} correct)
             </div>
             
-            {/* Questions Breakdown */}
+            {/* Performance Level */}
             <div style={{ fontSize: '16px', color: '#666', marginBottom: '25px' }}>
-              {score.totalCorrect} out of {score.totalQuestions} questions correct
+              Adaptive Performance Level: <strong style={{ 
+                color: score.performanceLevel === 'hard' ? '#27ae60' : 
+                      score.performanceLevel === 'medium' ? '#f39c12' : '#e74c3c',
+                textTransform: 'capitalize'
+              }}>{score.performanceLevel}</strong>
             </div>
             
             {/* Difficulty Breakdown */}
@@ -301,7 +524,28 @@ const GMATInterface = () => {
   }
 
   return (
-    <div style={{ fontFamily: 'Arial, sans-serif', height: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ 
+      fontFamily: 'Arial, sans-serif', 
+      height: '100vh', 
+      display: 'flex', 
+      flexDirection: 'column'
+    }}>
+      {/* Add mathematical formatting styles */}
+      <style>{`
+        sup {
+          font-size: 0.8em;
+          vertical-align: super;
+          line-height: 0;
+        }
+        sub {
+          font-size: 0.8em;
+          vertical-align: sub;
+          line-height: 0;
+        }
+        .math-text {
+          font-family: 'Times New Roman', serif;
+        }
+      `}</style>
       {/* Header */}
       <div style={{
         backgroundColor: '#2c3e50',
@@ -313,6 +557,9 @@ const GMATInterface = () => {
       }}>
         <span style={{ fontSize: '14px', fontWeight: '500' }}>
           GMAT™ Practice Test - Practice Session
+          {questionData.sectionName.includes('Development Mode') && 
+            <span style={{ color: '#f39c12', marginLeft: '8px' }}>(DEV MODE)</span>
+          }
         </span>
         <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
           <span style={{ 
@@ -323,7 +570,7 @@ const GMATInterface = () => {
             {formatTime(timeRemaining)}
           </span>
           <span style={{ fontSize: '14px' }}>
-            {currentQuestionIndex + 1} of {questionData.questions.length}
+            {currentQuestionIndex + 1} of {adaptiveQuestions.length}
           </span>
         </div>
       </div>
@@ -356,7 +603,7 @@ const GMATInterface = () => {
           <span style={{ color: '#2c3e50', fontSize: '16px', marginRight: '8px' }}>
             {currentQuestionIndex + 1}.
           </span>
-          <span dangerouslySetInnerHTML={{ __html: currentQuestion.questionText }}></span>
+          <span className="math-text" dangerouslySetInnerHTML={{ __html: formatMath(currentQuestion.questionText) }}></span>
         </div>
 
         {/* Answer Options */}
@@ -388,7 +635,7 @@ const GMATInterface = () => {
                 }}
               />
               <div>
-                <span style={{ fontSize: '16px', lineHeight: '1.4' }} dangerouslySetInnerHTML={{ __html: text }}>
+                <span className="math-text" style={{ fontSize: '16px', lineHeight: '1.4' }} dangerouslySetInnerHTML={{ __html: formatMath(text) }}>
                 </span>
               </div>
             </div>
@@ -449,7 +696,7 @@ const GMATInterface = () => {
               fontWeight: '500'
             }}
           >
-            {currentQuestionIndex === questionData.questions.length - 1 ? 'Finish Test' : 'Next →'}
+            {currentQuestionIndex === adaptiveQuestions.length - 1 ? 'Finish Test' : 'Next →'}
           </button>
         </div>
       </div>
