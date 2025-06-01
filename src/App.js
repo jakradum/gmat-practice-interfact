@@ -35,9 +35,9 @@ const GMATInterface = () => {
     }
   }, [hasStarted, isPaused, isCompleted, timeRemaining]);
 
-  // Show time warning when 10% of time remains (or 5 minutes, whichever is smaller)
+  // Show time warning when 1/9th of time remains
   useEffect(() => {
-    const warningTime = Math.min(300, timeLimit * 0.1);
+    const warningTime = timeLimit / 9;
     if (timeRemaining === Math.floor(warningTime)) {
       setShowTimeWarning(true);
     }
@@ -111,7 +111,7 @@ const GMATInterface = () => {
   };
 
   const currentQuestion = questionData.questions[currentQuestionIndex];
-  const isTimeWarning = timeRemaining <= Math.min(300, timeLimit * 0.1); // Last 5 minutes or 10% of time
+  const isTimeWarning = timeRemaining <= timeLimit / 9; // Last 1/9th of time
 
   // Start screen
   if (!hasStarted) {
@@ -353,10 +353,10 @@ const GMATInterface = () => {
           marginBottom: '30px',
           color: '#2c3e50'
         }}>
-          <span style={{ color: '#e74c3c', fontSize: '18px', marginRight: '8px' }}>
+          <span style={{ color: '#2c3e50', fontSize: '16px', marginRight: '8px' }}>
             {currentQuestionIndex + 1}.
           </span>
-          {currentQuestion.questionText}
+          <span dangerouslySetInnerHTML={{ __html: currentQuestion.questionText }}></span>
         </div>
 
         {/* Answer Options */}
@@ -388,8 +388,7 @@ const GMATInterface = () => {
                 }}
               />
               <div>
-                <span style={{ fontSize: '16px', lineHeight: '1.4' }}>
-                  {text}
+                <span style={{ fontSize: '16px', lineHeight: '1.4' }} dangerouslySetInnerHTML={{ __html: text }}>
                 </span>
               </div>
             </div>
@@ -478,7 +477,7 @@ const GMATInterface = () => {
           }}>
             <h3 style={{ color: '#e74c3c', marginBottom: '15px' }}>Time Warning</h3>
             <p style={{ marginBottom: '20px', color: '#666' }}>
-              You have {formatTime(timeRemaining)} remaining.
+              You have {Math.ceil(timeRemaining / 60)} minutes remaining.
             </p>
             <button
               onClick={() => setShowTimeWarning(false)}
