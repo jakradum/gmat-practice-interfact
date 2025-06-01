@@ -120,55 +120,60 @@ const GMATInterface = () => {
     }
   }, [timeRemaining, timeLimit]);
 
-  // Initialize adaptive questions when test starts
+  // Initialize questions when test starts (adaptive or non-adaptive)
   const initializeAdaptiveQuestions = () => {
-    // Get non-buffer and buffer questions from JSON
-    const coreQuestions = questionData.questions.filter(q => !q.buffer);
-    const bufferQuestions = questionData.questions.filter(q => q.buffer);
-    
-    // Take exactly targetQuestions number of questions
-    const questionsToUse = [];
-    
-    // Start with first 7 core questions (First Seven Fortress strategy)
-    questionsToUse.push(...coreQuestions.slice(0, 7));
-    
-    // Add remaining questions up to targetQuestions
-    const remainingSlots = targetQuestions - 7;
-    const remainingCore = coreQuestions.slice(7);
-    
-    // Fill remaining slots with core questions first, then buffer if needed
-    if (remainingCore.length >= remainingSlots) {
-      questionsToUse.push(...remainingCore.slice(0, remainingSlots));
+    if (questionData.adaptiveMode) {
+      // Adaptive mode: Use original logic
+      const coreQuestions = questionData.questions.filter(q => !q.buffer);
+      const bufferQuestions = questionData.questions.filter(q => q.buffer);
+      
+      const questionsToUse = [];
+      
+      // Start with first 7 core questions (First Seven Fortress strategy)
+      questionsToUse.push(...coreQuestions.slice(0, 7));
+      
+      // Add remaining questions up to targetQuestions
+      const remainingSlots = targetQuestions - 7;
+      const remainingCore = coreQuestions.slice(7);
+      
+      // Fill remaining slots with core questions first, then buffer if needed
+      if (remainingCore.length >= remainingSlots) {
+        questionsToUse.push(...remainingCore.slice(0, remainingSlots));
+      } else {
+        questionsToUse.push(...remainingCore);
+        const stillNeed = remainingSlots - remainingCore.length;
+        questionsToUse.push(...bufferQuestions.slice(0, stillNeed));
+      }
+      
+      setAdaptiveQuestions(questionsToUse);
     } else {
-      questionsToUse.push(...remainingCore);
-      const stillNeed = remainingSlots - remainingCore.length;
-      questionsToUse.push(...bufferQuestions.slice(0, stillNeed));
+      // Non-adaptive mode: Use questions in order up to targetQuestions
+      const questionsToUse = questionData.questions.slice(0, targetQuestions);
+      setAdaptiveQuestions(questionsToUse);
     }
-    
-    setAdaptiveQuestions(questionsToUse);
   };
 
-  // Update performance level based on recent answers
+  // Update performance level based on recent answers (only for adaptive mode)
   const updatePerformanceLevel = () => {
-    if (currentQuestionIndex >= 7) {
-      const recentAnswers = adaptiveQuestions.slice(Math.max(0, currentQuestionIndex - 5), currentQuestionIndex);
-      let correctCount = 0;
-      
-      recentAnswers.forEach(question => {
-        if (selectedAnswers[question.id] === question.correctAnswer) {
-          correctCount++;
-        }
-      });
-      
-      const recentAccuracy = correctCount / recentAnswers.length;
-      
-      if (recentAccuracy >= 0.8) {
-        setPerformanceLevel('hard');
-      } else if (recentAccuracy >= 0.6) {
-        setPerformanceLevel('medium');
-      } else {
-        setPerformanceLevel('easy');
+    if (!questionData.adaptiveMode || currentQuestionIndex < 7) return;
+    
+    const recentAnswers = adaptiveQuestions.slice(Math.max(0, currentQuestionIndex - 5), currentQuestionIndex);
+    let correctCount = 0;
+    
+    recentAnswers.forEach(question => {
+      if (selectedAnswers[question.id] === question.correctAnswer) {
+        correctCount++;
       }
+    });
+    
+    const recentAccuracy = correctCount / recentAnswers.length;
+    
+    if (recentAccuracy >= 0.8) {
+      setPerformanceLevel('hard');
+    } else if (recentAccuracy >= 0.6) {
+      setPerformanceLevel('medium');
+    } else {
+      setPerformanceLevel('easy');
     }
   };
 
@@ -228,7 +233,11 @@ const GMATInterface = () => {
   // Handle confirmation to proceed to next question
   const confirmNext = () => {
     setShowConfirmModal(false);
-    updatePerformanceLevel();
+    
+    // Only update performance level for adaptive tests
+    if (questionData.adaptiveMode) {
+      updatePerformanceLevel();
+    }
     
     if (currentQuestionIndex < adaptiveQuestions.length - 1) {
       setCurrentQuestionIndex(prev => prev + 1);
@@ -242,65 +251,89 @@ const GMATInterface = () => {
     setShowConfirmModal(false);
   };
 
-  // Calculate score with GMAT adaptive scoring (60-90 scale)
+  // Calculate score with different logic for adaptive vs non-adaptive
   const calculateScore = () => {
     let totalPoints = 0;
     let maxPossiblePoints = 0;
     let correctByDifficulty = { easy: 0, medium: 0, hard: 0 };
     let totalByDifficulty = { easy: 0, medium: 0, hard: 0 };
     
-    // Enhanced point values for adaptive scoring
-    const pointValues = { easy: 1, medium: 2.5, hard: 4 };
-    
-    // First seven questions get bonus weighting (adaptive algorithm impact)
-    const firstSevenBonus = 1.2;
-    
-    adaptiveQuestions.forEach((question, index) => {
-      const difficulty = question.difficulty;
-      let points = pointValues[difficulty];
+    if (questionData.adaptiveMode) {
+      // Adaptive scoring with enhanced point values
+      const pointValues = { easy: 1, medium: 2.5, hard: 4 };
+      const firstSevenBonus = 1.2;
       
-      // Apply first seven bonus
-      if (index < 7) {
-        points *= firstSevenBonus;
-      }
+      adaptiveQuestions.forEach((question, index) => {
+        const difficulty = question.difficulty;
+        let points = pointValues[difficulty];
+        
+        // Apply first seven bonus for adaptive tests
+        if (index < 7) {
+          points *= firstSevenBonus;
+        }
+        
+        totalByDifficulty[difficulty]++;
+        maxPossiblePoints += points;
+        
+        if (selectedAnswers[question.id] === question.correctAnswer) {
+          correctByDifficulty[difficulty]++;
+          totalPoints += points;
+        }
+      });
       
-      // Count totals by difficulty
-      totalByDifficulty[difficulty]++;
-      maxPossiblePoints += points;
+      // Calculate raw percentage and apply adaptive scaling
+      const rawPercentage = totalPoints / maxPossiblePoints;
+      let scalingFactor = 1.0;
+      if (performanceLevel === 'hard') scalingFactor = 1.1;
+      else if (performanceLevel === 'easy') scalingFactor = 0.9;
       
-      // Check if answer is correct
-      if (selectedAnswers[question.id] === question.correctAnswer) {
-        correctByDifficulty[difficulty]++;
-        totalPoints += points;
-      }
-    });
-    
-    // Calculate raw percentage
-    const rawPercentage = totalPoints / maxPossiblePoints;
-    
-    // Convert to GMAT scale (60-90)
-    // Use adaptive performance level to adjust scaling
-    let scalingFactor = 1.0;
-    if (performanceLevel === 'hard') scalingFactor = 1.1;
-    else if (performanceLevel === 'easy') scalingFactor = 0.9;
-    
-    const adjustedPercentage = Math.min(rawPercentage * scalingFactor, 1.0);
-    
-    // GMAT scoring: 60-90 scale
-    const gmatScore = Math.round(60 + (adjustedPercentage * 30));
-    const accuracyPercentage = Math.round((Object.values(correctByDifficulty).reduce((a, b) => a + b, 0) / adaptiveQuestions.length) * 100);
-    
-    return {
-      gmatScore,
-      accuracyPercentage,
-      totalPoints: Math.round(totalPoints),
-      maxPossiblePoints: Math.round(maxPossiblePoints),
-      correctByDifficulty,
-      totalByDifficulty,
-      totalCorrect: Object.values(correctByDifficulty).reduce((a, b) => a + b, 0),
-      totalQuestions: adaptiveQuestions.length,
-      performanceLevel
-    };
+      const adjustedPercentage = Math.min(rawPercentage * scalingFactor, 1.0);
+      const gmatScore = Math.round(60 + (adjustedPercentage * 30));
+      
+      return {
+        gmatScore,
+        accuracyPercentage: Math.round((Object.values(correctByDifficulty).reduce((a, b) => a + b, 0) / adaptiveQuestions.length) * 100),
+        totalPoints: Math.round(totalPoints),
+        maxPossiblePoints: Math.round(maxPossiblePoints),
+        correctByDifficulty,
+        totalByDifficulty,
+        totalCorrect: Object.values(correctByDifficulty).reduce((a, b) => a + b, 0),
+        totalQuestions: adaptiveQuestions.length,
+        performanceLevel
+      };
+    } else {
+      // Non-adaptive scoring - simpler calculation
+      const pointValues = { easy: 1, medium: 2, hard: 3 };
+      
+      adaptiveQuestions.forEach((question) => {
+        const difficulty = question.difficulty;
+        const points = pointValues[difficulty];
+        
+        totalByDifficulty[difficulty]++;
+        maxPossiblePoints += points;
+        
+        if (selectedAnswers[question.id] === question.correctAnswer) {
+          correctByDifficulty[difficulty]++;
+          totalPoints += points;
+        }
+      });
+      
+      // Simple percentage-based GMAT score for non-adaptive
+      const rawPercentage = totalPoints / maxPossiblePoints;
+      const gmatScore = Math.round(60 + (rawPercentage * 30));
+      
+      return {
+        gmatScore,
+        accuracyPercentage: Math.round((Object.values(correctByDifficulty).reduce((a, b) => a + b, 0) / adaptiveQuestions.length) * 100),
+        totalPoints: Math.round(totalPoints),
+        maxPossiblePoints: Math.round(maxPossiblePoints),
+        correctByDifficulty,
+        totalByDifficulty,
+        totalCorrect: Object.values(correctByDifficulty).reduce((a, b) => a + b, 0),
+        totalQuestions: adaptiveQuestions.length,
+        performanceLevel: 'N/A' // Not applicable for non-adaptive tests
+      };
+    }
   };
 
   const currentQuestion = adaptiveQuestions[currentQuestionIndex];
@@ -311,8 +344,12 @@ const GMATInterface = () => {
     return (
       <div style={{ fontFamily: 'Arial, sans-serif', height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ textAlign: 'center', padding: '20px' }}>
-          <div style={{ fontSize: '18px', color: '#3498db', marginBottom: '10px' }}>Initializing Adaptive Test...</div>
-          <div style={{ fontSize: '14px', color: '#666' }}>Setting up questions based on your profile</div>
+          <div style={{ fontSize: '18px', color: '#3498db', marginBottom: '10px' }}>
+            {questionData.adaptiveMode ? 'Initializing Adaptive Test...' : 'Loading Test Questions...'}
+          </div>
+          <div style={{ fontSize: '14px', color: '#666' }}>
+            {questionData.adaptiveMode ? 'Setting up questions based on your profile' : 'Preparing your question set'}
+          </div>
         </div>
       </div>
     );
@@ -394,10 +431,12 @@ const GMATInterface = () => {
             <div style={{ fontSize: '16px', color: '#666', marginBottom: '25px', lineHeight: '1.6' }}>
               <p>You are about to begin the {questionData.sectionName} section.</p>
               <p><strong>Time Limit:</strong> {Math.floor(timeLimit / 60)} minutes</p>
-              <p><strong>Questions:</strong> {targetQuestions} (Adaptive)</p>
+              <p><strong>Questions:</strong> {targetQuestions} {questionData.adaptiveMode ? '(Adaptive)' : ''}</p>
               <p style={{ marginTop: '20px', fontSize: '14px', color: '#888' }}>
-                This is an adaptive test. Question difficulty will adjust based on your performance.
-                Once you start, the timer will begin and you cannot go back to previous questions.
+                {questionData.adaptiveMode ? 
+                  'This is an adaptive test. Question difficulty will adjust based on your performance. Once you start, the timer will begin and you cannot go back to previous questions.' :
+                  'Once you start, the timer will begin and you cannot go back to previous questions.'
+                }
               </p>
             </div>
             <button
@@ -491,14 +530,16 @@ const GMATInterface = () => {
               Accuracy: {score.accuracyPercentage}% ({score.totalCorrect}/{score.totalQuestions} correct)
             </div>
             
-            {/* Performance Level */}
-            <div style={{ fontSize: '16px', color: '#666', marginBottom: '25px' }}>
-              Adaptive Performance Level: <strong style={{ 
-                color: score.performanceLevel === 'hard' ? '#27ae60' : 
-                      score.performanceLevel === 'medium' ? '#f39c12' : '#e74c3c',
-                textTransform: 'capitalize'
-              }}>{score.performanceLevel}</strong>
-            </div>
+            {/* Performance Level - only show for adaptive tests */}
+            {questionData.adaptiveMode && (
+              <div style={{ fontSize: '16px', color: '#666', marginBottom: '25px' }}>
+                Adaptive Performance Level: <strong style={{ 
+                  color: score.performanceLevel === 'hard' ? '#27ae60' : 
+                        score.performanceLevel === 'medium' ? '#f39c12' : '#e74c3c',
+                  textTransform: 'capitalize'
+                }}>{score.performanceLevel}</strong>
+              </div>
+            )}
             
             {/* Difficulty Breakdown */}
             <div style={{ 
