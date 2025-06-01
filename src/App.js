@@ -88,6 +88,7 @@ const GMATInterface = () => {
   const [showTimeWarning, setShowTimeWarning] = useState(false);
   const [adaptiveQuestions, setAdaptiveQuestions] = useState([]);
   const [performanceLevel, setPerformanceLevel] = useState('medium'); // 'easy', 'medium', 'hard'
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   // Timer effect
   useEffect(() => {
@@ -220,6 +221,13 @@ const GMATInterface = () => {
 
   // Navigate to next question
   const handleNext = () => {
+    // Show confirmation modal instead of immediately proceeding
+    setShowConfirmModal(true);
+  };
+
+  // Handle confirmation to proceed to next question
+  const confirmNext = () => {
+    setShowConfirmModal(false);
     updatePerformanceLevel();
     
     if (currentQuestionIndex < adaptiveQuestions.length - 1) {
@@ -227,6 +235,11 @@ const GMATInterface = () => {
     } else {
       setIsCompleted(true);
     }
+  };
+
+  // Handle cancellation (stay on current question)
+  const cancelNext = () => {
+    setShowConfirmModal(false);
   };
 
   // Calculate score with GMAT adaptive scoring (60-90 scale)
@@ -512,6 +525,123 @@ const GMATInterface = () => {
                 <span>{score.correctByDifficulty.hard}/{score.totalByDifficulty.hard} correct ({score.totalByDifficulty.hard > 0 ? Math.round((score.correctByDifficulty.hard / score.totalByDifficulty.hard) * 100) : 0}%)</span>
               </div>
             </div>
+
+            {/* Question-by-Question Analysis */}
+            <div style={{ 
+              textAlign: 'left', 
+              backgroundColor: '#f8f9fa', 
+              padding: '20px', 
+              borderRadius: '6px',
+              marginBottom: '20px',
+              maxHeight: '300px',
+              overflowY: 'auto'
+            }}>
+              <h4 style={{ color: '#2c3e50', marginBottom: '15px', textAlign: 'center' }}>Question Analysis</h4>
+              
+              <table style={{
+                width: '100%',
+                borderCollapse: 'collapse',
+                fontSize: '14px'
+              }}>
+                <thead>
+                  <tr style={{ backgroundColor: '#e9ecef' }}>
+                    <th style={{ 
+                      padding: '8px 12px', 
+                      textAlign: 'left', 
+                      borderBottom: '2px solid #dee2e6',
+                      fontWeight: '600'
+                    }}>
+                      Question
+                    </th>
+                    <th style={{ 
+                      padding: '8px 12px', 
+                      textAlign: 'center', 
+                      borderBottom: '2px solid #dee2e6',
+                      fontWeight: '600'
+                    }}>
+                      Your Answer
+                    </th>
+                    <th style={{ 
+                      padding: '8px 12px', 
+                      textAlign: 'center', 
+                      borderBottom: '2px solid #dee2e6',
+                      fontWeight: '600'
+                    }}>
+                      Correct Answer
+                    </th>
+                    <th style={{ 
+                      padding: '8px 12px', 
+                      textAlign: 'center', 
+                      borderBottom: '2px solid #dee2e6',
+                      fontWeight: '600'
+                    }}>
+                      Result
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {adaptiveQuestions.map((question, index) => {
+                    const chosenAnswer = selectedAnswers[question.id] || '--';
+                    const correctAnswer = question.correctAnswer;
+                    const isCorrect = chosenAnswer === correctAnswer;
+                    const isUnattempted = chosenAnswer === '--';
+                    
+                    return (
+                      <tr key={question.id} style={{ 
+                        borderBottom: '1px solid #dee2e6',
+                        backgroundColor: index % 2 === 0 ? 'white' : '#f8f9fa'
+                      }}>
+                        <td style={{ 
+                          padding: '8px 12px',
+                          fontWeight: '500'
+                        }}>
+                          Q{index + 1}
+                          <span style={{
+                            marginLeft: '8px',
+                            fontSize: '11px',
+                            color: question.difficulty === 'easy' ? '#27ae60' : 
+                                   question.difficulty === 'medium' ? '#f39c12' : '#e74c3c',
+                            textTransform: 'uppercase',
+                            fontWeight: '600'
+                          }}>
+                            {question.difficulty}
+                          </span>
+                        </td>
+                        <td style={{ 
+                          padding: '8px 12px', 
+                          textAlign: 'center',
+                          fontWeight: '600',
+                          color: isUnattempted ? '#6c757d' : (isCorrect ? '#27ae60' : '#e74c3c')
+                        }}>
+                          {chosenAnswer}
+                        </td>
+                        <td style={{ 
+                          padding: '8px 12px', 
+                          textAlign: 'center',
+                          fontWeight: '600',
+                          color: '#27ae60'
+                        }}>
+                          {correctAnswer}
+                        </td>
+                        <td style={{ 
+                          padding: '8px 12px', 
+                          textAlign: 'center',
+                          fontWeight: '600'
+                        }}>
+                          {isUnattempted ? (
+                            <span style={{ color: '#6c757d' }}>--</span>
+                          ) : isCorrect ? (
+                            <span style={{ color: '#27ae60' }}>✓</span>
+                          ) : (
+                            <span style={{ color: '#e74c3c' }}>✗</span>
+                          )}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
             
             <div style={{ fontSize: '14px', color: '#888' }}>
               Time used: {formatTime(timeLimit - timeRemaining)}
@@ -739,6 +869,83 @@ const GMATInterface = () => {
             >
               Continue
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Confirmation Modal */}
+      {showConfirmModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1001
+        }}>
+          <div style={{
+            backgroundColor: 'white',
+            padding: '30px',
+            borderRadius: '8px',
+            textAlign: 'center',
+            maxWidth: '450px',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.15)'
+          }}>
+            <h3 style={{ color: '#2c3e50', marginBottom: '15px', fontSize: '18px' }}>
+              Ready to Proceed?
+            </h3>
+            <p style={{ marginBottom: '25px', color: '#666', lineHeight: '1.5' }}>
+              Are you ready to move to the {currentQuestionIndex === adaptiveQuestions.length - 1 ? 'results' : 'next question'}?
+              <br />
+              <span style={{ fontSize: '14px', color: '#888' }}>
+                {currentQuestionIndex === adaptiveQuestions.length - 1 ? 
+                  'This will complete your test.' : 
+                  'You cannot return to this question once you proceed.'
+                }
+              </span>
+            </p>
+            <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+              <button
+                onClick={cancelNext}
+                style={{
+                  backgroundColor: '#95a5a6',
+                  color: 'white',
+                  border: 'none',
+                  padding: '10px 20px',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  transition: 'background-color 0.2s ease'
+                }}
+                onMouseOver={(e) => e.target.style.backgroundColor = '#7f8c8d'}
+                onMouseOut={(e) => e.target.style.backgroundColor = '#95a5a6'}
+              >
+                Cancel
+              </button>
+              <button
+                onClick={confirmNext}
+                style={{
+                  backgroundColor: '#27ae60',
+                  color: 'white',
+                  border: 'none',
+                  padding: '10px 20px',
+                  borderRadius: '4px',
+                  cursor: 'pointer',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  transition: 'background-color 0.2s ease'
+                }}
+                onMouseOver={(e) => e.target.style.backgroundColor = '#229954'}
+                onMouseOut={(e) => e.target.style.backgroundColor = '#27ae60'}
+              >
+                {currentQuestionIndex === adaptiveQuestions.length - 1 ? 'Finish Test' : 'Yes, Continue'}
+              </button>
+            </div>
           </div>
         </div>
       )}
