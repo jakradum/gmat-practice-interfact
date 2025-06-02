@@ -8,6 +8,13 @@ try {
   // Fallback mock data with dummy questions
   questionData = {
     "sectionName": "Practice Test - Development Mode",
+    "testDescription": "This practice test covers basic reasoning and mathematical concepts. Questions include simple arithmetic, logic, and general knowledge to test the interface functionality.",
+    "skillsAssessed": [
+      "Basic arithmetic and number sense",
+      "Simple logical reasoning",
+      "Reading comprehension",
+      "Pattern recognition"
+    ],
     "adaptiveMode": true,
     "targetQuestions": 3,
     "bufferQuestions": 1,
@@ -344,10 +351,10 @@ const GMATInterface = () => {
     return (
       <div style={{ fontFamily: 'Arial, sans-serif', height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ textAlign: 'center', padding: '20px' }}>
-          <div style={{ fontSize: '18px', color: '#3498db', marginBottom: '10px' }}>
+          <div style={{ fontSize: '20px', color: '#3498db', marginBottom: '10px' }}>
             {questionData.adaptiveMode ? 'Initializing Adaptive Test...' : 'Loading Test Questions...'}
           </div>
-          <div style={{ fontSize: '14px', color: '#666' }}>
+          <div style={{ fontSize: '16px', color: '#666' }}>
             {questionData.adaptiveMode ? 'Setting up questions based on your profile' : 'Preparing your question set'}
           </div>
         </div>
@@ -360,8 +367,8 @@ const GMATInterface = () => {
     return (
       <div style={{ fontFamily: 'Arial, sans-serif', height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ textAlign: 'center', padding: '20px' }}>
-          <div style={{ fontSize: '18px', color: '#e74c3c', marginBottom: '10px' }}>Test Error</div>
-          <div style={{ fontSize: '14px', color: '#666' }}>Unable to load question. Please restart the test.</div>
+          <div style={{ fontSize: '20px', color: '#e74c3c', marginBottom: '10px' }}>Test Error</div>
+          <div style={{ fontSize: '16px', color: '#666' }}>Unable to load question. Please restart the test.</div>
         </div>
       </div>
     );
@@ -375,18 +382,18 @@ const GMATInterface = () => {
         <div style={{
           backgroundColor: '#2c3e50',
           color: 'white',
-          padding: '12px 20px',
+          padding: '14px 22px',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center'
         }}>
-          <span style={{ fontSize: '14px', fontWeight: '500' }}>
+          <span style={{ fontSize: '16px', fontWeight: '500' }}>
             GMAT™ Practice Test - Practice Session
             {questionData.sectionName.includes('Development Mode') && 
               <span style={{ color: '#f39c12', marginLeft: '8px' }}>(DEV MODE)</span>
             }
           </span>
-          <span style={{ fontSize: '14px' }}>
+          <span style={{ fontSize: '16px' }}>
             Ready to Begin
           </span>
         </div>
@@ -395,8 +402,8 @@ const GMATInterface = () => {
         <div style={{
           backgroundColor: '#3498db',
           color: 'white',
-          padding: '8px 20px',
-          fontSize: '14px',
+          padding: '10px 22px',
+          fontSize: '16px',
           fontWeight: '500'
         }}>
           {questionData.sectionName}
@@ -418,21 +425,53 @@ const GMATInterface = () => {
             borderRadius: '8px',
             boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
             textAlign: 'center',
-            maxWidth: '600px'
+            maxWidth: '700px'
           }}>
-            <h2 style={{ color: '#2c3e50', marginBottom: '20px' }}>
+            <h2 style={{ color: '#2c3e50', marginBottom: '20px', fontSize: '24px' }}>
               {questionData.sectionName}
               {questionData.sectionName.includes('Development Mode') && 
-                <div style={{ fontSize: '14px', color: '#e74c3c', marginTop: '5px' }}>
+                <div style={{ fontSize: '16px', color: '#e74c3c', marginTop: '5px' }}>
                   (Using fallback data - questionData.json not found)
                 </div>
               }
             </h2>
-            <div style={{ fontSize: '16px', color: '#666', marginBottom: '25px', lineHeight: '1.6' }}>
-              <p>You are about to begin the {questionData.sectionName} section.</p>
+
+            {/* Test Summary */}
+            <div style={{ 
+              backgroundColor: '#f8f9fa', 
+              padding: '25px', 
+              borderRadius: '6px',
+              marginBottom: '25px',
+              textAlign: 'left'
+            }}>
+              <h3 style={{ color: '#2c3e50', marginBottom: '15px', fontSize: '18px', textAlign: 'center' }}>
+                What This Test Covers
+              </h3>
+              <div style={{ fontSize: '16px', color: '#666', marginBottom: '15px', lineHeight: '1.6' }}>
+                {questionData.testDescription || "This section tests your quantitative reasoning abilities through various mathematical concepts and problem-solving scenarios."}
+              </div>
+              {questionData.skillsAssessed && questionData.skillsAssessed.length > 0 && (
+                <div>
+                  <strong style={{ color: '#2c3e50', fontSize: '16px' }}>Skills Assessed:</strong>
+                  <ul style={{ 
+                    marginTop: '8px', 
+                    paddingLeft: '20px',
+                    fontSize: '16px',
+                    color: '#666',
+                    lineHeight: '1.6'
+                  }}>
+                    {questionData.skillsAssessed.map((skill, index) => (
+                      <li key={index} style={{ marginBottom: '4px' }}>{skill}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+
+            <div style={{ fontSize: '18px', color: '#666', marginBottom: '25px', lineHeight: '1.6' }}>
               <p><strong>Time Limit:</strong> {Math.floor(timeLimit / 60)} minutes</p>
               <p><strong>Questions:</strong> {targetQuestions} {questionData.adaptiveMode ? '(Adaptive)' : ''}</p>
-              <p style={{ marginTop: '20px', fontSize: '14px', color: '#888' }}>
+              <p style={{ marginTop: '20px', fontSize: '16px', color: '#888' }}>
                 {questionData.adaptiveMode ? 
                   'This is an adaptive test. Question difficulty will adjust based on your performance. Once you start, the timer will begin and you cannot go back to previous questions.' :
                   'Once you start, the timer will begin and you cannot go back to previous questions.'
@@ -445,9 +484,9 @@ const GMATInterface = () => {
                 backgroundColor: '#27ae60',
                 color: 'white',
                 border: 'none',
-                padding: '12px 24px',
+                padding: '14px 28px',
                 borderRadius: '6px',
-                fontSize: '16px',
+                fontSize: '18px',
                 fontWeight: '500',
                 cursor: 'pointer',
                 transition: 'background-color 0.2s ease'
@@ -472,18 +511,18 @@ const GMATInterface = () => {
         <div style={{
           backgroundColor: '#2c3e50',
           color: 'white',
-          padding: '12px 20px',
+          padding: '14px 22px',
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center'
         }}>
-          <span style={{ fontSize: '14px', fontWeight: '500' }}>
+          <span style={{ fontSize: '16px', fontWeight: '500' }}>
             GMAT™ Practice Test - Practice Session
             {questionData.sectionName.includes('Development Mode') && 
               <span style={{ color: '#f39c12', marginLeft: '8px' }}>(DEV MODE)</span>
             }
           </span>
-          <span style={{ fontSize: '14px' }}>
+          <span style={{ fontSize: '16px' }}>
             Test Complete
           </span>
         </div>
@@ -492,8 +531,8 @@ const GMATInterface = () => {
         <div style={{
           backgroundColor: '#3498db',
           color: 'white',
-          padding: '8px 20px',
-          fontSize: '14px',
+          padding: '10px 22px',
+          fontSize: '16px',
           fontWeight: '500'
         }}>
           {questionData.sectionName}
@@ -506,8 +545,9 @@ const GMATInterface = () => {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          justifyContent: 'center',
-          backgroundColor: '#f8f9fa'
+          justifyContent: 'flex-start',
+          backgroundColor: '#f8f9fa',
+          overflow: 'auto'
         }}>
           <div style={{
             backgroundColor: 'white',
@@ -515,24 +555,57 @@ const GMATInterface = () => {
             borderRadius: '8px',
             boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
             textAlign: 'center',
-            maxWidth: '600px'
+            maxWidth: '800px',
+            width: '100%'
           }}>
-            <h2 style={{ color: '#2c3e50', marginBottom: '20px' }}>Test Results</h2>
+            <h2 style={{ color: '#2c3e50', marginBottom: '20px', fontSize: '24px' }}>Test Results</h2>
+            
+            {/* Test Summary */}
+            <div style={{ 
+              backgroundColor: '#f8f9fa', 
+              padding: '20px', 
+              borderRadius: '6px',
+              marginBottom: '25px',
+              textAlign: 'left'
+            }}>
+              <h3 style={{ color: '#2c3e50', marginBottom: '15px', fontSize: '18px', textAlign: 'center' }}>
+                Test Coverage Summary
+              </h3>
+              <div style={{ fontSize: '16px', color: '#666', marginBottom: '15px', lineHeight: '1.6' }}>
+                {questionData.testDescription || "This section tested your quantitative reasoning abilities through various mathematical concepts and problem-solving scenarios."}
+              </div>
+              {questionData.skillsAssessed && questionData.skillsAssessed.length > 0 && (
+                <div>
+                  <strong style={{ color: '#2c3e50', fontSize: '16px' }}>Skills Assessed:</strong>
+                  <ul style={{ 
+                    marginTop: '8px', 
+                    paddingLeft: '20px',
+                    fontSize: '16px',
+                    color: '#666',
+                    lineHeight: '1.6'
+                  }}>
+                    {questionData.skillsAssessed.map((skill, index) => (
+                      <li key={index} style={{ marginBottom: '4px' }}>{skill}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
             
             {/* GMAT Score */}
-            <div style={{ fontSize: '48px', color: '#27ae60', fontWeight: 'bold', marginBottom: '10px' }}>
+            <div style={{ fontSize: '52px', color: '#27ae60', fontWeight: 'bold', marginBottom: '10px' }}>
               {score.gmatScore}
             </div>
-            <div style={{ fontSize: '18px', color: '#666', marginBottom: '10px' }}>
+            <div style={{ fontSize: '20px', color: '#666', marginBottom: '10px' }}>
               GMAT Quantitative Score (60-90 scale)
             </div>
-            <div style={{ fontSize: '16px', color: '#666', marginBottom: '30px' }}>
+            <div style={{ fontSize: '18px', color: '#666', marginBottom: '30px' }}>
               Accuracy: {score.accuracyPercentage}% ({score.totalCorrect}/{score.totalQuestions} correct)
             </div>
             
             {/* Performance Level - only show for adaptive tests */}
             {questionData.adaptiveMode && (
-              <div style={{ fontSize: '16px', color: '#666', marginBottom: '25px' }}>
+              <div style={{ fontSize: '18px', color: '#666', marginBottom: '25px' }}>
                 Adaptive Performance Level: <strong style={{ 
                   color: score.performanceLevel === 'hard' ? '#27ae60' : 
                         score.performanceLevel === 'medium' ? '#f39c12' : '#e74c3c',
@@ -545,23 +618,23 @@ const GMATInterface = () => {
             <div style={{ 
               textAlign: 'left', 
               backgroundColor: '#f8f9fa', 
-              padding: '20px', 
+              padding: '25px', 
               borderRadius: '6px',
-              marginBottom: '20px'
+              marginBottom: '25px'
             }}>
-              <h4 style={{ color: '#2c3e50', marginBottom: '15px', textAlign: 'center' }}>Performance by Difficulty</h4>
+              <h4 style={{ color: '#2c3e50', marginBottom: '20px', textAlign: 'center', fontSize: '18px' }}>Performance by Difficulty</h4>
               
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', fontSize: '16px' }}>
                 <span style={{ color: '#27ae60', fontWeight: '500' }}>Easy:</span>
                 <span>{score.correctByDifficulty.easy}/{score.totalByDifficulty.easy} correct ({score.totalByDifficulty.easy > 0 ? Math.round((score.correctByDifficulty.easy / score.totalByDifficulty.easy) * 100) : 0}%)</span>
               </div>
               
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', fontSize: '16px' }}>
                 <span style={{ color: '#f39c12', fontWeight: '500' }}>Medium:</span>
                 <span>{score.correctByDifficulty.medium}/{score.totalByDifficulty.medium} correct ({score.totalByDifficulty.medium > 0 ? Math.round((score.correctByDifficulty.medium / score.totalByDifficulty.medium) * 100) : 0}%)</span>
               </div>
               
-              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '16px' }}>
                 <span style={{ color: '#e74c3c', fontWeight: '500' }}>Hard:</span>
                 <span>{score.correctByDifficulty.hard}/{score.totalByDifficulty.hard} correct ({score.totalByDifficulty.hard > 0 ? Math.round((score.correctByDifficulty.hard / score.totalByDifficulty.hard) * 100) : 0}%)</span>
               </div>
@@ -571,50 +644,52 @@ const GMATInterface = () => {
             <div style={{ 
               textAlign: 'left', 
               backgroundColor: '#f8f9fa', 
-              padding: '20px', 
+              padding: '25px', 
               borderRadius: '6px',
-              marginBottom: '20px',
-              maxHeight: '300px',
-              overflowY: 'auto'
+              marginBottom: '25px'
             }}>
-              <h4 style={{ color: '#2c3e50', marginBottom: '15px', textAlign: 'center' }}>Question Analysis</h4>
+              <h4 style={{ color: '#2c3e50', marginBottom: '20px', textAlign: 'center', fontSize: '18px' }}>Question Analysis</h4>
               
               <table style={{
                 width: '100%',
                 borderCollapse: 'collapse',
-                fontSize: '14px'
+                fontSize: '16px'
               }}>
                 <thead>
                   <tr style={{ backgroundColor: '#e9ecef' }}>
                     <th style={{ 
-                      padding: '8px 12px', 
+                      padding: '12px 16px', 
                       textAlign: 'left', 
                       borderBottom: '2px solid #dee2e6',
-                      fontWeight: '600'
+                      fontWeight: '600',
+                      width: '45%'
                     }}>
                       Question
                     </th>
                     <th style={{ 
-                      padding: '8px 12px', 
+                      padding: '12px 16px', 
                       textAlign: 'center', 
                       borderBottom: '2px solid #dee2e6',
-                      fontWeight: '600'
+                      fontWeight: '600',
+                      width: '18%'
                     }}>
                       Your Answer
                     </th>
                     <th style={{ 
-                      padding: '8px 12px', 
+                      padding: '12px 16px', 
                       textAlign: 'center', 
                       borderBottom: '2px solid #dee2e6',
-                      fontWeight: '600'
+                      fontWeight: '600',
+                      width: '18%'
                     }}>
                       Correct Answer
                     </th>
                     <th style={{ 
-                      padding: '8px 12px', 
+                      padding: '12px 16px', 
                       textAlign: 'center', 
                       borderBottom: '2px solid #dee2e6',
-                      fontWeight: '600'
+                      fontWeight: '600',
+                      width: '19%'
                     }}>
                       Result
                     </th>
@@ -627,29 +702,44 @@ const GMATInterface = () => {
                     const isCorrect = chosenAnswer === correctAnswer;
                     const isUnattempted = chosenAnswer === '--';
                     
+                    // Get first few words of question (up to 50 characters)
+                    const questionPreview = question.questionText.length > 50 
+                      ? question.questionText.substring(0, 50) + '...'
+                      : question.questionText;
+                    
                     return (
                       <tr key={question.id} style={{ 
                         borderBottom: '1px solid #dee2e6',
                         backgroundColor: index % 2 === 0 ? 'white' : '#f8f9fa'
                       }}>
                         <td style={{ 
-                          padding: '8px 12px',
+                          padding: '12px 16px',
                           fontWeight: '500'
                         }}>
-                          Q{index + 1}
-                          <span style={{
-                            marginLeft: '8px',
-                            fontSize: '11px',
-                            color: question.difficulty === 'easy' ? '#27ae60' : 
-                                   question.difficulty === 'medium' ? '#f39c12' : '#e74c3c',
-                            textTransform: 'uppercase',
-                            fontWeight: '600'
+                          <div style={{ marginBottom: '4px' }}>
+                            Q{question.id}
+                            <span style={{
+                              marginLeft: '8px',
+                              fontSize: '12px',
+                              color: question.difficulty === 'easy' ? '#27ae60' : 
+                                     question.difficulty === 'medium' ? '#f39c12' : '#e74c3c',
+                              textTransform: 'uppercase',
+                              fontWeight: '600'
+                            }}>
+                              {question.difficulty}
+                            </span>
+                          </div>
+                          <div style={{ 
+                            fontSize: '14px', 
+                            color: '#666', 
+                            fontWeight: '400',
+                            lineHeight: '1.3'
                           }}>
-                            {question.difficulty}
-                          </span>
+                            {questionPreview}
+                          </div>
                         </td>
                         <td style={{ 
-                          padding: '8px 12px', 
+                          padding: '12px 16px', 
                           textAlign: 'center',
                           fontWeight: '600',
                           color: isUnattempted ? '#6c757d' : (isCorrect ? '#27ae60' : '#e74c3c')
@@ -657,7 +747,7 @@ const GMATInterface = () => {
                           {chosenAnswer}
                         </td>
                         <td style={{ 
-                          padding: '8px 12px', 
+                          padding: '12px 16px', 
                           textAlign: 'center',
                           fontWeight: '600',
                           color: '#27ae60'
@@ -665,7 +755,7 @@ const GMATInterface = () => {
                           {correctAnswer}
                         </td>
                         <td style={{ 
-                          padding: '8px 12px', 
+                          padding: '12px 16px', 
                           textAlign: 'center',
                           fontWeight: '600'
                         }}>
@@ -684,7 +774,7 @@ const GMATInterface = () => {
               </table>
             </div>
             
-            <div style={{ fontSize: '14px', color: '#888' }}>
+            <div style={{ fontSize: '16px', color: '#888' }}>
               Time used: {formatTime(timeLimit - timeRemaining)}
               {timeRemaining === 0 && <span style={{ color: '#e74c3c', marginLeft: '10px' }}>(Time Expired)</span>}
             </div>
@@ -721,12 +811,12 @@ const GMATInterface = () => {
       <div style={{
         backgroundColor: '#2c3e50',
         color: 'white',
-        padding: '12px 20px',
+        padding: '14px 22px',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center'
       }}>
-        <span style={{ fontSize: '14px', fontWeight: '500' }}>
+        <span style={{ fontSize: '16px', fontWeight: '500' }}>
           GMAT™ Practice Test - Practice Session
           {questionData.sectionName.includes('Development Mode') && 
             <span style={{ color: '#f39c12', marginLeft: '8px' }}>(DEV MODE)</span>
@@ -734,13 +824,13 @@ const GMATInterface = () => {
         </span>
         <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
           <span style={{ 
-            fontSize: '14px', 
+            fontSize: '16px', 
             color: isTimeWarning ? '#e74c3c' : 'white',
             fontWeight: isTimeWarning ? 'bold' : 'normal'
           }}>
             {formatTime(timeRemaining)}
           </span>
-          <span style={{ fontSize: '14px' }}>
+          <span style={{ fontSize: '16px' }}>
             {currentQuestionIndex + 1} of {adaptiveQuestions.length}
           </span>
         </div>
@@ -750,8 +840,8 @@ const GMATInterface = () => {
       <div style={{
         backgroundColor: '#3498db',
         color: 'white',
-        padding: '8px 20px',
-        fontSize: '14px',
+        padding: '10px 22px',
+        fontSize: '16px',
         fontWeight: '500'
       }}>
         {questionData.sectionName}
@@ -761,31 +851,33 @@ const GMATInterface = () => {
       <div style={{
         flex: 1,
         backgroundColor: 'white',
-        padding: '30px 40px',
-        overflow: 'auto'
+        padding: '35px 45px',
+        overflow: 'auto',
+        filter: isPaused ? 'blur(5px)' : 'none',
+        transition: 'filter 0.3s ease'
       }}>
         {/* Question Text */}
         <div style={{
-          fontSize: '16px',
+          fontSize: '18px',
           lineHeight: '1.6',
-          marginBottom: '30px',
+          marginBottom: '35px',
           color: '#2c3e50'
         }}>
-          <span style={{ color: '#2c3e50', fontSize: '16px', marginRight: '8px' }}>
+          <span style={{ color: '#2c3e50', fontSize: '18px', marginRight: '8px' }}>
             {currentQuestionIndex + 1}.
           </span>
           <span className="math-text" dangerouslySetInnerHTML={{ __html: formatMath(currentQuestion.questionText) }}></span>
         </div>
 
         {/* Answer Options */}
-        <div style={{ maxWidth: '600px' }}>
+        <div style={{ maxWidth: '650px' }}>
           {Object.entries(currentQuestion.options).map(([letter, text]) => (
             <div key={letter} style={{
-              marginBottom: '12px',
+              marginBottom: '15px',
               display: 'flex',
               alignItems: 'flex-start',
               cursor: 'pointer',
-              padding: '8px 12px',
+              padding: '10px 15px',
               borderRadius: '4px',
               backgroundColor: selectedAnswers[currentQuestion.id] === letter ? '#fff3cd' : 'transparent',
               border: selectedAnswers[currentQuestion.id] === letter ? '2px solid #ffc107' : '2px solid transparent',
@@ -800,13 +892,13 @@ const GMATInterface = () => {
                 checked={selectedAnswers[currentQuestion.id] === letter}
                 onChange={() => handleAnswerSelect(currentQuestion.id, letter)}
                 style={{
-                  marginRight: '12px',
+                  marginRight: '15px',
                   marginTop: '2px',
-                  transform: 'scale(1.2)'
+                  transform: 'scale(1.3)'
                 }}
               />
               <div>
-                <span className="math-text" style={{ fontSize: '16px', lineHeight: '1.4' }} dangerouslySetInnerHTML={{ __html: formatMath(text) }}>
+                <span className="math-text" style={{ fontSize: '18px', lineHeight: '1.4' }} dangerouslySetInnerHTML={{ __html: formatMath(text) }}>
                 </span>
               </div>
             </div>
@@ -817,7 +909,7 @@ const GMATInterface = () => {
       {/* Bottom Navigation */}
       <div style={{
         backgroundColor: '#3498db',
-        padding: '12px 20px',
+        padding: '14px 22px',
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center'
@@ -829,26 +921,13 @@ const GMATInterface = () => {
               backgroundColor: 'transparent',
               border: '1px solid white',
               color: 'white',
-              padding: '6px 12px',
+              padding: '8px 15px',
               borderRadius: '4px',
               cursor: 'pointer',
-              fontSize: '14px'
+              fontSize: '16px'
             }}
           >
             {isPaused ? '▶ Resume' : '⏸ Pause'}
-          </button>
-          <button
-            style={{
-              backgroundColor: 'transparent',
-              border: '1px solid white',
-              color: 'white',
-              padding: '6px 12px',
-              borderRadius: '4px',
-              cursor: 'pointer',
-              fontSize: '14px'
-            }}
-          >
-            📄 Help
           </button>
         </div>
 
@@ -860,10 +939,10 @@ const GMATInterface = () => {
               backgroundColor: selectedAnswers[currentQuestion.id] ? '#27ae60' : '#95a5a6',
               border: 'none',
               color: 'white',
-              padding: '8px 16px',
+              padding: '10px 20px',
               borderRadius: '4px',
               cursor: selectedAnswers[currentQuestion.id] ? 'pointer' : 'not-allowed',
-              fontSize: '14px',
+              fontSize: '16px',
               fontWeight: '500'
             }}
           >
@@ -871,6 +950,50 @@ const GMATInterface = () => {
           </button>
         </div>
       </div>
+
+      {/* Paused Overlay */}
+      {isPaused && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.3)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 999
+        }}>
+          <div style={{
+            backgroundColor: 'white',
+            padding: '40px',
+            borderRadius: '8px',
+            textAlign: 'center',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.2)'
+          }}>
+            <h3 style={{ color: '#2c3e50', marginBottom: '20px', fontSize: '20px' }}>Test Paused</h3>
+            <p style={{ marginBottom: '25px', color: '#666', fontSize: '16px' }}>
+              Click Resume to continue your test.
+            </p>
+            <button
+              onClick={() => setIsPaused(false)}
+              style={{
+                backgroundColor: '#27ae60',
+                color: 'white',
+                border: 'none',
+                padding: '12px 25px',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: '16px',
+                fontWeight: '500'
+              }}
+            >
+              ▶ Resume Test
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Time Warning Modal */}
       {showTimeWarning && timeRemaining > 0 && (
@@ -888,13 +1011,13 @@ const GMATInterface = () => {
         }}>
           <div style={{
             backgroundColor: 'white',
-            padding: '30px',
+            padding: '35px',
             borderRadius: '8px',
             textAlign: 'center',
-            maxWidth: '400px'
+            maxWidth: '450px'
           }}>
-            <h3 style={{ color: '#e74c3c', marginBottom: '15px' }}>Time Warning</h3>
-            <p style={{ marginBottom: '20px', color: '#666' }}>
+            <h3 style={{ color: '#e74c3c', marginBottom: '15px', fontSize: '20px' }}>Time Warning</h3>
+            <p style={{ marginBottom: '20px', color: '#666', fontSize: '16px' }}>
               You have {Math.ceil(timeRemaining / 60)} minutes remaining.
             </p>
             <button
@@ -903,9 +1026,10 @@ const GMATInterface = () => {
                 backgroundColor: '#3498db',
                 color: 'white',
                 border: 'none',
-                padding: '10px 20px',
+                padding: '12px 25px',
                 borderRadius: '4px',
-                cursor: 'pointer'
+                cursor: 'pointer',
+                fontSize: '16px'
               }}
             >
               Continue
@@ -930,62 +1054,130 @@ const GMATInterface = () => {
         }}>
           <div style={{
             backgroundColor: 'white',
-            padding: '30px',
             borderRadius: '8px',
-            textAlign: 'center',
-            maxWidth: '450px',
-            boxShadow: '0 4px 20px rgba(0,0,0,0.15)'
+            minWidth: '450px',
+            maxWidth: '520px',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+            border: '1px solid #dee2e6'
           }}>
-            <h3 style={{ color: '#2c3e50', marginBottom: '15px', fontSize: '18px' }}>
-              Ready to Proceed?
-            </h3>
-            <p style={{ marginBottom: '25px', color: '#666', lineHeight: '1.5' }}>
-              Are you ready to move to the {currentQuestionIndex === adaptiveQuestions.length - 1 ? 'results' : 'next question'}?
-              <br />
-              <span style={{ fontSize: '14px', color: '#888' }}>
-                {currentQuestionIndex === adaptiveQuestions.length - 1 ? 
-                  'This will complete your test.' : 
-                  'You cannot return to this question once you proceed.'
-                }
-              </span>
-            </p>
-            <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+            {/* Header */}
+            <div style={{
+              backgroundColor: '#3498db',
+              color: 'white',
+              padding: '14px 22px',
+              borderRadius: '8px 8px 0 0',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}>
+              <span style={{ fontSize: '18px', fontWeight: '500' }}>Response Confirmation</span>
               <button
                 onClick={cancelNext}
                 style={{
-                  backgroundColor: '#95a5a6',
-                  color: 'white',
+                  backgroundColor: 'transparent',
                   border: 'none',
-                  padding: '10px 20px',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                  fontWeight: '500',
-                  transition: 'background-color 0.2s ease'
-                }}
-                onMouseOver={(e) => e.target.style.backgroundColor = '#7f8c8d'}
-                onMouseOut={(e) => e.target.style.backgroundColor = '#95a5a6'}
-              >
-                Cancel
-              </button>
-              <button
-                onClick={confirmNext}
-                style={{
-                  backgroundColor: '#27ae60',
                   color: 'white',
-                  border: 'none',
-                  padding: '10px 20px',
-                  borderRadius: '4px',
+                  fontSize: '20px',
                   cursor: 'pointer',
-                  fontSize: '14px',
-                  fontWeight: '500',
-                  transition: 'background-color 0.2s ease'
+                  padding: '2px 6px',
+                  borderRadius: '3px'
                 }}
-                onMouseOver={(e) => e.target.style.backgroundColor = '#229954'}
-                onMouseOut={(e) => e.target.style.backgroundColor = '#27ae60'}
+                onMouseOver={(e) => e.target.style.backgroundColor = 'rgba(255,255,255,0.2)'}
+                onMouseOut={(e) => e.target.style.backgroundColor = 'transparent'}
               >
-                {currentQuestionIndex === adaptiveQuestions.length - 1 ? 'Finish Test' : 'Yes, Continue'}
+                ✕
               </button>
+            </div>
+            
+            {/* Content */}
+            <div style={{ padding: '28px' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', marginBottom: '25px' }}>
+                <div style={{
+                  backgroundColor: '#3498db',
+                  color: 'white',
+                  borderRadius: '50%',
+                  width: '22px',
+                  height: '22px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '14px',
+                  fontWeight: 'bold',
+                  marginRight: '15px',
+                  marginTop: '2px',
+                  flexShrink: 0
+                }}>
+                  i
+                </div>
+                <div>
+                  <div style={{ fontSize: '18px', color: '#2c3e50', fontWeight: '500', marginBottom: '15px' }}>
+                    Have you completed your response?
+                  </div>
+                  <div style={{ fontSize: '16px', color: '#666', lineHeight: '1.4' }}>
+                    Click <strong>Yes</strong> to move to the {currentQuestionIndex === adaptiveQuestions.length - 1 ? 'results' : 'next question'}.<br />
+                    Click <strong>No</strong> to continue responding to this question.
+                  </div>
+                </div>
+              </div>
+              
+              {/* Buttons */}
+              <div style={{ 
+                display: 'flex', 
+                gap: '15px', 
+                justifyContent: 'center',
+                marginTop: '25px'
+              }}>
+                <button
+                  onClick={confirmNext}
+                  style={{
+                    backgroundColor: 'white',
+                    color: '#333',
+                    border: '1px solid #ddd',
+                    padding: '10px 30px',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    fontSize: '16px',
+                    fontWeight: '500',
+                    minWidth: '90px',
+                    transition: 'all 0.2s ease'
+                  }}
+                  onMouseOver={(e) => {
+                    e.target.style.backgroundColor = '#f8f9fa';
+                    e.target.style.borderColor = '#999';
+                  }}
+                  onMouseOut={(e) => {
+                    e.target.style.backgroundColor = 'white';
+                    e.target.style.borderColor = '#ddd';
+                  }}
+                >
+                  Yes
+                </button>
+                <button
+                  onClick={cancelNext}
+                  style={{
+                    backgroundColor: 'white',
+                    color: '#333',
+                    border: '1px solid #ddd',
+                    padding: '10px 30px',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    fontSize: '16px',
+                    fontWeight: '500',
+                    minWidth: '90px',
+                    transition: 'all 0.2s ease'
+                  }}
+                  onMouseOver={(e) => {
+                    e.target.style.backgroundColor = '#f8f9fa';
+                    e.target.style.borderColor = '#999';
+                  }}
+                  onMouseOut={(e) => {
+                    e.target.style.backgroundColor = 'white';
+                    e.target.style.borderColor = '#ddd';
+                  }}
+                >
+                  No
+                </button>
+              </div>
             </div>
           </div>
         </div>
