@@ -5,75 +5,136 @@ let questionData;
 try {
   questionData = require('./questionData.json');
 } catch (error) {
-  // Fallback mock data with dummy questions
+  // Fallback mock data with dummy questions for both quant and DI
   questionData = {
     "sectionName": "Practice Test - Development Mode",
-    "testDescription": "This practice test covers basic reasoning and mathematical concepts. Questions include simple arithmetic, logic, and general knowledge to test the interface functionality.",
+    "sectionType": "dataInsights", // or "quantitative"
+    "testDescription": "This practice test covers data interpretation and analysis. Questions include graphics interpretation, table analysis, and multi-source reasoning.",
     "skillsAssessed": [
-      "Basic arithmetic and number sense",
-      "Simple logical reasoning",
-      "Reading comprehension",
-      "Pattern recognition"
+      "Graphics interpretation and trend analysis",
+      "Table analysis and data comparison", 
+      "Multi-source reasoning and synthesis",
+      "Data sufficiency evaluation"
     ],
     "adaptiveMode": true,
-    "targetQuestions": 3,
+    "targetQuestions": 4,
     "bufferQuestions": 1,
     "firstSevenStrategy": "controlled challenge",
+    "dataSources": [
+      {
+        "id": "graph1",
+        "type": "graph",
+        "title": "Company Revenue by Quarter (2020-2024)",
+        "data": {
+          "type": "line",
+          "xAxis": "Quarter",
+          "yAxis": "Revenue ($ millions)",
+          "series": [
+            {"name": "Product A", "color": "#3498db", "points": [{"x": "Q1 2020", "y": 15}, {"x": "Q2 2020", "y": 18}, {"x": "Q3 2020", "y": 22}, {"x": "Q4 2020", "y": 25}, {"x": "Q1 2021", "y": 28}, {"x": "Q2 2021", "y": 32}]},
+            {"name": "Product B", "color": "#e74c3c", "points": [{"x": "Q1 2020", "y": 12}, {"x": "Q2 2020", "y": 14}, {"x": "Q3 2020", "y": 16}, {"x": "Q4 2020", "y": 19}, {"x": "Q1 2021", "y": 23}, {"x": "Q2 2021", "y": 26}]}
+          ]
+        }
+      },
+      {
+        "id": "table1", 
+        "type": "table",
+        "title": "Employee Performance Metrics by Department",
+        "data": {
+          "headers": ["Department", "Employees", "Avg Salary ($)", "Satisfaction (%)", "Turnover (%)"],
+          "rows": [
+            ["Engineering", "45", "95000", "87", "8"],
+            ["Marketing", "23", "75000", "82", "12"], 
+            ["Sales", "34", "68000", "79", "15"],
+            ["HR", "12", "72000", "91", "5"],
+            ["Finance", "18", "88000", "85", "7"]
+          ]
+        }
+      },
+      {
+        "id": "multiSource1",
+        "type": "multiSource", 
+        "title": "Market Research Analysis",
+        "sources": [
+          {
+            "tabName": "Survey Results",
+            "type": "text",
+            "content": "A recent consumer survey of 1,200 participants revealed that 68% prefer Brand X over competitors. The survey was conducted across three age groups: 18-35 (42% of respondents), 36-50 (38% of respondents), and 51+ (20% of respondents). Brand preference varied significantly by age group, with younger consumers showing 78% preference for Brand X, middle-aged consumers showing 65% preference, and older consumers showing 52% preference."
+          },
+          {
+            "tabName": "Sales Data", 
+            "type": "table",
+            "data": {
+              "headers": ["Region", "Q1 Sales", "Q2 Sales", "Growth %"],
+              "rows": [
+                ["North", "$2.1M", "$2.4M", "14.3"],
+                ["South", "$1.8M", "$2.0M", "11.1"],
+                ["East", "$2.5M", "$2.9M", "16.0"],
+                ["West", "$1.9M", "$2.2M", "15.8"]
+              ]
+            }
+          }
+        ]
+      }
+    ],
     "questions": [
       {
         "id": 1,
-        "questionText": "What is your favorite color?",
+        "dataSourceId": "graph1",
+        "questionText": "Based on the revenue data shown, what was the approximate total revenue for Product A in 2020?",
         "difficulty": "easy",
         "options": {
-          "A": "Red",
-          "B": "Blue", 
-          "C": "Green",
-          "D": "Yellow",
-          "E": "Purple"
+          "A": "$65 million",
+          "B": "$70 million", 
+          "C": "$80 million",
+          "D": "$85 million",
+          "E": "$90 million"
         },
-        "correctAnswer": "B",
+        "correctAnswer": "C",
         "buffer": false
       },
       {
         "id": 2,
-        "questionText": "Which animal says 'meow'?",
+        "dataSourceId": "table1",
+        "questionText": "Which department has the highest ratio of average salary to turnover percentage?",
         "difficulty": "medium",
         "options": {
-          "A": "Dog",
-          "B": "Cat", 
-          "C": "Bird",
-          "D": "Fish",
-          "E": "Horse"
+          "A": "Engineering",
+          "B": "Marketing", 
+          "C": "Sales",
+          "D": "HR",
+          "E": "Finance"
         },
-        "correctAnswer": "B",
+        "correctAnswer": "A",
         "buffer": false
       },
       {
         "id": 3,
-        "questionText": "If a^2 + b^2 = dummy, what is dummy? (Test math formatting)",
-        "difficulty": "hard",
+        "dataSourceId": "multiSource1",
+        "questionText": "Based on the survey results, approximately how many respondents aged 18-35 preferred Brand X?",
+        "difficulty": "medium",
         "options": {
-          "A": "x^2",
-          "B": "y^3", 
-          "C": "z^4",
-          "D": "Test formatting",
-          "E": "sqrt(25)"
+          "A": "390",
+          "B": "420", 
+          "C": "450",
+          "D": "480",
+          "E": "510"
         },
-        "correctAnswer": "D",
+        "correctAnswer": "A",
         "buffer": false
       },
       {
         "id": 4,
-        "questionText": "What comes after Monday?",
-        "difficulty": "easy",
+        "dataSourceId": "multiSource1", 
+        "questionText": "Which region showed the highest sales growth percentage from Q1 to Q2?",
+        "difficulty": "hard",
         "options": {
-          "A": "Sunday",
-          "B": "Tuesday", 
-          "C": "Wednesday",
-          "D": "Thursday",
-          "E": "Friday"
+          "A": "North",
+          "B": "South",
+          "C": "East", 
+          "D": "West",
+          "E": "Cannot be determined"
         },
-        "correctAnswer": "B",
+        "correctAnswer": "C",
         "buffer": true
       }
     ]
@@ -82,9 +143,12 @@ try {
 }
 
 const GMATInterface = () => {
-  // Calculate GMAT timing dynamically from JSON: 45 minutes for targetQuestions (2.14 mins per question)
+  // Check if this is a Data Insights section
+  const isDataInsights = questionData.sectionType === 'dataInsights';
+  
+  // Calculate GMAT timing dynamically from JSON
   const targetQuestions = questionData.targetQuestions || 21;
-  const timeLimit = Math.round((45 * 60 * targetQuestions) / 21); // Scale 45 mins proportionally
+  const timeLimit = Math.round((45 * 60 * targetQuestions) / 21);
   
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState({});
@@ -94,10 +158,14 @@ const GMATInterface = () => {
   const [hasStarted, setHasStarted] = useState(false);
   const [showTimeWarning, setShowTimeWarning] = useState(false);
   const [adaptiveQuestions, setAdaptiveQuestions] = useState([]);
-  const [performanceLevel, setPerformanceLevel] = useState('medium'); // 'easy', 'medium', 'hard'
+  const [performanceLevel, setPerformanceLevel] = useState('medium');
   const [showConfirmModal, setShowConfirmModal] = useState(false);
+  
+  // Data Insights specific state
+  const [activeTab, setActiveTab] = useState(0); // For multi-source reasoning
+  const [currentDataSource, setCurrentDataSource] = useState(null);
 
-  // Timer effect
+  // Timer effect (same as before)
   useEffect(() => {
     if (hasStarted && !isPaused && !isCompleted && timeRemaining > 0) {
       const timer = setInterval(() => {
@@ -113,7 +181,6 @@ const GMATInterface = () => {
       return () => clearInterval(timer);
     }
     
-    // Auto-complete test when timer reaches 0
     if (hasStarted && timeRemaining <= 0 && !isCompleted) {
       setIsCompleted(true);
     }
@@ -127,50 +194,52 @@ const GMATInterface = () => {
     }
   }, [timeRemaining, timeLimit]);
 
-  // Initialize questions when test starts (adaptive or non-adaptive)
+  // Update current data source when question changes (for DI)
+  useEffect(() => {
+    if (isDataInsights && adaptiveQuestions.length > 0 && currentQuestionIndex < adaptiveQuestions.length) {
+      const currentQuestion = adaptiveQuestions[currentQuestionIndex];
+      const dataSource = questionData.dataSources?.find(ds => ds.id === currentQuestion.dataSourceId);
+      setCurrentDataSource(dataSource);
+      setActiveTab(0); // Reset to first tab for multi-source
+    }
+  }, [currentQuestionIndex, adaptiveQuestions, isDataInsights]);
+
+  // Initialize questions (same logic as before)
   const initializeAdaptiveQuestions = () => {
     if (questionData.adaptiveMode) {
-      // Adaptive mode: Create realistic difficulty progression with randomization
       const allQuestions = questionData.questions.filter(q => !q.buffer);
       const bufferQuestions = questionData.questions.filter(q => q.buffer);
       
-      // Group questions by difficulty
       const questionsByDifficulty = {
         easy: [...allQuestions.filter(q => q.difficulty === 'easy')],
         medium: [...allQuestions.filter(q => q.difficulty === 'medium')],
         hard: [...allQuestions.filter(q => q.difficulty === 'hard')]
       };
       
-      // Add buffer questions to their respective difficulty pools
       bufferQuestions.forEach(q => {
         if (questionsByDifficulty[q.difficulty]) {
           questionsByDifficulty[q.difficulty].push(q);
         }
       });
       
-      // Shuffle each difficulty pool for randomization
       Object.keys(questionsByDifficulty).forEach(difficulty => {
         questionsByDifficulty[difficulty] = shuffleArray(questionsByDifficulty[difficulty]);
       });
       
-      // Create realistic GMAT adaptive difficulty progression
       const difficultyPattern = createAdaptiveDifficultyPattern(targetQuestions);
       
       const questionsToUse = [];
       const usedQuestionIds = new Set();
       
-      // Select questions based on difficulty pattern
       for (let i = 0; i < difficultyPattern.length; i++) {
         const targetDifficulty = difficultyPattern[i];
         let selectedQuestion = null;
         
-        // Try to find unused question of target difficulty
         const pool = questionsByDifficulty[targetDifficulty];
         if (pool && pool.length > 0) {
           selectedQuestion = pool.find(q => !usedQuestionIds.has(q.id));
         }
         
-        // Fallback to other difficulties if needed
         if (!selectedQuestion) {
           const fallbackOrder = targetDifficulty === 'easy' ? ['medium', 'hard'] :
                                targetDifficulty === 'medium' ? ['easy', 'hard'] :
@@ -193,38 +262,31 @@ const GMATInterface = () => {
       
       setAdaptiveQuestions(questionsToUse);
     } else {
-      // Non-adaptive mode: Use questions in order up to targetQuestions
       const questionsToUse = questionData.questions.slice(0, targetQuestions);
       setAdaptiveQuestions(questionsToUse);
     }
   };
 
-  // Helper function to create realistic adaptive difficulty pattern
+  // Helper functions (same as before)
   const createAdaptiveDifficultyPattern = (numQuestions) => {
     const pattern = [];
-    
-    // Start with medium difficulty
     pattern.push('medium');
     
-    // Create realistic progression simulating typical GMAT adaptive behavior
     for (let i = 1; i < numQuestions; i++) {
-      const position = i / numQuestions; // 0 to 1
+      const position = i / numQuestions;
       
-      // Early questions (first 30%): Mix of easy/medium with some harder
       if (position < 0.3) {
         const rand = Math.random();
         if (rand < 0.4) pattern.push('easy');
         else if (rand < 0.8) pattern.push('medium');
         else pattern.push('hard');
       }
-      // Middle questions (30-70%): More varied difficulty
       else if (position < 0.7) {
         const rand = Math.random();
         if (rand < 0.3) pattern.push('easy');
         else if (rand < 0.6) pattern.push('medium');
         else pattern.push('hard');
       }
-      // Later questions (70%+): Tend toward medium/hard
       else {
         const rand = Math.random();
         if (rand < 0.2) pattern.push('easy');
@@ -236,7 +298,6 @@ const GMATInterface = () => {
     return pattern;
   };
 
-  // Helper function to shuffle array
   const shuffleArray = (array) => {
     const shuffled = [...array];
     for (let i = shuffled.length - 1; i > 0; i--) {
@@ -246,11 +307,9 @@ const GMATInterface = () => {
     return shuffled;
   };
 
-  // Update performance level based on recent answers (simplified for new adaptive system)
   const updatePerformanceLevel = () => {
     if (!questionData.adaptiveMode || currentQuestionIndex < 3) return;
     
-    // Look at last 3-5 questions for performance assessment
     const recentQuestions = Math.min(5, currentQuestionIndex);
     const startIndex = Math.max(0, currentQuestionIndex - recentQuestions);
     let correctCount = 0;
@@ -264,7 +323,6 @@ const GMATInterface = () => {
     
     const recentAccuracy = correctCount / recentQuestions;
     
-    // Update performance level for scoring purposes
     if (recentAccuracy >= 0.8) {
       setPerformanceLevel('hard');
     } else if (recentAccuracy >= 0.6) {
@@ -274,27 +332,20 @@ const GMATInterface = () => {
     }
   };
 
-  // Format mathematical expressions
+  // Format mathematical expressions (same as before)
   const formatMath = (text) => {
     if (!text) return text;
     
-    // Replace common mathematical notation
     return text
-      // Superscripts (handle parentheses first, then simple cases)
-      .replace(/\^(\([^)]+\))/g, '<sup>$1</sup>')  // ^(n+1) -> <sup>(n+1)</sup>
-      .replace(/\^(\d+)/g, '<sup>$1</sup>')        // ^2 -> <sup>2</sup>
-      .replace(/\^(\w+)/g, '<sup>$1</sup>')        // ^n -> <sup>n</sup>
-      // Subscripts (handle parentheses first, then simple cases)
-      .replace(/_(\([^)]+\))/g, '<sub>$1</sub>')   // _(n+1) -> <sub>(n+1)</sub>
-      .replace(/_(\d+)/g, '<sub>$1</sub>')         // _2 -> <sub>2</sub>
-      .replace(/_(\w+)/g, '<sub>$1</sub>')         // _n -> <sub>n</sub>
-      // Square root
+      .replace(/\^(\([^)]+\))/g, '<sup>$1</sup>')
+      .replace(/\^(\d+)/g, '<sup>$1</sup>')
+      .replace(/\^(\w+)/g, '<sup>$1</sup>')
+      .replace(/_(\([^)]+\))/g, '<sub>$1</sub>')
+      .replace(/_(\d+)/g, '<sub>$1</sub>')
+      .replace(/_(\w+)/g, '<sub>$1</sub>')
       .replace(/sqrt\(([^)]+)\)/g, '√($1)')
-      // Fractions (simple pattern)
       .replace(/(\d+)\/(\d+)/g, '<sup>$1</sup>⁄<sub>$2</sub>')
-      // Degree symbol
       .replace(/degrees?/g, '°')
-      // Mathematical symbols
       .replace(/\*\*/g, '×')
       .replace(/\+\-/g, '±')
       .replace(/!=/g, '≠')
@@ -302,20 +353,17 @@ const GMATInterface = () => {
       .replace(/>=/g, '≥');
   };
 
-  // Format time display
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Start the test
   const startTest = () => {
     setHasStarted(true);
     initializeAdaptiveQuestions();
   };
 
-  // Handle answer selection
   const handleAnswerSelect = (questionId, answer) => {
     setSelectedAnswers(prev => ({
       ...prev,
@@ -323,17 +371,13 @@ const GMATInterface = () => {
     }));
   };
 
-  // Navigate to next question
   const handleNext = () => {
-    // Show confirmation modal instead of immediately proceeding
     setShowConfirmModal(true);
   };
 
-  // Handle confirmation to proceed to next question
   const confirmNext = () => {
     setShowConfirmModal(false);
     
-    // Only update performance level for adaptive tests
     if (questionData.adaptiveMode) {
       updatePerformanceLevel();
     }
@@ -345,12 +389,11 @@ const GMATInterface = () => {
     }
   };
 
-  // Handle cancellation (stay on current question)
   const cancelNext = () => {
     setShowConfirmModal(false);
   };
 
-  // Calculate score with different logic for adaptive vs non-adaptive
+  // Calculate score (same logic as before)
   const calculateScore = () => {
     let totalPoints = 0;
     let maxPossiblePoints = 0;
@@ -358,7 +401,6 @@ const GMATInterface = () => {
     let totalByDifficulty = { easy: 0, medium: 0, hard: 0 };
     
     if (questionData.adaptiveMode) {
-      // Adaptive scoring with enhanced point values
       const pointValues = { easy: 1, medium: 2.5, hard: 4 };
       const firstSevenBonus = 1.2;
       
@@ -366,7 +408,6 @@ const GMATInterface = () => {
         const difficulty = question.difficulty;
         let points = pointValues[difficulty];
         
-        // Apply first seven bonus for adaptive tests
         if (index < 7) {
           points *= firstSevenBonus;
         }
@@ -380,7 +421,6 @@ const GMATInterface = () => {
         }
       });
       
-      // Calculate raw percentage and apply adaptive scaling
       const rawPercentage = totalPoints / maxPossiblePoints;
       let scalingFactor = 1.0;
       if (performanceLevel === 'hard') scalingFactor = 1.1;
@@ -401,7 +441,6 @@ const GMATInterface = () => {
         performanceLevel
       };
     } else {
-      // Non-adaptive scoring - simpler calculation
       const pointValues = { easy: 1, medium: 2, hard: 3 };
       
       adaptiveQuestions.forEach((question) => {
@@ -417,7 +456,6 @@ const GMATInterface = () => {
         }
       });
       
-      // Simple percentage-based GMAT score for non-adaptive
       const rawPercentage = totalPoints / maxPossiblePoints;
       const gmatScore = Math.round(60 + (rawPercentage * 30));
       
@@ -430,15 +468,249 @@ const GMATInterface = () => {
         totalByDifficulty,
         totalCorrect: Object.values(correctByDifficulty).reduce((a, b) => a + b, 0),
         totalQuestions: adaptiveQuestions.length,
-        performanceLevel: 'N/A' // Not applicable for non-adaptive tests
+        performanceLevel: 'N/A'
       };
     }
   };
 
-  const currentQuestion = adaptiveQuestions[currentQuestionIndex];
-  const isTimeWarning = timeRemaining <= timeLimit / 9; // Last 1/9th of time
+  // Render data source content for Data Insights
+  const renderDataSource = (dataSource) => {
+    if (!dataSource) return null;
 
-  // Don't render question area until adaptive questions are initialized
+    switch (dataSource.type) {
+      case 'graph':
+        return (
+          <div style={{ padding: '20px' }}>
+            <h3 style={{ marginBottom: '20px', fontSize: '18px', color: '#2c3e50' }}>
+              {dataSource.title}
+            </h3>
+            <div style={{
+              border: '2px solid #ddd',
+              borderRadius: '8px',
+              padding: '30px',
+              backgroundColor: '#f9f9f9',
+              minHeight: '300px',
+              display: 'flex',
+              flexDirection: 'column'
+            }}>
+              {/* Simple graph representation */}
+              <div style={{ marginBottom: '15px', fontSize: '14px', color: '#666' }}>
+                <strong>Y-Axis:</strong> {dataSource.data.yAxis} | <strong>X-Axis:</strong> {dataSource.data.xAxis}
+              </div>
+              
+              {/* Legend */}
+              <div style={{ marginBottom: '20px', display: 'flex', gap: '20px' }}>
+                {dataSource.data.series.map((series, idx) => (
+                  <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{
+                      width: '12px',
+                      height: '12px',
+                      backgroundColor: series.color,
+                      borderRadius: '2px'
+                    }}></div>
+                    <span style={{ fontSize: '14px' }}>{series.name}</span>
+                  </div>
+                ))}
+              </div>
+              
+              {/* Simplified chart visualization */}
+              <div style={{ flex: 1, position: 'relative', backgroundColor: 'white', border: '1px solid #ddd' }}>
+                <svg width="100%" height="200" viewBox="0 0 400 200">
+                  {/* Grid lines */}
+                  <defs>
+                    <pattern id="grid" width="40" height="20" patternUnits="userSpaceOnUse">
+                      <path d="M 40 0 L 0 0 0 20" fill="none" stroke="#e0e0e0" strokeWidth="1"/>
+                    </pattern>
+                  </defs>
+                  <rect width="100%" height="100%" fill="url(#grid)" />
+                  
+                  {/* Data series */}
+                  {dataSource.data.series.map((series, seriesIdx) => {
+                    const points = series.points.map((point, idx) => ({
+                      x: 50 + (idx * 50),
+                      y: 180 - (point.y * 4) // Simple scaling
+                    }));
+                    
+                    const pathData = points.map((point, idx) => 
+                      `${idx === 0 ? 'M' : 'L'} ${point.x} ${point.y}`
+                    ).join(' ');
+                    
+                    return (
+                      <g key={seriesIdx}>
+                        <path
+                          d={pathData}
+                          fill="none"
+                          stroke={series.color}
+                          strokeWidth="2"
+                        />
+                        {points.map((point, idx) => (
+                          <circle
+                            key={idx}
+                            cx={point.x}
+                            cy={point.y}
+                            r="3"
+                            fill={series.color}
+                          />
+                        ))}
+                      </g>
+                    );
+                  })}
+                </svg>
+              </div>
+            </div>
+          </div>
+        );
+
+      case 'table':
+        return (
+          <div style={{ padding: '20px' }}>
+            <h3 style={{ marginBottom: '20px', fontSize: '18px', color: '#2c3e50' }}>
+              {dataSource.title}
+            </h3>
+            <div style={{ overflow: 'auto', border: '1px solid #ddd', borderRadius: '8px' }}>
+              <table style={{
+                width: '100%',
+                borderCollapse: 'collapse',
+                fontSize: '14px',
+                backgroundColor: 'white'
+              }}>
+                <thead>
+                  <tr style={{ backgroundColor: '#f8f9fa' }}>
+                    {dataSource.data.headers.map((header, idx) => (
+                      <th key={idx} style={{
+                        padding: '12px 10px',
+                        textAlign: 'left',
+                        borderBottom: '2px solid #dee2e6',
+                        fontWeight: '600',
+                        color: '#2c3e50'
+                      }}>
+                        {header}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {dataSource.data.rows.map((row, rowIdx) => (
+                    <tr key={rowIdx} style={{
+                      borderBottom: '1px solid #dee2e6',
+                      backgroundColor: rowIdx % 2 === 0 ? 'white' : '#f8f9fa'
+                    }}>
+                      {row.map((cell, cellIdx) => (
+                        <td key={cellIdx} style={{
+                          padding: '10px',
+                          color: '#333'
+                        }}>
+                          {cell}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        );
+
+      case 'multiSource':
+        const activeSource = dataSource.sources[activeTab];
+        return (
+          <div style={{ padding: '20px' }}>
+            <h3 style={{ marginBottom: '20px', fontSize: '18px', color: '#2c3e50' }}>
+              {dataSource.title}
+            </h3>
+            
+            {/* Tabs */}
+            <div style={{ marginBottom: '20px', borderBottom: '2px solid #ddd' }}>
+              {dataSource.sources.map((source, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setActiveTab(idx)}
+                  style={{
+                    padding: '10px 20px',
+                    border: 'none',
+                    backgroundColor: activeTab === idx ? '#3498db' : 'transparent',
+                    color: activeTab === idx ? 'white' : '#666',
+                    cursor: 'pointer',
+                    borderRadius: '8px 8px 0 0',
+                    marginRight: '5px',
+                    fontSize: '14px',
+                    fontWeight: activeTab === idx ? '600' : '400'
+                  }}
+                >
+                  {source.tabName}
+                </button>
+              ))}
+            </div>
+            
+            {/* Tab content */}
+            <div style={{ minHeight: '300px' }}>
+              {activeSource.type === 'text' ? (
+                <div style={{
+                  padding: '20px',
+                  backgroundColor: '#f9f9f9',
+                  borderRadius: '8px',
+                  lineHeight: '1.6',
+                  fontSize: '15px',
+                  color: '#333'
+                }}>
+                  {activeSource.content}
+                </div>
+              ) : activeSource.type === 'table' ? (
+                <div style={{ overflow: 'auto', border: '1px solid #ddd', borderRadius: '8px' }}>
+                  <table style={{
+                    width: '100%',
+                    borderCollapse: 'collapse',
+                    fontSize: '14px',
+                    backgroundColor: 'white'
+                  }}>
+                    <thead>
+                      <tr style={{ backgroundColor: '#f8f9fa' }}>
+                        {activeSource.data.headers.map((header, idx) => (
+                          <th key={idx} style={{
+                            padding: '12px 10px',
+                            textAlign: 'left',
+                            borderBottom: '2px solid #dee2e6',
+                            fontWeight: '600',
+                            color: '#2c3e50'
+                          }}>
+                            {header}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {activeSource.data.rows.map((row, rowIdx) => (
+                        <tr key={rowIdx} style={{
+                          borderBottom: '1px solid #dee2e6',
+                          backgroundColor: rowIdx % 2 === 0 ? 'white' : '#f8f9fa'
+                        }}>
+                          {row.map((cell, cellIdx) => (
+                            <td key={cellIdx} style={{
+                              padding: '10px',
+                              color: '#333'
+                            }}>
+                              {cell}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : null}
+            </div>
+          </div>
+        );
+
+      default:
+        return <div>Unsupported data source type</div>;
+    }
+  };
+
+  const currentQuestion = adaptiveQuestions[currentQuestionIndex];
+  const isTimeWarning = timeRemaining <= timeLimit / 9;
+
+  // Loading states and error handling (same as before)
   if (hasStarted && adaptiveQuestions.length === 0) {
     return (
       <div style={{ fontFamily: 'Arial, sans-serif', height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -454,7 +726,6 @@ const GMATInterface = () => {
     );
   }
 
-  // Safety check for currentQuestion
   if (hasStarted && (!currentQuestion || currentQuestionIndex >= adaptiveQuestions.length)) {
     return (
       <div style={{ fontFamily: 'Arial, sans-serif', height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -466,11 +737,10 @@ const GMATInterface = () => {
     );
   }
 
-  // Start screen
+  // Start screen (same as before but shows section type)
   if (!hasStarted) {
     return (
       <div style={{ fontFamily: 'Arial, sans-serif', height: '100vh', display: 'flex', flexDirection: 'column' }}>
-        {/* Header */}
         <div style={{
           backgroundColor: '#2c3e50',
           color: 'white',
@@ -480,17 +750,14 @@ const GMATInterface = () => {
           alignItems: 'center'
         }}>
           <span style={{ fontSize: '16px', fontWeight: '500' }}>
-            GMAT™ Practice Test - Practice Session
+            GMAT™ Practice Test - {isDataInsights ? 'Data Insights' : 'Quantitative Reasoning'}
             {questionData.sectionName.includes('Development Mode') && 
               <span style={{ color: '#f39c12', marginLeft: '8px' }}>(DEV MODE)</span>
             }
           </span>
-          <span style={{ fontSize: '16px' }}>
-            Ready to Begin
-          </span>
+          <span style={{ fontSize: '16px' }}>Ready to Begin</span>
         </div>
 
-        {/* Section Header */}
         <div style={{
           backgroundColor: '#3498db',
           color: 'white',
@@ -501,7 +768,6 @@ const GMATInterface = () => {
           {questionData.sectionName}
         </div>
 
-        {/* Start Screen */}
         <div style={{
           flex: 1,
           padding: '40px',
@@ -528,7 +794,6 @@ const GMATInterface = () => {
               }
             </h2>
 
-            {/* Test Summary */}
             <div style={{ 
               backgroundColor: '#f8f9fa', 
               padding: '25px', 
@@ -540,7 +805,7 @@ const GMATInterface = () => {
                 What This Test Covers
               </h3>
               <div style={{ fontSize: '16px', color: '#666', marginBottom: '15px', lineHeight: '1.6' }}>
-                {questionData.testDescription || "This section tests your quantitative reasoning abilities through various mathematical concepts and problem-solving scenarios."}
+                {questionData.testDescription || `This section tests your ${isDataInsights ? 'data analysis and interpretation' : 'quantitative reasoning'} abilities.`}
               </div>
               {questionData.skillsAssessed && questionData.skillsAssessed.length > 0 && (
                 <div>
@@ -563,6 +828,7 @@ const GMATInterface = () => {
             <div style={{ fontSize: '18px', color: '#666', marginBottom: '25px', lineHeight: '1.6' }}>
               <p><strong>Time Limit:</strong> {Math.floor(timeLimit / 60)} minutes</p>
               <p><strong>Questions:</strong> {targetQuestions} {questionData.adaptiveMode ? '(Adaptive)' : ''}</p>
+              <p><strong>Section Type:</strong> {isDataInsights ? 'Data Insights' : 'Quantitative Reasoning'}</p>
               <p style={{ marginTop: '20px', fontSize: '16px', color: '#888' }}>
                 {questionData.adaptiveMode ? 
                   'This is an adaptive test. Question difficulty will adjust based on your performance. Once you start, the timer will begin and you cannot go back to previous questions.' :
@@ -594,12 +860,11 @@ const GMATInterface = () => {
     );
   }
 
-  // Completion screen
+  // Completion screen (same as before but works for both section types)
   if (isCompleted) {
     const score = calculateScore();
     return (
       <div style={{ fontFamily: 'Arial, sans-serif', height: '100vh', display: 'flex', flexDirection: 'column' }}>
-        {/* Header */}
         <div style={{
           backgroundColor: '#2c3e50',
           color: 'white',
@@ -609,17 +874,14 @@ const GMATInterface = () => {
           alignItems: 'center'
         }}>
           <span style={{ fontSize: '16px', fontWeight: '500' }}>
-            GMAT™ Practice Test - Practice Session
+            GMAT™ Practice Test - {isDataInsights ? 'Data Insights' : 'Quantitative Reasoning'}
             {questionData.sectionName.includes('Development Mode') && 
               <span style={{ color: '#f39c12', marginLeft: '8px' }}>(DEV MODE)</span>
             }
           </span>
-          <span style={{ fontSize: '16px' }}>
-            Test Complete
-          </span>
+          <span style={{ fontSize: '16px' }}>Test Complete</span>
         </div>
 
-        {/* Section Header */}
         <div style={{
           backgroundColor: '#3498db',
           color: 'white',
@@ -630,7 +892,6 @@ const GMATInterface = () => {
           {questionData.sectionName}
         </div>
 
-        {/* Results */}
         <div style={{
           flex: 1,
           padding: '40px',
@@ -664,7 +925,7 @@ const GMATInterface = () => {
                 Test Coverage Summary
               </h3>
               <div style={{ fontSize: '16px', color: '#666', marginBottom: '15px', lineHeight: '1.6' }}>
-                {questionData.testDescription || "This section tested your quantitative reasoning abilities through various mathematical concepts and problem-solving scenarios."}
+                {questionData.testDescription || `This section tested your ${isDataInsights ? 'data analysis and interpretation' : 'quantitative reasoning'} abilities.`}
               </div>
               {questionData.skillsAssessed && questionData.skillsAssessed.length > 0 && (
                 <div>
@@ -689,7 +950,7 @@ const GMATInterface = () => {
               {score.gmatScore}
             </div>
             <div style={{ fontSize: '20px', color: '#666', marginBottom: '10px' }}>
-              GMAT Quantitative Score (60-90 scale)
+              GMAT {isDataInsights ? 'Data Insights' : 'Quantitative'} Score (60-90 scale)
             </div>
             <div style={{ fontSize: '18px', color: '#666', marginBottom: '30px' }}>
               Accuracy: {score.accuracyPercentage}% ({score.totalCorrect}/{score.totalQuestions} correct)
@@ -794,12 +1055,10 @@ const GMATInterface = () => {
                     const isCorrect = chosenAnswer === correctAnswer;
                     const isUnattempted = chosenAnswer === '--';
                     
-                    // Get first few words of question (up to 50 characters)
                     const questionPreview = question.questionText.length > 50 
                       ? question.questionText.substring(0, 50) + '...'
                       : question.questionText;
                     
-                    // Check if this is from Official Guide
                     const hasOGNumber = question.ogQuestionNumber !== undefined;
                     
                     return (
@@ -889,6 +1148,7 @@ const GMATInterface = () => {
     );
   }
 
+  // Main test interface - different layouts for Quant vs Data Insights
   return (
     <div style={{ 
       fontFamily: 'Arial, sans-serif', 
@@ -896,7 +1156,6 @@ const GMATInterface = () => {
       display: 'flex', 
       flexDirection: 'column'
     }}>
-      {/* Add mathematical formatting styles */}
       <style>{`
         sup {
           font-size: 0.8em;
@@ -912,6 +1171,7 @@ const GMATInterface = () => {
           font-family: 'Times New Roman', serif;
         }
       `}</style>
+
       {/* Header */}
       <div style={{
         backgroundColor: '#2c3e50',
@@ -922,7 +1182,7 @@ const GMATInterface = () => {
         alignItems: 'center'
       }}>
         <span style={{ fontSize: '16px', fontWeight: '500' }}>
-          GMAT™ Practice Test - Practice Session
+          GMAT™ Practice Test - {isDataInsights ? 'Data Insights' : 'Quantitative Reasoning'}
           {questionData.sectionName.includes('Development Mode') && 
             <span style={{ color: '#f39c12', marginLeft: '8px' }}>(DEV MODE)</span>
           }
@@ -952,63 +1212,141 @@ const GMATInterface = () => {
         {questionData.sectionName}
       </div>
 
-      {/* Question Area */}
+      {/* Main Content Area - Different layouts for Quant vs DI */}
       <div style={{
         flex: 1,
+        display: 'flex',
         backgroundColor: 'white',
-        padding: '35px 45px',
-        overflow: 'auto',
         filter: isPaused ? 'blur(5px)' : 'none',
         transition: 'filter 0.3s ease'
       }}>
-        {/* Question Text */}
-        <div style={{
-          fontSize: '18px',
-          lineHeight: '1.6',
-          marginBottom: '35px',
-          color: '#2c3e50'
-        }}>
-          <span style={{ color: '#2c3e50', fontSize: '18px', marginRight: '8px' }}>
-            {currentQuestionIndex + 1}.
-          </span>
-          <span className="math-text" dangerouslySetInnerHTML={{ __html: formatMath(currentQuestion.questionText) }}></span>
-        </div>
-
-        {/* Answer Options */}
-        <div style={{ maxWidth: '650px' }}>
-          {Object.entries(currentQuestion.options).map(([letter, text]) => (
-            <div key={letter} style={{
-              marginBottom: '15px',
-              display: 'flex',
-              alignItems: 'flex-start',
-              cursor: 'pointer',
-              padding: '10px 15px',
-              borderRadius: '4px',
-              backgroundColor: selectedAnswers[currentQuestion.id] === letter ? '#fff3cd' : 'transparent',
-              border: selectedAnswers[currentQuestion.id] === letter ? '2px solid #ffc107' : '2px solid transparent',
-              transition: 'all 0.2s ease'
-            }}
-            onClick={() => handleAnswerSelect(currentQuestion.id, letter)}
-            >
-              <input
-                type="radio"
-                name={`question-${currentQuestion.id}`}
-                value={letter}
-                checked={selectedAnswers[currentQuestion.id] === letter}
-                onChange={() => handleAnswerSelect(currentQuestion.id, letter)}
-                style={{
-                  marginRight: '15px',
-                  marginTop: '2px',
-                  transform: 'scale(1.3)'
-                }}
-              />
-              <div>
-                <span className="math-text" style={{ fontSize: '18px', lineHeight: '1.4' }} dangerouslySetInnerHTML={{ __html: formatMath(text) }}>
+        
+        {isDataInsights ? (
+          // Data Insights Layout: Data on left, Question on right
+          <>
+            {/* Data Panel */}
+            <div style={{
+              width: '50%',
+              borderRight: '2px solid #ddd',
+              overflow: 'auto',
+              backgroundColor: '#f9f9f9'
+            }}>
+              {currentDataSource && renderDataSource(currentDataSource)}
+            </div>
+            
+            {/* Question Panel */}
+            <div style={{
+              width: '50%',
+              padding: '35px 30px',
+              overflow: 'auto'
+            }}>
+              {/* Question Text */}
+              <div style={{
+                fontSize: '18px',
+                lineHeight: '1.6',
+                marginBottom: '35px',
+                color: '#2c3e50'
+              }}>
+                <span style={{ color: '#2c3e50', fontSize: '18px', marginRight: '8px' }}>
+                  {currentQuestionIndex + 1}.
                 </span>
+                <span className="math-text" dangerouslySetInnerHTML={{ __html: formatMath(currentQuestion.questionText) }}></span>
+              </div>
+
+              {/* Answer Options */}
+              <div>
+                {Object.entries(currentQuestion.options).map(([letter, text]) => (
+                  <div key={letter} style={{
+                    marginBottom: '15px',
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    cursor: 'pointer',
+                    padding: '10px 15px',
+                    borderRadius: '4px',
+                    backgroundColor: selectedAnswers[currentQuestion.id] === letter ? '#fff3cd' : 'transparent',
+                    border: selectedAnswers[currentQuestion.id] === letter ? '2px solid #ffc107' : '2px solid transparent',
+                    transition: 'all 0.2s ease'
+                  }}
+                  onClick={() => handleAnswerSelect(currentQuestion.id, letter)}
+                  >
+                    <input
+                      type="radio"
+                      name={`question-${currentQuestion.id}`}
+                      value={letter}
+                      checked={selectedAnswers[currentQuestion.id] === letter}
+                      onChange={() => handleAnswerSelect(currentQuestion.id, letter)}
+                      style={{
+                        marginRight: '15px',
+                        marginTop: '2px',
+                        transform: 'scale(1.3)'
+                      }}
+                    />
+                    <div>
+                      <span className="math-text" style={{ fontSize: '18px', lineHeight: '1.4' }} dangerouslySetInnerHTML={{ __html: formatMath(text) }}>
+                      </span>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-          ))}
-        </div>
+          </>
+        ) : (
+          // Quantitative Layout: Full width question area (original layout)
+          <div style={{
+            flex: 1,
+            padding: '35px 45px',
+            overflow: 'auto'
+          }}>
+            {/* Question Text */}
+            <div style={{
+              fontSize: '18px',
+              lineHeight: '1.6',
+              marginBottom: '35px',
+              color: '#2c3e50'
+            }}>
+              <span style={{ color: '#2c3e50', fontSize: '18px', marginRight: '8px' }}>
+                {currentQuestionIndex + 1}.
+              </span>
+              <span className="math-text" dangerouslySetInnerHTML={{ __html: formatMath(currentQuestion.questionText) }}></span>
+            </div>
+
+            {/* Answer Options */}
+            <div style={{ maxWidth: '650px' }}>
+              {Object.entries(currentQuestion.options).map(([letter, text]) => (
+                <div key={letter} style={{
+                  marginBottom: '15px',
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  cursor: 'pointer',
+                  padding: '10px 15px',
+                  borderRadius: '4px',
+                  backgroundColor: selectedAnswers[currentQuestion.id] === letter ? '#fff3cd' : 'transparent',
+                  border: selectedAnswers[currentQuestion.id] === letter ? '2px solid #ffc107' : '2px solid transparent',
+                  transition: 'all 0.2s ease'
+                }}
+                onClick={() => handleAnswerSelect(currentQuestion.id, letter)}
+                >
+                  <input
+                    type="radio"
+                    name={`question-${currentQuestion.id}`}
+                    value={letter}
+                    checked={selectedAnswers[currentQuestion.id] === letter}
+                    onChange={() => handleAnswerSelect(currentQuestion.id, letter)}
+                    style={{
+                      marginRight: '15px',
+                      marginTop: '2px',
+                      transform: 'scale(1.3)'
+                    }}
+                  />
+                  <div>
+                    <span className="math-text" style={{ fontSize: '18px', lineHeight: '1.4' }} dangerouslySetInnerHTML={{ __html: formatMath(text) }}>
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Bottom Navigation */}
@@ -1165,7 +1503,6 @@ const GMATInterface = () => {
             boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
             border: '1px solid #dee2e6'
           }}>
-            {/* Header */}
             <div style={{
               backgroundColor: '#3498db',
               color: 'white',
@@ -1194,7 +1531,6 @@ const GMATInterface = () => {
               </button>
             </div>
             
-            {/* Content */}
             <div style={{ padding: '28px' }}>
               <div style={{ display: 'flex', alignItems: 'flex-start', marginBottom: '25px' }}>
                 <div style={{
@@ -1225,7 +1561,6 @@ const GMATInterface = () => {
                 </div>
               </div>
               
-              {/* Buttons */}
               <div style={{ 
                 display: 'flex', 
                 gap: '15px', 
