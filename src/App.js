@@ -130,26 +130,65 @@ const GMATInterface = () => {
   // Initialize questions when test starts (adaptive or non-adaptive)
   const initializeAdaptiveQuestions = () => {
     if (questionData.adaptiveMode) {
-      // Adaptive mode: Use original logic
-      const coreQuestions = questionData.questions.filter(q => !q.buffer);
+      // Adaptive mode: Create realistic difficulty progression with randomization
+      const allQuestions = questionData.questions.filter(q => !q.buffer);
       const bufferQuestions = questionData.questions.filter(q => q.buffer);
       
+      // Group questions by difficulty
+      const questionsByDifficulty = {
+        easy: [...allQuestions.filter(q => q.difficulty === 'easy')],
+        medium: [...allQuestions.filter(q => q.difficulty === 'medium')],
+        hard: [...allQuestions.filter(q => q.difficulty === 'hard')]
+      };
+      
+      // Add buffer questions to their respective difficulty pools
+      bufferQuestions.forEach(q => {
+        if (questionsByDifficulty[q.difficulty]) {
+          questionsByDifficulty[q.difficulty].push(q);
+        }
+      });
+      
+      // Shuffle each difficulty pool for randomization
+      Object.keys(questionsByDifficulty).forEach(difficulty => {
+        questionsByDifficulty[difficulty] = shuffleArray(questionsByDifficulty[difficulty]);
+      });
+      
+      // Create realistic GMAT adaptive difficulty progression
+      const difficultyPattern = createAdaptiveDifficultyPattern(targetQuestions);
+      
       const questionsToUse = [];
+      const usedQuestionIds = new Set();
       
-      // Start with first 7 core questions (First Seven Fortress strategy)
-      questionsToUse.push(...coreQuestions.slice(0, 7));
-      
-      // Add remaining questions up to targetQuestions
-      const remainingSlots = targetQuestions - 7;
-      const remainingCore = coreQuestions.slice(7);
-      
-      // Fill remaining slots with core questions first, then buffer if needed
-      if (remainingCore.length >= remainingSlots) {
-        questionsToUse.push(...remainingCore.slice(0, remainingSlots));
-      } else {
-        questionsToUse.push(...remainingCore);
-        const stillNeed = remainingSlots - remainingCore.length;
-        questionsToUse.push(...bufferQuestions.slice(0, stillNeed));
+      // Select questions based on difficulty pattern
+      for (let i = 0; i < difficultyPattern.length; i++) {
+        const targetDifficulty = difficultyPattern[i];
+        let selectedQuestion = null;
+        
+        // Try to find unused question of target difficulty
+        const pool = questionsByDifficulty[targetDifficulty];
+        if (pool && pool.length > 0) {
+          selectedQuestion = pool.find(q => !usedQuestionIds.has(q.id));
+        }
+        
+        // Fallback to other difficulties if needed
+        if (!selectedQuestion) {
+          const fallbackOrder = targetDifficulty === 'easy' ? ['medium', 'hard'] :
+                               targetDifficulty === 'medium' ? ['easy', 'hard'] :
+                               ['medium', 'easy'];
+          
+          for (const fallbackDiff of fallbackOrder) {
+            const fallbackPool = questionsByDifficulty[fallbackDiff];
+            if (fallbackPool && fallbackPool.length > 0) {
+              selectedQuestion = fallbackPool.find(q => !usedQuestionIds.has(q.id));
+              if (selectedQuestion) break;
+            }
+          }
+        }
+        
+        if (selectedQuestion) {
+          questionsToUse.push(selectedQuestion);
+          usedQuestionIds.add(selectedQuestion.id);
+        }
       }
       
       setAdaptiveQuestions(questionsToUse);
@@ -160,21 +199,72 @@ const GMATInterface = () => {
     }
   };
 
-  // Update performance level based on recent answers (only for adaptive mode)
-  const updatePerformanceLevel = () => {
-    if (!questionData.adaptiveMode || currentQuestionIndex < 7) return;
+  // Helper function to create realistic adaptive difficulty pattern
+  const createAdaptiveDifficultyPattern = (numQuestions) => {
+    const pattern = [];
     
-    const recentAnswers = adaptiveQuestions.slice(Math.max(0, currentQuestionIndex - 5), currentQuestionIndex);
+    // Start with medium difficulty
+    pattern.push('medium');
+    
+    // Create realistic progression simulating typical GMAT adaptive behavior
+    for (let i = 1; i < numQuestions; i++) {
+      const position = i / numQuestions; // 0 to 1
+      
+      // Early questions (first 30%): Mix of easy/medium with some harder
+      if (position < 0.3) {
+        const rand = Math.random();
+        if (rand < 0.4) pattern.push('easy');
+        else if (rand < 0.8) pattern.push('medium');
+        else pattern.push('hard');
+      }
+      // Middle questions (30-70%): More varied difficulty
+      else if (position < 0.7) {
+        const rand = Math.random();
+        if (rand < 0.3) pattern.push('easy');
+        else if (rand < 0.6) pattern.push('medium');
+        else pattern.push('hard');
+      }
+      // Later questions (70%+): Tend toward medium/hard
+      else {
+        const rand = Math.random();
+        if (rand < 0.2) pattern.push('easy');
+        else if (rand < 0.5) pattern.push('medium');
+        else pattern.push('hard');
+      }
+    }
+    
+    return pattern;
+  };
+
+  // Helper function to shuffle array
+  const shuffleArray = (array) => {
+    const shuffled = [...array];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled;
+  };
+
+  // Update performance level based on recent answers (simplified for new adaptive system)
+  const updatePerformanceLevel = () => {
+    if (!questionData.adaptiveMode || currentQuestionIndex < 3) return;
+    
+    // Look at last 3-5 questions for performance assessment
+    const recentQuestions = Math.min(5, currentQuestionIndex);
+    const startIndex = Math.max(0, currentQuestionIndex - recentQuestions);
     let correctCount = 0;
     
-    recentAnswers.forEach(question => {
+    for (let i = startIndex; i < currentQuestionIndex; i++) {
+      const question = adaptiveQuestions[i];
       if (selectedAnswers[question.id] === question.correctAnswer) {
         correctCount++;
       }
-    });
+    }
     
-    const recentAccuracy = correctCount / recentAnswers.length;
+    const recentAccuracy = correctCount / recentQuestions;
     
+    // Update performance level for scoring purposes
     if (recentAccuracy >= 0.8) {
       setPerformanceLevel('hard');
     } else if (recentAccuracy >= 0.6) {
@@ -190,12 +280,14 @@ const GMATInterface = () => {
     
     // Replace common mathematical notation
     return text
-      // Superscripts
-      .replace(/\^(\d+)/g, '<sup>$1</sup>')
-      .replace(/\^(\w+)/g, '<sup>$1</sup>')
-      // Subscripts  
-      .replace(/_(\d+)/g, '<sub>$1</sub>')
-      .replace(/_(\w+)/g, '<sub>$1</sub>')
+      // Superscripts (handle parentheses first, then simple cases)
+      .replace(/\^(\([^)]+\))/g, '<sup>$1</sup>')  // ^(n+1) -> <sup>(n+1)</sup>
+      .replace(/\^(\d+)/g, '<sup>$1</sup>')        // ^2 -> <sup>2</sup>
+      .replace(/\^(\w+)/g, '<sup>$1</sup>')        // ^n -> <sup>n</sup>
+      // Subscripts (handle parentheses first, then simple cases)
+      .replace(/_(\([^)]+\))/g, '<sub>$1</sub>')   // _(n+1) -> <sub>(n+1)</sub>
+      .replace(/_(\d+)/g, '<sub>$1</sub>')         // _2 -> <sub>2</sub>
+      .replace(/_(\w+)/g, '<sub>$1</sub>')         // _n -> <sub>n</sub>
       // Square root
       .replace(/sqrt\(([^)]+)\)/g, '√($1)')
       // Fractions (simple pattern)
@@ -707,6 +799,9 @@ const GMATInterface = () => {
                       ? question.questionText.substring(0, 50) + '...'
                       : question.questionText;
                     
+                    // Check if this is from Official Guide
+                    const hasOGNumber = question.ogQuestionNumber !== undefined;
+                    
                     return (
                       <tr key={question.id} style={{ 
                         borderBottom: '1px solid #dee2e6',
@@ -718,6 +813,16 @@ const GMATInterface = () => {
                         }}>
                           <div style={{ marginBottom: '4px' }}>
                             Q{question.id}
+                            {hasOGNumber && (
+                              <span style={{ 
+                                color: '#666', 
+                                fontSize: '13px', 
+                                fontWeight: '400',
+                                marginLeft: '6px'
+                              }}>
+                                (OG #{question.ogQuestionNumber})
+                              </span>
+                            )}
                             <span style={{
                               marginLeft: '8px',
                               fontSize: '12px',

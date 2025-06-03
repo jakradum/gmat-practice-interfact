@@ -1,282 +1,348 @@
 {
-    "sectionName": "Quantitative Reasoning - Cascade Inoculation Therapy",
+    "sectionName": "GMAT Quantitative Reasoning - Full Section Practice (21 Questions)",
+    "testDescription": "This full-length section contains 21 unused questions from the Official Guide, representing a complete GMAT Quantitative section experience. Questions span authentic difficulty levels with balanced distribution, providing realistic practice for final test preparation under timed conditions.",
+    "skillsAssessed": [
+      "Rate, time, and work problem applications",
+      "Percentage calculations and profit analysis", 
+      "Number theory and perfect number properties",
+      "Fraction comparison and algebraic manipulation",
+      "Statistical analysis and data interpretation",
+      "Complex word problem translation and setup"
+    ],
     "adaptiveMode": true,
-    "targetQuestions": 15,
-    "bufferQuestions": 3,
-    "firstSevenStrategy": "authentic simulation",
-    "cascadeTrainingNote": "First 7 questions designed to trigger potential early mistakes for resilience training",
+    "targetQuestions": 21,
+    "bufferQuestions": 0,
+    "firstSevenStrategy": "controlled challenge",
     "questions": [
       {
         "id": 1,
-        "questionText": "If f(x) = x^2 - 4x + 3 and g(x) = x + 1, what is the value of f(g(2))?",
-        "difficulty": "hard",
+        "ogQuestionNumber": 1,
+        "questionText": "Working at a constant rate, a copy machine makes 20 copies of a one-page document per minute. If the machine works at this constant rate, how many hours does it take to make 4,800 copies of a one-page document?",
+        "difficulty": "easy",
         "options": {
-          "A": "-2",
-          "B": "0", 
-          "C": "2",
-          "D": "6",
-          "E": "12"
+          "A": "4",
+          "B": "5",
+          "C": "6", 
+          "D": "7",
+          "E": "8"
         },
-        "correctAnswer": "B",
-        "buffer": false,
-        "cascadeTrigger": "function composition complexity"
+        "correctAnswer": "A",
+        "buffer": false
       },
       {
         "id": 2,
-        "questionText": "If 3^(x+1) = 9^(x-1), what is the value of x?",
-        "difficulty": "hard",
+        "ogQuestionNumber": 85,
+        "questionText": "If x, y, and k are positive and x is less than y, then (x+k)/(y+k) is",
+        "difficulty": "medium",
         "options": {
           "A": "1",
-          "B": "2",
-          "C": "3",
-          "D": "4", 
-          "E": "5"
+          "B": "greater than x/y",
+          "C": "equal to x/y",
+          "D": "less than x/y",
+          "E": "less than x/y or greater than x/y, depending on the value of k"
         },
-        "correctAnswer": "C",
-        "buffer": false,
-        "cascadeTrigger": "exponential equation with base conversion"
+        "correctAnswer": "B",
+        "buffer": false
       },
       {
         "id": 3,
-        "questionText": "If the quadratic equation x^2 - 6x + k = 0 has equal roots, what is the value of k?",
-        "difficulty": "hard",
+        "ogQuestionNumber": 8,
+        "questionText": "To order certain plants from a catalog, it costs $3.00 per plant, plus a 5 percent sales tax, plus $6.95 for shipping and handling regardless of the number of plants ordered. If Company C ordered these plants from the catalog at the total cost of $69.95, how many plants did Company C order?",
+        "difficulty": "easy",
         "options": {
-          "A": "6",
-          "B": "9",
-          "C": "12", 
-          "D": "15",
+          "A": "22",
+          "B": "21",
+          "C": "20",
+          "D": "19",
           "E": "18"
         },
-        "correctAnswer": "B",
-        "buffer": false,
-        "cascadeTrigger": "discriminant concept under pressure"
+        "correctAnswer": "C",
+        "buffer": false
       },
       {
         "id": 4,
-        "questionText": "What is the value of (2^n + 2^n + 2^n + 2^n) ÷ 2^(n-2)?",
-        "difficulty": "hard",
+        "ogQuestionNumber": 91,
+        "questionText": "A certain financial analyst defines the \"volatility\" of a stock during a given week to be the result of the following procedure: find the absolute value of the difference in the stock's closing price for each pair of consecutive days in the week and then find the average (arithmetic mean) of these 4 values. What is the volatility of Stock X during the week shown in the table? (Monday: 21, Tuesday: 19, Wednesday: 22, Thursday: 24(1/2), Friday: 23)",
+        "difficulty": "medium",
         "options": {
-          "A": "4",
-          "B": "8",
-          "C": "12",
-          "D": "16",
-          "E": "32"
+          "A": "0.50",
+          "B": "1.80",
+          "C": "2.00",
+          "D": "2.25",
+          "E": "2.50"
         },
         "correctAnswer": "D",
-        "buffer": false,
-        "cascadeTrigger": "exponent manipulation complexity"
+        "buffer": false
       },
       {
         "id": 5,
-        "questionText": "A jacket originally priced at $120 is first marked down 25%, then an additional 20% discount is applied to the sale price. What is the final selling price?",
-        "difficulty": "medium",
+        "ogQuestionNumber": 13,
+        "questionText": "Of the following, which is least?",
+        "difficulty": "easy",
         "options": {
-          "A": "$66",
-          "B": "$72", 
-          "C": "$78",
-          "D": "$84",
-          "E": "$90"
+          "A": "0.03/0.00071",
+          "B": "0.03/0.0071",
+          "C": "0.03/0.071",
+          "D": "0.03/0.71",
+          "E": "0.03/7.1"
         },
-        "correctAnswer": "B",
-        "buffer": false,
-        "cascadeTrigger": "sequential percentage trap"
+        "correctAnswer": "E",
+        "buffer": false
       },
       {
         "id": 6,
-        "questionText": "Train A leaves at 8:00 AM traveling east at 60 mph. Train B leaves the same station at 10:00 AM traveling west at 80 mph. At what time will they be 420 miles apart?",
+        "ogQuestionNumber": 102,
+        "questionText": "Each of the 20 employees at Company J is to receive an end-of-year bonus this year. Agnes will receive a larger bonus than any other employee, but only $500 more than Cheryl will receive. None of the employees will receive a smaller bonus than Cheryl. If the amount of money to be distributed in bonuses at Company J this year totals $60,000, what is the largest bonus Agnes can receive?",
         "difficulty": "medium",
         "options": {
-          "A": "12:00 PM",
-          "B": "12:05 PM",
-          "C": "12:10 PM",
-          "D": "12:15 PM",
-          "E": "12:20 PM"
+          "A": "$3,250",
+          "B": "$3,325",
+          "C": "$3,400",
+          "D": "$3,475",
+          "E": "$3,500"
         },
-        "correctAnswer": "C",
-        "buffer": false,
-        "cascadeTrigger": "time delay complexity in rates"
+        "correctAnswer": "D",
+        "buffer": false
       },
       {
         "id": 7,
-        "questionText": "In a school, 30% of students play soccer, 40% play basketball, and 15% play both sports. What percentage of students play neither sport?",
-        "difficulty": "medium",
+        "ogQuestionNumber": 37,
+        "questionText": "If r and s are positive integers such that (2^r)(4^s) = 16, then 2r + s =",
+        "difficulty": "easy",
         "options": {
-          "A": "35%",
-          "B": "40%", 
-          "C": "45%",
-          "D": "50%",
-          "E": "55%"
+          "A": "2",
+          "B": "3",
+          "C": "4",
+          "D": "5",
+          "E": "6"
         },
-        "correctAnswer": "C",
-        "buffer": false,
-        "cascadeTrigger": "overlapping sets misinterpretation"
+        "correctAnswer": "D",
+        "buffer": false
       },
       {
         "id": 8,
-        "questionText": "If 2x + 3 = 11, what is the value of 6x + 9?",
+        "ogQuestionNumber": 18,
+        "questionText": "A company sells radios for $15.00 each. It costs the company $14.00 per radio to produce 1,000 radios and $13.50 per radio to produce 2,000 radios. How much greater will the company's gross profit be from the production and sale of 2,000 radios than from the production and sale of 1,000 radios?",
         "difficulty": "easy",
         "options": {
-          "A": "24",
-          "B": "27",
-          "C": "30",
-          "D": "33",
-          "E": "36"
+          "A": "$500",
+          "B": "$1,000",
+          "C": "$1,500",
+          "D": "$2,000",
+          "E": "$2,500"
         },
         "correctAnswer": "D",
-        "buffer": false,
-        "recoveryBuilder": "pattern recognition confidence"
+        "buffer": false
+      },
+      {
+        "id": 8,
+        "ogQuestionNumber": 18,
+        "questionText": "A company sells radios for $15.00 each. It costs the company $14.00 per radio to produce 1,000 radios and $13.50 per radio to produce 2,000 radios. How much greater will the company's gross profit be from the production and sale of 2,000 radios than from the production and sale of 1,000 radios?",
+        "difficulty": "easy",
+        "options": {
+          "A": "$500",
+          "B": "$1,000",
+          "C": "$1,500",
+          "D": "$2,000",
+          "E": "$2,500"
+        },
+        "correctAnswer": "D",
+        "buffer": false
       },
       {
         "id": 9,
-        "questionText": "What is the value of √(25 + 144)?",
-        "difficulty": "easy",
+        "ogQuestionNumber": 107,
+        "questionText": "The product of 3,305 and the 1-digit integer x is a 5-digit integer. The units (ones) digit of the product is 5 and the hundreds digit is y. If A is the set of all possible values of x and B is the set of all possible values of y, then which of the following gives the members of A and B?",
+        "difficulty": "medium",
         "options": {
-          "A": "11",
-          "B": "12",
-          "C": "13",
-          "D": "14",
-          "E": "15"
+          "A": "A: {1, 3, 5, 7, 9}, B: {0, 1, 2, 3, 4, 5, 6, 7, 8, 9}",
+          "B": "A: {1, 3, 5, 7, 9}, B: {1, 3, 5, 7, 9}",
+          "C": "A: {3, 5, 7, 9}, B: {1, 5, 7, 9}",
+          "D": "A: {5, 7, 9}, B: {1, 5, 7}",
+          "E": "A: {5, 7, 9}, B: {1, 5, 9}"
         },
-        "correctAnswer": "C",
-        "buffer": false,
-        "recoveryBuilder": "computational confidence"
+        "correctAnswer": "D",
+        "buffer": false
       },
       {
         "id": 10,
-        "questionText": "If n is divisible by both 6 and 10, what is the smallest positive value of n?",
-        "difficulty": "medium",
+        "ogQuestionNumber": 148,
+        "questionText": "Two numbers differ by 2 and sum to S. Which of the following is the greater of the numbers in terms of S?",
+        "difficulty": "hard",
         "options": {
-          "A": "16",
-          "B": "20",
-          "C": "24",
-          "D": "30",
-          "E": "60"
+          "A": "S/2 - 1",
+          "B": "S/2",
+          "C": "S/2 + 1/2",
+          "D": "S/2 + 1",
+          "E": "S/2 + 2"
         },
         "correctAnswer": "D",
-        "buffer": false,
-        "recoveryBuilder": "number properties fundamentals"
+        "buffer": false
       },
       {
         "id": 11,
-        "questionText": "What is the value of (x + 3)^2 when x = 5?",
+        "ogQuestionNumber": 27,
+        "questionText": "A rope 20.6 meters long is cut into two pieces. If the length of one piece of rope is 2.8 meters shorter than the length of the other, what is the length, in meters, of the longer piece of rope?",
         "difficulty": "easy",
         "options": {
-          "A": "34",
-          "B": "49",
-          "C": "64",
-          "D": "81",
-          "E": "100"
+          "A": "7.5",
+          "B": "8.9",
+          "C": "9.9",
+          "D": "10.3",
+          "E": "11.7"
         },
-        "correctAnswer": "C",
-        "buffer": false,
-        "recoveryBuilder": "algebraic substitution confidence"
+        "correctAnswer": "E",
+        "buffer": false
       },
       {
         "id": 12,
-        "questionText": "If the average of 4 numbers is 15, what is their sum?",
-        "difficulty": "easy",
+        "ogQuestionNumber": 113,
+        "questionText": "If x = -|w|, which of the following must be true?",
+        "difficulty": "medium",
         "options": {
-          "A": "45",
-          "B": "50",
-          "C": "55",
-          "D": "60",
-          "E": "65"
+          "A": "x = -w",
+          "B": "x = w",
+          "C": "x^2 = w",
+          "D": "x^2 = w^2",
+          "E": "x^3 = w^3"
         },
         "correctAnswer": "D",
-        "buffer": false,
-        "recoveryBuilder": "basic statistics confidence"
+        "buffer": false
       },
       {
         "id": 13,
-        "questionText": "How many distinct prime factors does 60 have?",
-        "difficulty": "medium",
+        "ogQuestionNumber": 35,
+        "questionText": "At the opening of a trading day at a certain stock exchange, the price per share of stock K was $8. If the price per share of stock K was $9 at the closing of the day, what was the percent increase in the price per share of stock K for that day?",
+        "difficulty": "easy",
         "options": {
-          "A": "2",
-          "B": "3",
-          "C": "4",
-          "D": "5",
-          "E": "6"
+          "A": "1.4%",
+          "B": "5.9%",
+          "C": "11.1%",
+          "D": "12.5%",
+          "E": "23.6%"
         },
-        "correctAnswer": "B",
-        "buffer": false,
-        "recoveryBuilder": "factorization skills"
+        "correctAnswer": "D",
+        "buffer": false
       },
       {
         "id": 14,
-        "questionText": "If |x - 3| = 7, what are the possible values of x?",
+        "ogQuestionNumber": 137,
+        "questionText": "When the positive integer k is divided by the positive integer n, the remainder is 11. If k/n = 81.2, what is the value of n?",
         "difficulty": "medium",
         "options": {
-          "A": "4 and 10",
-          "B": "-4 and 10",
-          "C": "3 and 7", 
-          "D": "-3 and 7",
-          "E": "-4 and -10"
+          "A": "9",
+          "B": "20",
+          "C": "55",
+          "D": "70",
+          "E": "81"
         },
-        "correctAnswer": "B",
-        "buffer": false,
-        "recoveryBuilder": "absolute value confidence"
+        "correctAnswer": "C",
+        "buffer": false
       },
       {
         "id": 15,
-        "questionText": "What is the value of 2^4 × 2^3?",
-        "difficulty": "easy",
+        "ogQuestionNumber": 122,
+        "questionText": "Of all the students in a certain dormitory, 1/2 are first-year students and the rest are second-year students. If 4/5 of the first-year students have not declared a major and if the fraction of second-year students who have declared a major is 3 times the fraction of first-year students who have declared a major, what fraction of all the students in the dormitory are second-year students who have not declared a major?",
+        "difficulty": "medium",
         "options": {
-          "A": "64",
-          "B": "98",
-          "C": "128",
-          "D": "144",
-          "E": "256"
+          "A": "1/15",
+          "B": "1/5",
+          "C": "4/15",
+          "D": "1/3",
+          "E": "2/5"
         },
-        "correctAnswer": "C",
-        "buffer": false,
-        "recoveryBuilder": "exponent rules confidence"
+        "correctAnswer": "B",
+        "buffer": false
       },
       {
         "id": 16,
-        "questionText": "If f(x) = 3x - 2 and f(a) = 10, what is the value of a?",
+        "ogQuestionNumber": 131,
+        "questionText": "A certain manufacturer sells its product to stores in 113 different regions worldwide, with an average (arithmetic mean) of 181 stores per region. If last year these stores sold an average of 51,752 units of the manufacturer's product per store, which of the following is closest to the total number of units of the manufacturer's product sold worldwide last year?",
         "difficulty": "medium",
         "options": {
-          "A": "2",
-          "B": "3",
-          "C": "4",
-          "D": "5",
-          "E": "6"
+          "A": "10^6",
+          "B": "10^7",
+          "C": "10^8",
+          "D": "10^9",
+          "E": "10^10"
         },
-        "correctAnswer": "C",
-        "buffer": true,
-        "adaptiveNote": "function evaluation recovery"
+        "correctAnswer": "D",
+        "buffer": false
       },
       {
         "id": 17,
-        "questionText": "What is the remainder when 2^30 is divided by 7?",
+        "ogQuestionNumber": 152,
+        "questionText": "A positive integer n is a perfect number provided that the sum of all the positive factors of n, including 1 and n, is equal to 2n. What is the sum of the reciprocals of all the positive factors of the perfect number 28?",
         "difficulty": "hard",
         "options": {
-          "A": "1",
-          "B": "2",
-          "C": "4",
-          "D": "6",
-          "E": "0"
+          "A": "1/4",
+          "B": "56/27",
+          "C": "2",
+          "D": "3",
+          "E": "4"
         },
-        "correctAnswer": "A",
-        "buffer": true,
-        "adaptiveNote": "advanced modular arithmetic"
+        "correctAnswer": "C",
+        "buffer": false
       },
       {
         "id": 18,
-        "questionText": "A store sells books at a 30% profit margin. If a book costs the store $20, what is the selling price?",
-        "difficulty": "easy",
+        "ogQuestionNumber": 161,
+        "questionText": "If the variables X, Y, and Z take on only the values 10, 20, 30, 40, 50, 60, or 70 with frequencies indicated by the shaded regions above, for which of the frequency distributions is the mean equal to the median?",
+        "difficulty": "hard",
         "options": {
-          "A": "$23",
-          "B": "$24",
-          "C": "$25",
-          "D": "$26",
-          "E": "$27"
+          "A": "X only",
+          "B": "Y only",
+          "C": "Z only",
+          "D": "X and Y",
+          "E": "X and Z"
         },
-        "correctAnswer": "D",
-        "buffer": true,
-        "adaptiveNote": "basic percentage application"
+        "correctAnswer": "E",
+        "buffer": false
+      },
+      {
+        "id": 19,
+        "ogQuestionNumber": 128,
+        "questionText": "What is the remainder when 3^24 is divided by 5?",
+        "difficulty": "medium",
+        "options": {
+          "A": "0",
+          "B": "1",
+          "C": "2",
+          "D": "3",
+          "E": "4"
+        },
+        "correctAnswer": "B",
+        "buffer": false
+      },
+      {
+        "id": 20,
+        "ogQuestionNumber": 173,
+        "questionText": "Becky rented a power tool from a rental shop. The rent for the tool was $12 for the first hour and $3 for each additional hour. If Becky paid a total of $27, excluding sales tax, to rent the tool, for how many hours did she rent it?",
+        "difficulty": "hard",
+        "options": {
+          "A": "5",
+          "B": "6",
+          "C": "9",
+          "D": "10",
+          "E": "12"
+        },
+        "correctAnswer": "B",
+        "buffer": false
+      },
+      {
+        "id": 21,
+        "ogQuestionNumber": 95,
+        "questionText": "The formula above gives the contribution C, in dollars, to a certain profit-sharing plan for a participant with a salary of s dollars. How many more dollars is the contribution for a participant with a salary of $70,000 than for a participant with a salary of $50,000?",
+        "difficulty": "medium",
+        "options": {
+          "A": "$800",
+          "B": "$1,400",
+          "C": "$2,000",
+          "D": "$2,400",
+          "E": "$2,800"
+        },
+        "correctAnswer": "B",
+        "buffer": false
       }
     ]
   }
-  
-  
