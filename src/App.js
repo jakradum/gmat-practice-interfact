@@ -332,11 +332,15 @@ const GMATInterface = () => {
     }
   };
 
-  // Format mathematical expressions (same as before)
+  // Format mathematical expressions with proper type checking
   const formatMath = (text) => {
-    if (!text) return text;
+    // Handle null, undefined, or empty values
+    if (!text) return '';
     
-    return text
+    // Convert to string if it's not already a string
+    const textStr = typeof text === 'string' ? text : String(text);
+    
+    return textStr
       .replace(/\^(\([^)]+\))/g, '<sup>$1</sup>')
       .replace(/\^(\d+)/g, '<sup>$1</sup>')
       .replace(/\^(\w+)/g, '<sup>$1</sup>')
@@ -362,6 +366,24 @@ const GMATInterface = () => {
   const startTest = () => {
     setHasStarted(true);
     initializeAdaptiveQuestions();
+  };
+
+  // Check if current question is answered based on its format
+  const isQuestionAnswered = (question) => {
+    if (question.questionFormat === 'tableAnalysis') {
+      // Check if all statements are answered
+      return question.statements?.every((_, index) => 
+        selectedAnswers[`${question.id}-${index}`] !== undefined
+      ) || false;
+    } else if (question.questionFormat === 'twoPartAnalysis') {
+      // Check if both columns are answered
+      return question.columns?.every((_, colIndex) => 
+        selectedAnswers[`${question.id}-col${colIndex}`] !== undefined
+      ) || false;
+    } else {
+      // Standard format - check if main question is answered
+      return selectedAnswers[question.id] !== undefined;
+    }
   };
 
   const handleAnswerSelect = (questionId, answer) => {
@@ -393,12 +415,33 @@ const GMATInterface = () => {
     setShowConfirmModal(false);
   };
 
-  // Calculate score (same logic as before)
+  // Calculate score with support for different question formats
   const calculateScore = () => {
     let totalPoints = 0;
     let maxPossiblePoints = 0;
     let correctByDifficulty = { easy: 0, medium: 0, hard: 0 };
     let totalByDifficulty = { easy: 0, medium: 0, hard: 0 };
+    
+    // Helper function to check if a question is answered correctly
+    const isQuestionCorrect = (question) => {
+      if (question.questionFormat === 'tableAnalysis') {
+        // Check if all statements are answered correctly
+        return question.statements?.every((statement, index) => 
+          selectedAnswers[`${question.id}-${index}`] === statement.answer
+        ) || false;
+      } else if (question.questionFormat === 'twoPartAnalysis') {
+        // Check if both columns are answered correctly
+        if (!question.correctAnswer) return false;
+        return question.columns?.every((_, colIndex) => {
+          const correctKey = colIndex === 0 ? Object.keys(question.correctAnswer)[0] : Object.keys(question.correctAnswer)[1];
+          const correctValue = question.correctAnswer[correctKey];
+          return selectedAnswers[`${question.id}-col${colIndex}`] === correctValue;
+        }) || false;
+      } else {
+        // Standard format
+        return selectedAnswers[question.id] === question.correctAnswer;
+      }
+    };
     
     if (questionData.adaptiveMode) {
       const pointValues = { easy: 1, medium: 2.5, hard: 4 };
@@ -415,7 +458,7 @@ const GMATInterface = () => {
         totalByDifficulty[difficulty]++;
         maxPossiblePoints += points;
         
-        if (selectedAnswers[question.id] === question.correctAnswer) {
+        if (isQuestionCorrect(question)) {
           correctByDifficulty[difficulty]++;
           totalPoints += points;
         }
@@ -450,7 +493,7 @@ const GMATInterface = () => {
         totalByDifficulty[difficulty]++;
         maxPossiblePoints += points;
         
-        if (selectedAnswers[question.id] === question.correctAnswer) {
+        if (isQuestionCorrect(question)) {
           correctByDifficulty[difficulty]++;
           totalPoints += points;
         }
@@ -1050,10 +1093,32 @@ const GMATInterface = () => {
                 </thead>
                 <tbody>
                   {adaptiveQuestions.map((question, index) => {
-                    const chosenAnswer = selectedAnswers[question.id] || '--';
-                    const correctAnswer = question.correctAnswer;
-                    const isCorrect = chosenAnswer === correctAnswer;
-                    const isUnattempted = chosenAnswer === '--';
+                    let chosenAnswer, correctAnswer, isCorrect, isUnattempted;
+                    
+                    if (question.questionFormat === 'tableAnalysis') {
+                      const allAnswered = question.statements?.every((_, idx) => selectedAnswers[`${question.id}-${idx}`]);
+                      chosenAnswer = allAnswered ? 'Completed' : 'Incomplete';
+                      correctAnswer = 'All statements';
+                      isCorrect = question.statements?.every((statement, idx) => 
+                        selectedAnswers[`${question.id}-${idx}`] === statement.answer
+                      ) || false;
+                      isUnattempted = !allAnswered;
+                    } else if (question.questionFormat === 'twoPartAnalysis') {
+                      const bothAnswered = question.columns?.every((_, colIdx) => selectedAnswers[`${question.id}-col${colIdx}`]);
+                      chosenAnswer = bothAnswered ? 'Both columns' : 'Incomplete';
+                      correctAnswer = 'Both correct';
+                      isCorrect = question.columns?.every((_, colIdx) => {
+                        const correctKey = colIdx === 0 ? Object.keys(question.correctAnswer || {})[0] : Object.keys(question.correctAnswer || {})[1];
+                        const correctValue = (question.correctAnswer || {})[correctKey];
+                        return selectedAnswers[`${question.id}-col${colIdx}`] === correctValue;
+                      }) || false;
+                      isUnattempted = !bothAnswered;
+                    } else {
+                      chosenAnswer = selectedAnswers[question.id] || '--';
+                      correctAnswer = question.correctAnswer || '--';
+                      isCorrect = chosenAnswer === correctAnswer;
+                      isUnattempted = chosenAnswer === '--';
+                    }
                     
                     const questionPreview = question.questionText.length > 50 
                       ? question.questionText.substring(0, 50) + '...'
@@ -1092,6 +1157,19 @@ const GMATInterface = () => {
                             }}>
                               {question.difficulty}
                             </span>
+                            {question.questionFormat && (
+                              <span style={{
+                                marginLeft: '8px',
+                                fontSize: '10px',
+                                color: '#666',
+                                backgroundColor: '#f0f0f0',
+                                padding: '2px 6px',
+                                borderRadius: '3px',
+                                textTransform: 'uppercase'
+                              }}>
+                                {question.questionFormat}
+                              </span>
+                            )}
                           </div>
                           <div style={{ 
                             fontSize: '14px', 
@@ -1253,9 +1331,199 @@ const GMATInterface = () => {
                 <span className="math-text" dangerouslySetInnerHTML={{ __html: formatMath(currentQuestion.questionText) }}></span>
               </div>
 
-              {/* Answer Options */}
+              {/* Answer Options - Handle different question formats */}
               <div>
-                {Object.entries(currentQuestion.options).map(([letter, text]) => (
+                {currentQuestion.questionFormat === 'tableAnalysis' ? (
+                  // Table Analysis format
+                  <div>
+                    <div style={{ marginBottom: '20px', padding: '15px', backgroundColor: '#f8f9fa', borderRadius: '6px' }}>
+                      <strong>Instructions:</strong> For each statement, select True, False, or Cannot be determined.
+                    </div>
+                    {currentQuestion.statements?.map((statement, index) => (
+                      <div key={index} style={{ marginBottom: '20px', padding: '15px', border: '1px solid #ddd', borderRadius: '6px' }}>
+                        <div style={{ marginBottom: '10px', fontSize: '16px', fontWeight: '500' }}>
+                          Statement {index + 1}: {statement.text}
+                        </div>
+                        <div style={{ display: 'flex', gap: '15px' }}>
+                          {['True', 'False', 'Cannot be determined'].map((option) => (
+                            <label key={option} style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+                              <input
+                                type="radio"
+                                name={`question-${currentQuestion.id}-statement-${index}`}
+                                value={option}
+                                checked={selectedAnswers[`${currentQuestion.id}-${index}`] === option}
+                                onChange={() => handleAnswerSelect(`${currentQuestion.id}-${index}`, option)}
+                                style={{ marginRight: '8px', transform: 'scale(1.2)' }}
+                              />
+                              <span style={{ fontSize: '14px' }}>{option}</span>
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : currentQuestion.questionFormat === 'twoPartAnalysis' ? (
+                  // Two-Part Analysis format
+                  <div>
+                    <div style={{ marginBottom: '20px', padding: '15px', backgroundColor: '#f8f9fa', borderRadius: '6px' }}>
+                      <strong>Instructions:</strong> Select one option from each column.
+                    </div>
+                    <div style={{ display: 'flex', gap: '20px' }}>
+                      {currentQuestion.columns?.map((column, colIndex) => (
+                        <div key={colIndex} style={{ flex: 1 }}>
+                          <h4 style={{ marginBottom: '15px', fontSize: '16px', fontWeight: '600', color: '#2c3e50' }}>
+                            {column}
+                          </h4>
+                          {currentQuestion.options?.map((option, optIndex) => {
+                            const optionKey = colIndex === 0 ? Object.keys(option)[0] : Object.keys(option)[1];
+                            const optionValue = option[optionKey];
+                            return (
+                              <div key={optIndex} style={{ marginBottom: '10px' }}>
+                                <label style={{ display: 'flex', alignItems: 'flex-start', cursor: 'pointer', padding: '8px', borderRadius: '4px', backgroundColor: selectedAnswers[`${currentQuestion.id}-col${colIndex}`] === optionValue ? '#fff3cd' : 'transparent' }}>
+                                  <input
+                                    type="radio"
+                                    name={`question-${currentQuestion.id}-col${colIndex}`}
+                                    value={optionValue}
+                                    checked={selectedAnswers[`${currentQuestion.id}-col${colIndex}`] === optionValue}
+                                    onChange={() => handleAnswerSelect(`${currentQuestion.id}-col${colIndex}`, optionValue)}
+                                    style={{ marginRight: '10px', marginTop: '2px', transform: 'scale(1.2)' }}
+                                  />
+                                  <span style={{ fontSize: '14px', lineHeight: '1.4' }}>{optionValue}</span>
+                                </label>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ) : (
+                  // Standard format with A-E options
+                  currentQuestion.options && Object.entries(currentQuestion.options).map(([letter, text]) => (
+                    <div key={letter} style={{
+                      marginBottom: '15px',
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      cursor: 'pointer',
+                      padding: '10px 15px',
+                      borderRadius: '4px',
+                      backgroundColor: selectedAnswers[currentQuestion.id] === letter ? '#fff3cd' : 'transparent',
+                      border: selectedAnswers[currentQuestion.id] === letter ? '2px solid #ffc107' : '2px solid transparent',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onClick={() => handleAnswerSelect(currentQuestion.id, letter)}
+                    >
+                      <input
+                        type="radio"
+                        name={`question-${currentQuestion.id}`}
+                        value={letter}
+                        checked={selectedAnswers[currentQuestion.id] === letter}
+                        onChange={() => handleAnswerSelect(currentQuestion.id, letter)}
+                        style={{
+                          marginRight: '15px',
+                          marginTop: '2px',
+                          transform: 'scale(1.3)'
+                        }}
+                      />
+                      <div>
+                        <span className="math-text" style={{ fontSize: '18px', lineHeight: '1.4' }} dangerouslySetInnerHTML={{ __html: formatMath(text) }}>
+                        </span>
+                      </div>
+                    </div>
+                  ))
+                )}
+              </div>
+            </div>
+          </>
+        ) : (
+          // Quantitative Layout: Full width question area (original layout)
+          <div style={{
+            flex: 1,
+            padding: '35px 45px',
+            overflow: 'auto'
+          }}>
+            {/* Question Text */}
+            <div style={{
+              fontSize: '18px',
+              lineHeight: '1.6',
+              marginBottom: '35px',
+              color: '#2c3e50'
+            }}>
+              <span style={{ color: '#2c3e50', fontSize: '18px', marginRight: '8px' }}>
+                {currentQuestionIndex + 1}.
+              </span>
+              <span className="math-text" dangerouslySetInnerHTML={{ __html: formatMath(currentQuestion.questionText) }}></span>
+            </div>
+
+            {/* Answer Options - Handle different question formats */}
+            <div style={{ maxWidth: '650px' }}>
+              {currentQuestion.questionFormat === 'tableAnalysis' ? (
+                // Table Analysis format
+                <div>
+                  <div style={{ marginBottom: '20px', padding: '15px', backgroundColor: '#f8f9fa', borderRadius: '6px' }}>
+                    <strong>Instructions:</strong> For each statement, select True, False, or Cannot be determined.
+                  </div>
+                  {currentQuestion.statements?.map((statement, index) => (
+                    <div key={index} style={{ marginBottom: '20px', padding: '15px', border: '1px solid #ddd', borderRadius: '6px' }}>
+                      <div style={{ marginBottom: '10px', fontSize: '16px', fontWeight: '500' }}>
+                        Statement {index + 1}: {statement.text}
+                      </div>
+                      <div style={{ display: 'flex', gap: '15px' }}>
+                        {['True', 'False', 'Cannot be determined'].map((option) => (
+                          <label key={option} style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+                            <input
+                              type="radio"
+                              name={`question-${currentQuestion.id}-statement-${index}`}
+                              value={option}
+                              checked={selectedAnswers[`${currentQuestion.id}-${index}`] === option}
+                              onChange={() => handleAnswerSelect(`${currentQuestion.id}-${index}`, option)}
+                              style={{ marginRight: '8px', transform: 'scale(1.2)' }}
+                            />
+                            <span style={{ fontSize: '14px' }}>{option}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : currentQuestion.questionFormat === 'twoPartAnalysis' ? (
+                // Two-Part Analysis format
+                <div>
+                  <div style={{ marginBottom: '20px', padding: '15px', backgroundColor: '#f8f9fa', borderRadius: '6px' }}>
+                    <strong>Instructions:</strong> Select one option from each column.
+                  </div>
+                  <div style={{ display: 'flex', gap: '20px' }}>
+                    {currentQuestion.columns?.map((column, colIndex) => (
+                      <div key={colIndex} style={{ flex: 1 }}>
+                        <h4 style={{ marginBottom: '15px', fontSize: '16px', fontWeight: '600', color: '#2c3e50' }}>
+                          {column}
+                        </h4>
+                        {currentQuestion.options?.map((option, optIndex) => {
+                          const optionKey = colIndex === 0 ? Object.keys(option)[0] : Object.keys(option)[1];
+                          const optionValue = option[optionKey];
+                          return (
+                            <div key={optIndex} style={{ marginBottom: '10px' }}>
+                              <label style={{ display: 'flex', alignItems: 'flex-start', cursor: 'pointer', padding: '8px', borderRadius: '4px', backgroundColor: selectedAnswers[`${currentQuestion.id}-col${colIndex}`] === optionValue ? '#fff3cd' : 'transparent' }}>
+                                <input
+                                  type="radio"
+                                  name={`question-${currentQuestion.id}-col${colIndex}`}
+                                  value={optionValue}
+                                  checked={selectedAnswers[`${currentQuestion.id}-col${colIndex}`] === optionValue}
+                                  onChange={() => handleAnswerSelect(`${currentQuestion.id}-col${colIndex}`, optionValue)}
+                                  style={{ marginRight: '10px', marginTop: '2px', transform: 'scale(1.2)' }}
+                                />
+                                <span style={{ fontSize: '14px', lineHeight: '1.4' }}>{optionValue}</span>
+                              </label>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                // Standard format with A-E options
+                currentQuestion.options && Object.entries(currentQuestion.options).map(([letter, text]) => (
                   <div key={letter} style={{
                     marginBottom: '15px',
                     display: 'flex',
@@ -1286,64 +1554,8 @@ const GMATInterface = () => {
                       </span>
                     </div>
                   </div>
-                ))}
-              </div>
-            </div>
-          </>
-        ) : (
-          // Quantitative Layout: Full width question area (original layout)
-          <div style={{
-            flex: 1,
-            padding: '35px 45px',
-            overflow: 'auto'
-          }}>
-            {/* Question Text */}
-            <div style={{
-              fontSize: '18px',
-              lineHeight: '1.6',
-              marginBottom: '35px',
-              color: '#2c3e50'
-            }}>
-              <span style={{ color: '#2c3e50', fontSize: '18px', marginRight: '8px' }}>
-                {currentQuestionIndex + 1}.
-              </span>
-              <span className="math-text" dangerouslySetInnerHTML={{ __html: formatMath(currentQuestion.questionText) }}></span>
-            </div>
-
-            {/* Answer Options */}
-            <div style={{ maxWidth: '650px' }}>
-              {Object.entries(currentQuestion.options).map(([letter, text]) => (
-                <div key={letter} style={{
-                  marginBottom: '15px',
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  cursor: 'pointer',
-                  padding: '10px 15px',
-                  borderRadius: '4px',
-                  backgroundColor: selectedAnswers[currentQuestion.id] === letter ? '#fff3cd' : 'transparent',
-                  border: selectedAnswers[currentQuestion.id] === letter ? '2px solid #ffc107' : '2px solid transparent',
-                  transition: 'all 0.2s ease'
-                }}
-                onClick={() => handleAnswerSelect(currentQuestion.id, letter)}
-                >
-                  <input
-                    type="radio"
-                    name={`question-${currentQuestion.id}`}
-                    value={letter}
-                    checked={selectedAnswers[currentQuestion.id] === letter}
-                    onChange={() => handleAnswerSelect(currentQuestion.id, letter)}
-                    style={{
-                      marginRight: '15px',
-                      marginTop: '2px',
-                      transform: 'scale(1.3)'
-                    }}
-                  />
-                  <div>
-                    <span className="math-text" style={{ fontSize: '18px', lineHeight: '1.4' }} dangerouslySetInnerHTML={{ __html: formatMath(text) }}>
-                    </span>
-                  </div>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </div>
         )}
@@ -1377,14 +1589,14 @@ const GMATInterface = () => {
         <div style={{ display: 'flex', gap: '10px' }}>
           <button
             onClick={handleNext}
-            disabled={!selectedAnswers[currentQuestion.id]}
+            disabled={!isQuestionAnswered(currentQuestion)}
             style={{
-              backgroundColor: selectedAnswers[currentQuestion.id] ? '#27ae60' : '#95a5a6',
+              backgroundColor: isQuestionAnswered(currentQuestion) ? '#27ae60' : '#95a5a6',
               border: 'none',
               color: 'white',
               padding: '10px 20px',
               borderRadius: '4px',
-              cursor: selectedAnswers[currentQuestion.id] ? 'pointer' : 'not-allowed',
+              cursor: isQuestionAnswered(currentQuestion) ? 'pointer' : 'not-allowed',
               fontSize: '16px',
               fontWeight: '500'
             }}
