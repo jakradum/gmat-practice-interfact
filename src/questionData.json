@@ -1,162 +1,495 @@
 {
-    "sectionName": "GMAT Quantitative - Maximum Trick Factor",
+    "sectionName": "GMAT Quantitative Reasoning - Mixed Practice",
     "sectionType": "quantitative",
-    "testDescription": "This section contains carefully selected problems with maximum confusion potential, designed to test question comprehension skills and prevent common interpretation errors. Each problem includes deliberate ambiguity, misleading wording, or conceptual traps that frequently catch high scorers on the actual GMAT.",
+    "testDescription": "This section tests your mathematical skills including algebra, arithmetic, geometry, and data analysis through problem-solving questions.",
     "skillsAssessed": [
-      "Ambiguous language interpretation and constraint analysis",
-      "Logical precision in conditional statements (could vs must)",
-      "Complement probability and 'at least one' scenarios",
-      "Sequential percentage change calculations",
-      "Geometric percentage applications and area relationships",
-      "Reverse logic and working backwards from constraints",
-      "Comparison vs absolute value interpretation",
-      "Complex geometric area calculations and spatial reasoning",
-      "Net rate calculations with multiple flow directions",
-      "Relative motion problems with coordinate timing"
+      "Algebraic manipulation and equation solving",
+      "Number properties and arithmetic operations", 
+      "Word problem translation and setup",
+      "Pattern recognition and logical reasoning",
+      "Optimization and constraint analysis"
     ],
-    "adaptiveMode": false,
-    "targetQuestions": 10,
+    "adaptiveMode": true,
+    "targetQuestions": 21,
     "bufferQuestions": 0,
-    "firstSevenStrategy": "maximum comprehension challenge",
+    "firstSevenStrategy": "controlled challenge",
     "questions": [
       {
         "id": 1,
-        "questionText": "John has twice as many apples as oranges. If he gives away half of his fruits, keeping equal numbers of apples and oranges, how many apples did he give away?",
-        "difficulty": "medium",
+        "ogQuestionNumber": 2,
+        "questionText": "If x + y = 2 and x² + y² = 2, what is the value of xy?",
+        "difficulty": "easy",
         "options": {
-          "A": "Cannot be determined",
-          "B": "Equal to oranges given away",
-          "C": "Half his original apples",
-          "D": "One-third his original fruits",
-          "E": "Twice the oranges given away"
+          "A": "-2",
+          "B": "-1", 
+          "C": "0",
+          "D": "1",
+          "E": "2"
         },
-        "correctAnswer": "A",
+        "correctAnswer": "C",
         "buffer": false
       },
       {
         "id": 2,
-        "questionText": "A car travels 60 miles in the first hour, then increases speed by 20% for the second hour. What distance does it travel in the second hour compared to the first hour?",
+        "ogQuestionNumber": 3,
+        "questionText": "The sum S of the first n consecutive positive even integers is given by S = n(n + 1). For what value of n is this sum equal to 110?",
         "difficulty": "easy",
         "options": {
-          "A": "12 miles more",
-          "B": "20 miles more",
-          "C": "20% more distance",
-          "D": "72 miles total",
-          "E": "132 miles total"
+          "A": "10",
+          "B": "11",
+          "C": "12", 
+          "D": "13",
+          "E": "14"
         },
         "correctAnswer": "A",
         "buffer": false
       },
       {
         "id": 3,
-        "questionText": "A rectangle's length is increased by 20% and width decreased by 20%. The new area compared to the original area is what percent?",
-        "difficulty": "medium",
+        "ogQuestionNumber": 11,
+        "questionText": "Company C produces toy trucks at a cost of $5.00 each for the first 100 trucks and $3.50 for each additional truck. If 500 toy trucks were produced by Company C and sold for $10.00 each, what was Company C's gross profit?",
+        "difficulty": "easy",
         "options": {
-          "A": "100%",
-          "B": "96%",
-          "C": "104%",
-          "D": "80%",
-          "E": "120%"
+          "A": "$2,250",
+          "B": "$2,500",
+          "C": "$3,100",
+          "D": "$3,250",
+          "E": "$3,500"
         },
-        "correctAnswer": "B",
+        "correctAnswer": "E",
         "buffer": false
       },
       {
         "id": 4,
-        "questionText": "The average age of 5 people is 30 years. If the oldest person is twice as old as the youngest, what could be the age of the oldest person?",
-        "difficulty": "hard",
+        "ogQuestionNumber": 16,
+        "questionText": "In a field day at a school, each child who competed in n events and scored a total of p points was given an overall score of p/n + n. Andrew competed in 1 event and scored 9 points. Jason competed in 3 events and scored 5, 6, and 7 points, respectively. What was the ratio of Andrew's overall score to Jason's overall score?",
+        "difficulty": "easy",
         "options": {
-          "A": "60",
-          "B": "50",
-          "C": "Cannot be determined",
-          "D": "40",
-          "E": "30"
+          "A": "10/23",
+          "B": "7/10",
+          "C": "4/5",
+          "D": "10/9",
+          "E": "12/7"
         },
-        "correctAnswer": "C",
+        "correctAnswer": "D",
         "buffer": false
       },
       {
         "id": 5,
-        "questionText": "Train A leaves station X at 9 AM traveling at 60 mph toward station Y. Train B leaves station Y at 10 AM traveling at 80 mph toward station X. If the distance between stations is 420 miles, at what time do they meet?",
-        "difficulty": "hard",
+        "ogQuestionNumber": 22,
+        "questionText": "For what value of x between -4 and 4, inclusive, is the value of x² - 10x + 16 the greatest?",
+        "difficulty": "easy",
         "options": {
-          "A": "11:30 AM",
-          "B": "12:00 PM",
-          "C": "12:30 PM",
-          "D": "1:00 PM",
-          "E": "1:30 PM"
+          "A": "-4",
+          "B": "-2",
+          "C": "0",
+          "D": "2",
+          "E": "4"
         },
-        "correctAnswer": "C",
+        "correctAnswer": "A",
         "buffer": false
       },
       {
         "id": 6,
-        "questionText": "Circle A has radius 3 and Circle B has radius 4. If Circle A is placed inside Circle B, what is the area between the two circles?",
+        "ogQuestionNumber": 28,
+        "questionText": "If x and y are integers and x - y is odd, which of the following must be true?\n\nI. xy is even.\nII. x² + y² is odd.\nIII. (x + y)² is even.",
         "difficulty": "easy",
         "options": {
-          "A": "π",
-          "B": "7π",
-          "C": "16π",
-          "D": "9π",
-          "E": "25π"
+          "A": "I only",
+          "B": "II only",
+          "C": "III only",
+          "D": "I and II only",
+          "E": "I, II, and III"
         },
-        "correctAnswer": "B",
+        "correctAnswer": "D",
         "buffer": false
       },
       {
         "id": 7,
-        "questionText": "In a sequence, each term after the second is the sum of the two preceding terms. If the first term is 2 and the third term is 7, what is the second term?",
-        "difficulty": "medium",
-        "options": {
-          "A": "3",
-          "B": "4",
-          "C": "5",
-          "D": "9",
-          "E": "Cannot be determined"
+        "ogQuestionNumber": 36,
+        "questionText": "As shown in the diagram above, a lever resting on a fulcrum has weights of w₁ pounds and w₂ pounds, located d₁ feet and d₂ feet from the fulcrum. The lever is balanced and w₁d₁ = w₂d₂. Suppose w₁ is 50 pounds and w₂ is 30 pounds. If d₁ is 4 feet less than d₂, what is d₂, in feet?",
+        "difficulty": "easy",
+        "visual": {
+          "type": "diagram",
+          "title": "Lever and Fulcrum System",
+          "dimensions": {
+            "width": 500,
+            "height": 200
+          },
+          "elements": [
+            {
+              "type": "line",
+              "x1": 50,
+              "y1": 100,
+              "x2": 450,
+              "y2": 100,
+              "color": "#2c3e50",
+              "width": 4
+            },
+            {
+              "type": "path",
+              "d": "M 250 100 L 235 130 L 265 130 Z",
+              "fill": "#95a5a6",
+              "color": "#7f8c8d",
+              "width": 2
+            },
+            {
+              "type": "rectangle",
+              "x": 120,
+              "y": 70,
+              "width": 30,
+              "height": 20,
+              "fill": "#3498db",
+              "color": "#2980b9",
+              "strokeWidth": 2
+            },
+            {
+              "type": "rectangle",
+              "x": 350,
+              "y": 70,
+              "width": 30,
+              "height": 20,
+              "fill": "#e74c3c",
+              "color": "#c0392b",
+              "strokeWidth": 2
+            },
+            {
+              "type": "line",
+              "x1": 135,
+              "y1": 100,
+              "x2": 135,
+              "y2": 140,
+              "color": "#34495e",
+              "width": 1
+            },
+            {
+              "type": "line",
+              "x1": 250,
+              "y1": 100,
+              "x2": 250,
+              "y2": 140,
+              "color": "#34495e",
+              "width": 1
+            },
+            {
+              "type": "line",
+              "x1": 365,
+              "y1": 100,
+              "x2": 365,
+              "y2": 140,
+              "color": "#34495e",
+              "width": 1
+            },
+            {
+              "type": "line",
+              "x1": 135,
+              "y1": 150,
+              "x2": 250,
+              "y2": 150,
+              "color": "#34495e",
+              "width": 1
+            },
+            {
+              "type": "line",
+              "x1": 250,
+              "y1": 150,
+              "x2": 365,
+              "y2": 150,
+              "color": "#34495e",
+              "width": 1
+            },
+            {
+              "type": "text",
+              "x": 135,
+              "y": 65,
+              "content": "w₁",
+              "size": 16,
+              "color": "#2c3e50",
+              "anchor": "middle",
+              "weight": "bold"
+            },
+            {
+              "type": "text",
+              "x": 365,
+              "y": 65,
+              "content": "w₂",
+              "size": 16,
+              "color": "#2c3e50",
+              "anchor": "middle",
+              "weight": "bold"
+            },
+            {
+              "type": "text",
+              "x": 192,
+              "y": 165,
+              "content": "d₁",
+              "size": 14,
+              "color": "#2c3e50",
+              "anchor": "middle"
+            },
+            {
+              "type": "text",
+              "x": 307,
+              "y": 165,
+              "content": "d₂",
+              "size": 14,
+              "color": "#2c3e50",
+              "anchor": "middle"
+            },
+            {
+              "type": "text",
+              "x": 240,
+              "y": 185,
+              "content": "fulcrum",
+              "size": 12,
+              "color": "#7f8c8d",
+              "anchor": "middle"
+            },
+            {
+              "type": "text",
+              "x": 450,
+              "y": 185,
+              "content": "lever",
+              "size": 12,
+              "color": "#7f8c8d",
+              "anchor": "end"
+            }
+          ],
+          "caption": "Lever system showing weights w₁ and w₂ at distances d₁ and d₂ from the fulcrum"
         },
-        "correctAnswer": "C",
+        "options": {
+          "A": "1.5",
+          "B": "2.5",
+          "C": "6",
+          "D": "10",
+          "E": "20"
+        },
+        "correctAnswer": "D",
         "buffer": false
       },
       {
         "id": 8,
-        "questionText": "Water flows into a tank at 5 gallons per minute and flows out at 3 gallons per minute. Starting with an empty tank, how much water is in the tank after 10 minutes?",
+        "ogQuestionNumber": 44,
+        "questionText": "Stephanie has 2¼ cups of milk on hand and makes 2 batches of cookies, using ⅔ cup of milk for each batch of cookies. Which of the following describes the amount of milk remaining after she makes the cookies?",
         "difficulty": "easy",
         "options": {
-          "A": "50 gallons",
-          "B": "30 gallons",
-          "C": "20 gallons",
-          "D": "80 gallons",
-          "E": "2 gallons"
+          "A": "Less than ½ cup",
+          "B": "Between ½ cup and ¾ cup",
+          "C": "Between ¾ cup and 1 cup",
+          "D": "Between 1 cup and 1½ cups",
+          "E": "More than 1½ cups"
         },
         "correctAnswer": "C",
         "buffer": false
       },
       {
         "id": 9,
-        "questionText": "The probability of rain on any given day is 0.3. What is the probability that it rains on at least one day during a 2-day period?",
-        "difficulty": "medium",
+        "ogQuestionNumber": 47,
+        "questionText": "A nursery sells fruit trees priced as shown in the chart above. In its inventory 54 trees are less than 5 feet in height. If the expected revenue from the sale of its entire stock is estimated at $2,450, approximately how much of this will come from the sale of trees that are at least 5 feet tall?",
+        "difficulty": "easy",
+        "visual": {
+          "type": "table",
+          "title": "Fruit Tree Pricing by Height",
+          "data": {
+            "headers": ["Tree Height", "Price per Tree"],
+            "rows": [
+              ["Less than 3 feet", "$8"],
+              ["3 to 4 feet", "$12"],
+              ["4 to 5 feet", "$15"],
+              ["5 to 6 feet", "$22"],
+              ["6 to 7 feet", "$28"],
+              ["Over 7 feet", "$35"]
+            ]
+          }
+        },
         "options": {
-          "A": "0.6",
-          "B": "0.51",
-          "C": "0.49",
-          "D": "0.09",
-          "E": "0.91"
+          "A": "$1,730",
+          "B": "$1,640",
+          "C": "$1,410",
+          "D": "$1,080",
+          "E": "$810"
+        },
+        "correctAnswer": "A",
+        "buffer": false
+      },
+      {
+        "id": 10,
+        "ogQuestionNumber": 52,
+        "questionText": "What is the larger of the 2 solutions of the equation x² - 4x = 96?",
+        "difficulty": "easy",
+        "options": {
+          "A": "8",
+          "B": "12",
+          "C": "16",
+          "D": "32",
+          "E": "100"
         },
         "correctAnswer": "B",
         "buffer": false
       },
       {
-        "id": 10,
-        "questionText": "A number is increased by 25%, then decreased by 20%. The final result compared to the original number represents what percent change?",
+        "id": 11,
+        "ogQuestionNumber": 83,
+        "questionText": "If ½ the result obtained when 2 is subtracted from 5x is equal to the sum of 10 and 3x, what is the value of x?",
         "difficulty": "medium",
         "options": {
-          "A": "5% increase",
-          "B": "5% decrease",
-          "C": "No change",
-          "D": "0% change",
-          "E": "Cannot be determined"
+          "A": "-22",
+          "B": "-4",
+          "C": "4",
+          "D": "18",
+          "E": "22"
+        },
+        "correctAnswer": "E",
+        "buffer": false
+      },
+      {
+        "id": 12,
+        "ogQuestionNumber": 86,
+        "questionText": "Consider the following set of inequalities: p > q, s > r, q > t, s > p, and r > q. Between which two quantities is no relationship established?",
+        "difficulty": "medium",
+        "options": {
+          "A": "p and r",
+          "B": "s and t",
+          "C": "s and q",
+          "D": "p and t",
+          "E": "r and t"
+        },
+        "correctAnswer": "E",
+        "buffer": false
+      },
+      {
+        "id": 13,
+        "ogQuestionNumber": 99,
+        "questionText": "If x = -½, then (6x³ + 3x² - 8x - 4)/(2x + 1) =",
+        "difficulty": "medium",
+        "options": {
+          "A": "3x² + (3/2)x - 8",
+          "B": "3x² + (3/2)x - 4",
+          "C": "3x² - 4",
+          "D": "3x - 4",
+          "E": "3x + 4"
         },
         "correctAnswer": "C",
+        "buffer": false
+      },
+      {
+        "id": 14,
+        "ogQuestionNumber": 106,
+        "questionText": "The average (arithmetic mean) of the positive integers x, y, and z is 3. If x < y < z, what is the greatest possible value of z?",
+        "difficulty": "medium",
+        "options": {
+          "A": "5",
+          "B": "6",
+          "C": "7",
+          "D": "8",
+          "E": "9"
+        },
+        "correctAnswer": "C",
+        "buffer": false
+      },
+      {
+        "id": 15,
+        "ogQuestionNumber": 111,
+        "questionText": "The average (arithmetic mean) length per film for a group of 21 films is t minutes. If a film that runs for 66 minutes is removed from the group and replaced by one that runs for 52 minutes, what is the average length per film, in minutes, for the new group of films, in terms of t?",
+        "difficulty": "medium",
+        "options": {
+          "A": "t + 2/3",
+          "B": "t - 2/3",
+          "C": "21t + 14",
+          "D": "t + 3/2",
+          "E": "t - 3/2"
+        },
+        "correctAnswer": "B",
+        "buffer": false
+      },
+      {
+        "id": 16,
+        "ogQuestionNumber": 118,
+        "questionText": "If m is an even integer, v is an odd integer, and m > v > 0, which of the following represents the number of even integers less than m and greater than v?",
+        "difficulty": "medium",
+        "options": {
+          "A": "(m - v)/2 - 1",
+          "B": "(m - v - 1)/2",
+          "C": "(m - v)/2",
+          "D": "m - v - 1",
+          "E": "m - v"
+        },
+        "correctAnswer": "B",
+        "buffer": false
+      },
+      {
+        "id": 17,
+        "ogQuestionNumber": 123,
+        "questionText": "If the average (arithmetic mean) of x, y, and z is 7x and x ≠ 0, what is the ratio of x to the sum of y and z?",
+        "difficulty": "medium",
+        "options": {
+          "A": "1:21",
+          "B": "1:20",
+          "C": "1:6",
+          "D": "6:1",
+          "E": "20:1"
+        },
+        "correctAnswer": "B",
+        "buffer": false
+      },
+      {
+        "id": 18,
+        "ogQuestionNumber": 129,
+        "questionText": "José has a collection of 100 coins, consisting of nickels, dimes, quarters, and half-dollars. If he has a total of 35 nickels and dimes, a total of 45 dimes and quarters, and a total of 50 nickels and quarters, how many half-dollars does he have?",
+        "difficulty": "medium",
+        "options": {
+          "A": "15",
+          "B": "20",
+          "C": "25",
+          "D": "30",
+          "E": "35"
+        },
+        "correctAnswer": "B",
+        "buffer": false
+      },
+      {
+        "id": 19,
+        "ogQuestionNumber": 133,
+        "questionText": "If x is a positive integer, r is the remainder when x is divided by 4, and R is the remainder when x is divided by 9, what is the greatest possible value of r² + R²?",
+        "difficulty": "medium",
+        "options": {
+          "A": "25",
+          "B": "21",
+          "C": "17",
+          "D": "13",
+          "E": "11"
+        },
+        "correctAnswer": "A",
+        "buffer": false
+      },
+      {
+        "id": 20,
+        "ogQuestionNumber": 149,
+        "questionText": "If m is an integer and m = 10³² - 32, what is the sum of the digits of m?",
+        "difficulty": "hard",
+        "options": {
+          "A": "257",
+          "B": "264",
+          "C": "275",
+          "D": "284",
+          "E": "292"
+        },
+        "correctAnswer": "D",
+        "buffer": false
+      },
+      {
+        "id": 21,
+        "ogQuestionNumber": 154,
+        "questionText": "The sequence a₁, a₂, ... aₙ, ... is such that aₙ = 2aₙ₋₁ - x for all positive integers n ≥ 2 and for a certain number x. If a₅ = 99 and a₃ = 27, what is the value of x?",
+        "difficulty": "hard",
+        "options": {
+          "A": "3",
+          "B": "9",
+          "C": "18",
+          "D": "36",
+          "E": "45"
+        },
+        "correctAnswer": "A",
         "buffer": false
       }
     ]
