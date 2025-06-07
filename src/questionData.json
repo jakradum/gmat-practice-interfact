@@ -1,405 +1,162 @@
 {
-    "sectionName": "GMAT Data Insights - Targeted Practice",
-    "sectionType": "dataInsights",
-    "testDescription": "This section targets Graphics Interpretation weaknesses and attention management through varied question types requiring complete element identification and constraint tracking.",
+    "sectionName": "GMAT Quantitative - Maximum Trick Factor",
+    "sectionType": "quantitative",
+    "testDescription": "This section contains carefully selected problems with maximum confusion potential, designed to test question comprehension skills and prevent common interpretation errors. Each problem includes deliberate ambiguity, misleading wording, or conceptual traps that frequently catch high scorers on the actual GMAT.",
     "skillsAssessed": [
-      "Graphics interpretation with multiple variable relationships",
-      "Table analysis with systematic criteria application",
-      "Two-part analysis with constraint optimization",
-      "Data sufficiency with logical reasoning"
+      "Ambiguous language interpretation and constraint analysis",
+      "Logical precision in conditional statements (could vs must)",
+      "Complement probability and 'at least one' scenarios",
+      "Sequential percentage change calculations",
+      "Geometric percentage applications and area relationships",
+      "Reverse logic and working backwards from constraints",
+      "Comparison vs absolute value interpretation",
+      "Complex geometric area calculations and spatial reasoning",
+      "Net rate calculations with multiple flow directions",
+      "Relative motion problems with coordinate timing"
     ],
-    "adaptiveMode": true,
-    "targetQuestions": 12,
+    "adaptiveMode": false,
+    "targetQuestions": 10,
     "bufferQuestions": 0,
-    "firstSevenStrategy": "attention management focus",
-    "dataSources": [
-      {
-        "id": "productivity_graph",
-        "type": "graph",
-        "title": "Employee Productivity vs Training Hours by Department",
-        "data": {
-          "type": "line",
-          "xAxis": "Training Hours per Month",
-          "yAxis": "Productivity Index (100 = baseline)",
-          "series": [
-            {
-              "name": "Engineering",
-              "color": "#3498db",
-              "points": [
-                {"x": "0", "y": 100},
-                {"x": "5", "y": 115},
-                {"x": "10", "y": 128},
-                {"x": "15", "y": 135},
-                {"x": "20", "y": 138},
-                {"x": "25", "y": 136},
-                {"x": "30", "y": 130}
-              ]
-            },
-            {
-              "name": "Sales",
-              "color": "#e74c3c",
-              "points": [
-                {"x": "0", "y": 100},
-                {"x": "5", "y": 108},
-                {"x": "10", "y": 118},
-                {"x": "15", "y": 125},
-                {"x": "20", "y": 130},
-                {"x": "25", "y": 132},
-                {"x": "30", "y": 131}
-              ]
-            },
-            {
-              "name": "HR",
-              "color": "#27ae60",
-              "points": [
-                {"x": "0", "y": 100},
-                {"x": "5", "y": 105},
-                {"x": "10", "y": 112},
-                {"x": "15", "y": 120},
-                {"x": "20", "y": 125},
-                {"x": "25", "y": 127},
-                {"x": "30", "y": 126}
-              ]
-            }
-          ]
-        }
-      },
-      {
-        "id": "market_share_graph",
-        "type": "graph", 
-        "title": "Market Share Evolution (2020-2024) - Technology Sector",
-        "data": {
-          "type": "line",
-          "xAxis": "Year",
-          "yAxis": "Market Share (%)",
-          "series": [
-            {
-              "name": "Alpha Corp",
-              "color": "#3498db",
-              "points": [
-                {"x": "2020", "y": 25},
-                {"x": "2021", "y": 28},
-                {"x": "2022", "y": 32},
-                {"x": "2023", "y": 30},
-                {"x": "2024", "y": 27}
-              ]
-            },
-            {
-              "name": "Beta Systems",
-              "color": "#e74c3c",
-              "points": [
-                {"x": "2020", "y": 35},
-                {"x": "2021", "y": 33},
-                {"x": "2022", "y": 29},
-                {"x": "2023", "y": 31},
-                {"x": "2024", "y": 34}
-              ]
-            },
-            {
-              "name": "Gamma Tech",
-              "color": "#f39c12",
-              "points": [
-                {"x": "2020", "y": 15},
-                {"x": "2021", "y": 18},
-                {"x": "2022", "y": 22},
-                {"x": "2023", "y": 26},
-                {"x": "2024", "y": 29}
-              ]
-            },
-            {
-              "name": "Others",
-              "color": "#95a5a6",
-              "points": [
-                {"x": "2020", "y": 25},
-                {"x": "2021", "y": 21},
-                {"x": "2022", "y": 17},
-                {"x": "2023", "y": 13},
-                {"x": "2024", "y": 10}
-              ]
-            }
-          ]
-        }
-      },
-      {
-        "id": "university_table",
-        "type": "table",
-        "title": "University Performance Metrics - 2024 Rankings",
-        "data": {
-          "headers": ["University", "Enrollment", "Graduation Rate (%)", "Research Funding ($M)", "Student-Faculty Ratio", "International Students (%)"],
-          "rows": [
-            ["State University A", "45,200", "78", "340", "16:1", "12"],
-            ["Metro College B", "28,400", "85", "180", "14:1", "18"],
-            ["Tech Institute C", "15,800", "92", "420", "8:1", "35"],
-            ["Liberal Arts D", "8,600", "89", "65", "11:1", "22"],
-            ["Research University E", "52,100", "73", "680", "18:1", "28"],
-            ["Private College F", "12,300", "94", "95", "9:1", "15"]
-          ]
-        }
-      },
-      {
-        "id": "supply_chain_table",
-        "type": "table",
-        "title": "Supply Chain Performance Analysis - Q3 2024",
-        "data": {
-          "headers": ["Supplier", "On-Time Delivery (%)", "Quality Score (1-10)", "Cost per Unit ($)", "Lead Time (days)", "Capacity (units/month)"],
-          "rows": [
-            ["Supplier X", "94", "8.2", "24.50", "12", "50,000"],
-            ["Supplier Y", "87", "9.1", "28.75", "8", "35,000"],
-            ["Supplier Z", "96", "7.8", "22.30", "15", "75,000"],
-            ["Supplier W", "91", "8.7", "26.80", "10", "40,000"],
-            ["Supplier V", "88", "8.9", "25.20", "11", "60,000"]
-          ]
-        }
-      },
-      {
-        "id": "optimization_scenario",
-        "type": "text",
-        "title": "Project Resource Allocation Scenario",
-        "content": "A consulting firm must assign 6 consultants to 3 client projects. Project Alpha requires 2-3 consultants and has a fixed deadline of 8 weeks. Project Beta needs 1-2 consultants with a flexible timeline of 6-10 weeks. Project Gamma requires exactly 2 consultants and must be completed in 12 weeks. Each consultant can work on only one project at a time. Senior consultants (Sarah, Mike, Anna) have 10+ years of experience, while junior consultants (Jake, Lisa, Tom) have 2-4 years of experience. Alpha requires at least 1 senior consultant, Beta requires at least 1 junior consultant, and Gamma has no specific experience requirements."
-      },
-      {
-        "id": "campaign_multiSource",
-        "type": "multiSource",
-        "title": "Marketing Campaign Performance Analysis",
-        "sources": [
-          {
-            "tabName": "Campaign Metrics",
-            "type": "table",
-            "data": {
-              "headers": ["Channel", "Reach (000s)", "Engagement Rate (%)", "Cost ($000s)", "Conversions", "ROI (%)"],
-              "rows": [
-                ["Digital Display", "2,400", "2.3", "180", "1,450", "185"],
-                ["Social Media", "3,100", "4.7", "120", "2,200", "275"],
-                ["Video Streaming", "1,800", "3.1", "240", "980", "95"],
-                ["Search Engine", "950", "8.2", "150", "1,850", "320"],
-                ["Email Marketing", "750", "12.4", "25", "1,100", "780"]
-              ]
-            }
-          },
-          {
-            "tabName": "Audience Demographics",
-            "type": "text",
-            "content": "Target audience analysis shows 65% of conversions come from the 25-34 age group, with 58% female and 42% male distribution. Geographic breakdown: 45% urban, 35% suburban, 20% rural. Income distribution: 32% earning $50K-75K, 28% earning $75K-100K, 25% earning $35K-50K, and 15% earning above $100K. Digital Display and Video Streaming show higher engagement in urban areas, while Email Marketing performs better in suburban regions."
-          }
-        ]
-      }
-    ],
+    "firstSevenStrategy": "maximum comprehension challenge",
     "questions": [
       {
         "id": 1,
-        "dataSourceId": "productivity_graph",
-        "questionText": "According to the graph, at approximately what training hours per month do Engineering and Sales departments achieve the same productivity index?",
-        "difficulty": "easy",
+        "questionText": "John has twice as many apples as oranges. If he gives away half of his fruits, keeping equal numbers of apples and oranges, how many apples did he give away?",
+        "difficulty": "medium",
         "options": {
-          "A": "12 hours",
-          "B": "17 hours", 
-          "C": "22 hours",
-          "D": "27 hours",
-          "E": "Cannot be determined from the graph"
+          "A": "Cannot be determined",
+          "B": "Equal to oranges given away",
+          "C": "Half his original apples",
+          "D": "One-third his original fruits",
+          "E": "Twice the oranges given away"
         },
-        "correctAnswer": "D",
+        "correctAnswer": "A",
         "buffer": false
       },
       {
         "id": 2,
-        "dataSourceId": "productivity_graph",
-        "questionText": "Based on the productivity patterns shown, which statement can be most accurately inferred about the relationship between training and productivity?",
+        "questionText": "A car travels 60 miles in the first hour, then increases speed by 20% for the second hour. What distance does it travel in the second hour compared to the first hour?",
+        "difficulty": "easy",
+        "options": {
+          "A": "12 miles more",
+          "B": "20 miles more",
+          "C": "20% more distance",
+          "D": "72 miles total",
+          "E": "132 miles total"
+        },
+        "correctAnswer": "A",
+        "buffer": false
+      },
+      {
+        "id": 3,
+        "questionText": "A rectangle's length is increased by 20% and width decreased by 20%. The new area compared to the original area is what percent?",
         "difficulty": "medium",
         "options": {
-          "A": "All departments show continuously increasing productivity with more training",
-          "B": "Engineering department shows diminishing returns after 20 training hours",
-          "C": "HR department achieves higher productivity than Sales at all training levels",
-          "D": "Sales department benefits most from additional training beyond 15 hours",
-          "E": "Training beyond 25 hours decreases productivity for all departments"
+          "A": "100%",
+          "B": "96%",
+          "C": "104%",
+          "D": "80%",
+          "E": "120%"
         },
         "correctAnswer": "B",
         "buffer": false
       },
       {
-        "id": 3,
-        "dataSourceId": "market_share_graph",
-        "questionText": "Which company experienced the most volatile market share during the period shown, and what was the approximate range of this volatility?",
-        "difficulty": "medium",
-        "options": {
-          "A": "Alpha Corp with a range of 5 percentage points",
-          "B": "Beta Systems with a range of 6 percentage points", 
-          "C": "Gamma Tech with a range of 14 percentage points",
-          "D": "Others with a range of 15 percentage points",
-          "E": "Alpha Corp with a range of 8 percentage points"
-        },
-        "correctAnswer": "D",
-        "buffer": false
-      },
-      {
         "id": 4,
-        "dataSourceId": "market_share_graph",
-        "questionText": "If the trend from 2023 to 2024 continues for one more year, which company would be most likely to achieve the largest market share in 2025?",
+        "questionText": "The average age of 5 people is 30 years. If the oldest person is twice as old as the youngest, what could be the age of the oldest person?",
         "difficulty": "hard",
         "options": {
-          "A": "Alpha Corp",
-          "B": "Beta Systems",
-          "C": "Gamma Tech", 
-          "D": "The ranking would remain unchanged",
-          "E": "Cannot be determined without additional data"
+          "A": "60",
+          "B": "50",
+          "C": "Cannot be determined",
+          "D": "40",
+          "E": "30"
         },
         "correctAnswer": "C",
         "buffer": false
       },
       {
         "id": 5,
-        "dataSourceId": "university_table",
-        "questionText": "For each statement, select True if it can be verified by the table data, False if it contradicts the data, or Cannot be determined if insufficient information is provided.",
-        "difficulty": "medium",
-        "questionFormat": "tableAnalysis",
-        "statements": [
-          {
-            "text": "Tech Institute C has the highest graduation rate per research funding dollar.",
-            "answer": "Cannot be determined"
-          },
-          {
-            "text": "Universities with lower student-faculty ratios tend to have higher graduation rates.",
-            "answer": "True"
-          },
-          {
-            "text": "Research University E has more international students than State University A has total enrollment.",
-            "answer": "False"
-          }
-        ],
+        "questionText": "Train A leaves station X at 9 AM traveling at 60 mph toward station Y. Train B leaves station Y at 10 AM traveling at 80 mph toward station X. If the distance between stations is 420 miles, at what time do they meet?",
+        "difficulty": "hard",
+        "options": {
+          "A": "11:30 AM",
+          "B": "12:00 PM",
+          "C": "12:30 PM",
+          "D": "1:00 PM",
+          "E": "1:30 PM"
+        },
+        "correctAnswer": "C",
         "buffer": false
       },
       {
         "id": 6,
-        "dataSourceId": "supply_chain_table", 
-        "questionText": "A purchasing manager needs to select suppliers that meet specific criteria: On-time delivery ≥ 90%, Quality score ≥ 8.5, and Lead time ≤ 12 days. Which suppliers meet ALL these criteria?",
+        "questionText": "Circle A has radius 3 and Circle B has radius 4. If Circle A is placed inside Circle B, what is the area between the two circles?",
         "difficulty": "easy",
         "options": {
-          "A": "Supplier X and Supplier Y only",
-          "B": "Supplier Y and Supplier W only",
-          "C": "Supplier X, Supplier W, and Supplier V only", 
-          "D": "Supplier Y only",
-          "E": "No suppliers meet all criteria"
+          "A": "π",
+          "B": "7π",
+          "C": "16π",
+          "D": "9π",
+          "E": "25π"
         },
-        "correctAnswer": "D",
+        "correctAnswer": "B",
         "buffer": false
       },
       {
         "id": 7,
-        "dataSourceId": "optimization_scenario",
-        "questionText": "Select the project assignment for Team Composition and the corresponding Timeline that would best utilize consultant expertise while meeting all project requirements.",
+        "questionText": "In a sequence, each term after the second is the sum of the two preceding terms. If the first term is 2 and the third term is 7, what is the second term?",
         "difficulty": "medium",
-        "questionFormat": "twoPartAnalysis",
-        "columns": [
-          "Team Composition",
-          "Timeline"
-        ],
-        "options": [
-          {
-            "teamComposition": "Alpha: Sarah, Mike, Jake; Beta: Anna; Gamma: Lisa, Tom",
-            "timeline": "Alpha: 8 weeks; Beta: 8 weeks; Gamma: 12 weeks"
-          },
-          {
-            "teamComposition": "Alpha: Sarah, Anna; Beta: Jake, Lisa; Gamma: Mike, Tom", 
-            "timeline": "Alpha: 8 weeks; Beta: 6 weeks; Gamma: 12 weeks"
-          },
-          {
-            "teamComposition": "Alpha: Mike, Jake, Lisa; Beta: Sarah; Gamma: Anna, Tom",
-            "timeline": "Alpha: 8 weeks; Beta: 9 weeks; Gamma: 12 weeks"
-          }
-        ],
-        "correctAnswer": {
-          "teamComposition": "Alpha: Mike, Jake, Lisa; Beta: Sarah; Gamma: Anna, Tom",
-          "timeline": "Alpha: 8 weeks; Beta: 9 weeks; Gamma: 12 weeks"
+        "options": {
+          "A": "3",
+          "B": "4",
+          "C": "5",
+          "D": "9",
+          "E": "Cannot be determined"
         },
+        "correctAnswer": "C",
         "buffer": false
       },
       {
         "id": 8,
-        "dataSourceId": "optimization_scenario",
-        "questionText": "Based on the project requirements, what is the minimum number of weeks needed to complete all three projects if they can be worked on simultaneously?",
+        "questionText": "Water flows into a tank at 5 gallons per minute and flows out at 3 gallons per minute. Starting with an empty tank, how much water is in the tank after 10 minutes?",
         "difficulty": "easy",
         "options": {
-          "A": "8 weeks",
-          "B": "10 weeks",
-          "C": "12 weeks",
-          "D": "20 weeks",
-          "E": "26 weeks"
+          "A": "50 gallons",
+          "B": "30 gallons",
+          "C": "20 gallons",
+          "D": "80 gallons",
+          "E": "2 gallons"
         },
         "correctAnswer": "C",
         "buffer": false
       },
       {
         "id": 9,
-        "dataSourceId": "campaign_multiSource",
-        "questionText": "Select the Marketing Channel for the highest efficiency metric and the Audience Segment that shows the strongest alignment with high-performing channels.",
-        "difficulty": "hard",
-        "questionFormat": "twoPartAnalysis", 
-        "columns": [
-          "Marketing Channel (Highest ROI per $1000 spent)",
-          "Audience Segment (Best Performance Match)"
-        ],
-        "options": [
-          {
-            "marketingChannel": "Email Marketing",
-            "audienceSegment": "Suburban, $50K-75K income"
-          },
-          {
-            "marketingChannel": "Search Engine",
-            "audienceSegment": "Urban, 25-34 age group"
-          },
-          {
-            "marketingChannel": "Social Media",
-            "audienceSegment": "Female, $75K-100K income"
-          }
-        ],
-        "correctAnswer": {
-          "marketingChannel": "Email Marketing", 
-          "audienceSegment": "Suburban, $50K-75K income"
-        },
-        "buffer": false
-      },
-      {
-        "id": 10,
-        "dataSourceId": "campaign_multiSource",
-        "questionText": "If the marketing budget were increased by 50% and allocated proportionally to current spending, what would be the approximate total cost for Social Media and Search Engine channels combined?",
+        "questionText": "The probability of rain on any given day is 0.3. What is the probability that it rains on at least one day during a 2-day period?",
         "difficulty": "medium",
         "options": {
-          "A": "$270,000",
-          "B": "$405,000",
-          "C": "$540,000", 
-          "D": "$630,000",
-          "E": "$810,000"
+          "A": "0.6",
+          "B": "0.51",
+          "C": "0.49",
+          "D": "0.09",
+          "E": "0.91"
         },
         "correctAnswer": "B",
         "buffer": false
       },
       {
-        "id": 11,
-        "dataSourceId": null,
-        "questionText": "Is the average age of employees in Department X greater than 35? (1) The median age of employees in Department X is 38. (2) 60% of employees in Department X are older than 32.",
+        "id": 10,
+        "questionText": "A number is increased by 25%, then decreased by 20%. The final result compared to the original number represents what percent change?",
         "difficulty": "medium",
         "options": {
-          "A": "Statement (1) ALONE is sufficient, but statement (2) alone is not sufficient.",
-          "B": "Statement (2) ALONE is sufficient, but statement (1) alone is not sufficient.",
-          "C": "BOTH statements TOGETHER are sufficient, but NEITHER statement ALONE is sufficient.",
-          "D": "EACH statement ALONE is sufficient.",
-          "E": "Statements (1) and (2) TOGETHER are NOT sufficient."
+          "A": "5% increase",
+          "B": "5% decrease",
+          "C": "No change",
+          "D": "0% change",
+          "E": "Cannot be determined"
         },
-        "correctAnswer": "E",
-        "buffer": false
-      },
-      {
-        "id": 12,
-        "dataSourceId": null,
-        "questionText": "A company's profit margin increased by what percent from Year 1 to Year 2? (1) The company's revenue increased by 20% and costs increased by 15% from Year 1 to Year 2. (2) In Year 1, the profit margin was 8%, and in Year 2, the profit was $2.4 million.",
-        "difficulty": "hard", 
-        "options": {
-          "A": "Statement (1) ALONE is sufficient, but statement (2) alone is not sufficient.",
-          "B": "Statement (2) ALONE is sufficient, but statement (1) alone is not sufficient.",
-          "C": "BOTH statements TOGETHER are sufficient, but NEITHER statement ALONE is sufficient.",
-          "D": "EACH statement ALONE is sufficient.",
-          "E": "Statements (1) and (2) TOGETHER are NOT sufficient."
-        },
-        "correctAnswer": "A",
+        "correctAnswer": "C",
         "buffer": false
       }
     ]

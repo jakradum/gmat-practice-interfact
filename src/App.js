@@ -19,6 +19,7 @@ try {
     "adaptiveMode": true,
     "targetQuestions": 4,
     "bufferQuestions": 1,
+    "timeLimit": 1920, // 32 minutes in seconds - NEW FIELD
     "firstSevenStrategy": "controlled challenge",
     "dataSources": [
       {
@@ -146,9 +147,16 @@ const GMATInterface = () => {
   // Check if this is a Data Insights section
   const isDataInsights = questionData.sectionType === 'dataInsights';
   
-  // Calculate GMAT timing dynamically from JSON
+  // Calculate GMAT timing correctly
   const targetQuestions = questionData.targetQuestions || 21;
-  const timeLimit = Math.round((45 * 60 * targetQuestions) / 21);
+  const timeLimit = questionData.timeLimit || (() => {
+    // Fallback calculation based on section type if timeLimit not specified
+    if (isDataInsights) {
+      return Math.round((45 * 60 * targetQuestions) / 20); // DI: 45 min for 20 questions
+    } else {
+      return Math.round((45 * 60 * targetQuestions) / 21); // Quant: 45 min for 21 questions
+    }
+  })();
   
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState({});
@@ -161,11 +169,24 @@ const GMATInterface = () => {
   const [performanceLevel, setPerformanceLevel] = useState('medium');
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   
+  // Bookmark functionality
+  const [bookmarkedQuestions, setBookmarkedQuestions] = useState(new Set());
+  const [isReviewingBookmarks, setIsReviewingBookmarks] = useState(false);
+  const [bookmarkReviewIndex, setBookmarkReviewIndex] = useState(0);
+  
+  // Edit functionality
+  const [editsUsed, setEditsUsed] = useState(0);
+  const [maxEdits] = useState(Math.floor(targetQuestions / 7) || 1); // 1/7th ratio
+  const [answeredQuestions, setAnsweredQuestions] = useState(new Set());
+  const [isEditingPrevious, setIsEditingPrevious] = useState(false);
+  const [editQuestionIndex, setEditQuestionIndex] = useState(0);
+  const [showEditModal, setShowEditModal] = useState(false);
+  
   // Data Insights specific state
   const [activeTab, setActiveTab] = useState(0); // For multi-source reasoning
   const [currentDataSource, setCurrentDataSource] = useState(null);
 
-  // Timer effect (same as before)
+  // Timer effect
   useEffect(() => {
     if (hasStarted && !isPaused && !isCompleted && timeRemaining > 0) {
       const timer = setInterval(() => {
@@ -196,15 +217,21 @@ const GMATInterface = () => {
 
   // Update current data source when question changes (for DI)
   useEffect(() => {
-    if (isDataInsights && adaptiveQuestions.length > 0 && currentQuestionIndex < adaptiveQuestions.length) {
-      const currentQuestion = adaptiveQuestions[currentQuestionIndex];
-      const dataSource = questionData.dataSources?.find(ds => ds.id === currentQuestion.dataSourceId);
-      setCurrentDataSource(dataSource);
-      setActiveTab(0); // Reset to first tab for multi-source
+    if (isDataInsights && adaptiveQuestions.length > 0) {
+      const actualIndex = isReviewingBookmarks ? bookmarkReviewIndex : currentQuestionIndex;
+      const currentQuestion = isReviewingBookmarks ? 
+        Array.from(bookmarkedQuestions).map(id => adaptiveQuestions.find(q => q.id === id))[actualIndex] :
+        adaptiveQuestions[actualIndex];
+        
+      if (currentQuestion) {
+        const dataSource = questionData.dataSources?.find(ds => ds.id === currentQuestion.dataSourceId);
+        setCurrentDataSource(dataSource);
+        setActiveTab(0); // Reset to first tab for multi-source
+      }
     }
-  }, [currentQuestionIndex, adaptiveQuestions, isDataInsights]);
+  }, [currentQuestionIndex, bookmarkReviewIndex, adaptiveQuestions, isDataInsights, isReviewingBookmarks, bookmarkedQuestions]);
 
-  // Initialize questions (same logic as before)
+  // Initialize questions
   const initializeAdaptiveQuestions = () => {
     if (questionData.adaptiveMode) {
       const allQuestions = questionData.questions.filter(q => !q.buffer);
@@ -267,7 +294,7 @@ const GMATInterface = () => {
     }
   };
 
-  // Helper functions (same as before)
+  // Helper functions
   const createAdaptiveDifficultyPattern = (numQuestions) => {
     const pattern = [];
     pattern.push('medium');
@@ -332,12 +359,48 @@ const GMATInterface = () => {
     }
   };
 
+  // Bookmark functions
+  const toggleBookmark = (questionId) => {
+    setBookmarkedQuestions(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(questionId)) {
+        newSet.delete(questionId);
+      } else {
+        newSet.add(questionId);
+      }
+      return newSet;
+    });
+  };
+
+  const startBookmarkReview = () => {
+    if (bookmarkedQuestions.size > 0) {
+      setIsReviewingBookmarks(true);
+      setBookmarkReviewIndex(0);
+    }
+  };
+
+  const exitBookmarkReview = () => {
+    setIsReviewingBookmarks(false);
+    setBookmarkReviewIndex(0);
+  };
+
+  // Edit functions
+  const startEditQuestion = (questionIndex) => {
+    if (editsUsed >= maxEdits) return;
+    setIsEditingPrevious(true);
+    setEditQuestionIndex(questionIndex);
+    setEditsUsed(prev => prev + 1);
+  };
+
+  const exitEditMode = () => {
+    setIsEditingPrevious(false);
+    setEditQuestionIndex(0);
+  };
+
   // Format mathematical expressions with proper type checking
   const formatMath = (text) => {
-    // Handle null, undefined, or empty values
     if (!text) return '';
     
-    // Convert to string if it's not already a string
     const textStr = typeof text === 'string' ? text : String(text);
     
     return textStr
@@ -371,17 +434,14 @@ const GMATInterface = () => {
   // Check if current question is answered based on its format
   const isQuestionAnswered = (question) => {
     if (question.questionFormat === 'tableAnalysis') {
-      // Check if all statements are answered
       return question.statements?.every((_, index) => 
         selectedAnswers[`${question.id}-${index}`] !== undefined
       ) || false;
     } else if (question.questionFormat === 'twoPartAnalysis') {
-      // Check if both columns are answered
       return question.columns?.every((_, colIndex) => 
         selectedAnswers[`${question.id}-col${colIndex}`] !== undefined
       ) || false;
     } else {
-      // Standard format - check if main question is answered
       return selectedAnswers[question.id] !== undefined;
     }
   };
@@ -391,6 +451,9 @@ const GMATInterface = () => {
       ...prev,
       [questionId]: answer
     }));
+    
+    // Track that this question has been answered
+    setAnsweredQuestions(prev => new Set([...prev, questionId]));
   };
 
   const handleNext = () => {
@@ -404,10 +467,27 @@ const GMATInterface = () => {
       updatePerformanceLevel();
     }
     
-    if (currentQuestionIndex < adaptiveQuestions.length - 1) {
-      setCurrentQuestionIndex(prev => prev + 1);
+    if (isReviewingBookmarks) {
+      // Handle bookmark navigation
+      const bookmarkArray = Array.from(bookmarkedQuestions);
+      if (bookmarkReviewIndex < bookmarkArray.length - 1) {
+        setBookmarkReviewIndex(prev => prev + 1);
+      } else {
+        // Finished reviewing bookmarks
+        setIsCompleted(true);
+      }
     } else {
-      setIsCompleted(true);
+      // Normal navigation
+      if (currentQuestionIndex < adaptiveQuestions.length - 1) {
+        setCurrentQuestionIndex(prev => prev + 1);
+      } else {
+        // Check if there are bookmarked questions to review
+        if (bookmarkedQuestions.size > 0 && timeRemaining > 0) {
+          startBookmarkReview();
+        } else {
+          setIsCompleted(true);
+        }
+      }
     }
   };
 
@@ -422,15 +502,12 @@ const GMATInterface = () => {
     let correctByDifficulty = { easy: 0, medium: 0, hard: 0 };
     let totalByDifficulty = { easy: 0, medium: 0, hard: 0 };
     
-    // Helper function to check if a question is answered correctly
     const isQuestionCorrect = (question) => {
       if (question.questionFormat === 'tableAnalysis') {
-        // Check if all statements are answered correctly
         return question.statements?.every((statement, index) => 
           selectedAnswers[`${question.id}-${index}`] === statement.answer
         ) || false;
       } else if (question.questionFormat === 'twoPartAnalysis') {
-        // Check if both columns are answered correctly
         if (!question.correctAnswer) return false;
         return question.columns?.every((_, colIndex) => {
           const correctKey = colIndex === 0 ? Object.keys(question.correctAnswer)[0] : Object.keys(question.correctAnswer)[1];
@@ -438,7 +515,6 @@ const GMATInterface = () => {
           return selectedAnswers[`${question.id}-col${colIndex}`] === correctValue;
         }) || false;
       } else {
-        // Standard format
         return selectedAnswers[question.id] === question.correctAnswer;
       }
     };
@@ -516,6 +592,351 @@ const GMATInterface = () => {
     }
   };
 
+  // Render question visual content (for Quantitative questions)
+  const renderQuestionVisual = (visual) => {
+    if (!visual) return null;
+
+    switch (visual.type) {
+      case 'table':
+        return (
+          <div style={{
+            marginBottom: '25px',
+            padding: '20px',
+            backgroundColor: '#f9f9f9',
+            borderRadius: '8px',
+            border: '1px solid #ddd'
+          }}>
+            {visual.title && (
+              <h4 style={{ 
+                marginBottom: '15px', 
+                fontSize: '16px', 
+                color: '#2c3e50',
+                textAlign: 'center',
+                fontWeight: '600'
+              }}>
+                {visual.title}
+              </h4>
+            )}
+            <div style={{ overflow: 'auto' }}>
+              <table style={{
+                width: '100%',
+                borderCollapse: 'collapse',
+                fontSize: '14px',
+                backgroundColor: 'white',
+                margin: '0 auto'
+              }}>
+                <thead>
+                  <tr style={{ backgroundColor: '#f8f9fa' }}>
+                    {visual.data.headers.map((header, idx) => (
+                      <th key={idx} style={{
+                        padding: '10px 12px',
+                        textAlign: 'center',
+                        borderBottom: '2px solid #dee2e6',
+                        fontWeight: '600',
+                        color: '#2c3e50'
+                      }}>
+                        <span dangerouslySetInnerHTML={{ __html: formatMath(header) }}></span>
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {visual.data.rows.map((row, rowIdx) => (
+                    <tr key={rowIdx} style={{
+                      borderBottom: '1px solid #dee2e6'
+                    }}>
+                      {row.map((cell, cellIdx) => (
+                        <td key={cellIdx} style={{
+                          padding: '8px 12px',
+                          textAlign: 'center',
+                          color: '#333'
+                        }}>
+                          <span dangerouslySetInnerHTML={{ __html: formatMath(cell) }}></span>
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        );
+
+      case 'diagram':
+        return (
+          <div style={{
+            marginBottom: '25px',
+            padding: '20px',
+            backgroundColor: '#f9f9f9',
+            borderRadius: '8px',
+            border: '1px solid #ddd',
+            textAlign: 'center'
+          }}>
+            {visual.title && (
+              <h4 style={{ 
+                marginBottom: '15px', 
+                fontSize: '16px', 
+                color: '#2c3e50',
+                fontWeight: '600'
+              }}>
+                {visual.title}
+              </h4>
+            )}
+            <div style={{
+              backgroundColor: 'white',
+              padding: '20px',
+              borderRadius: '6px',
+              display: 'inline-block',
+              border: '1px solid #ddd'
+            }}>
+              <svg 
+                width={visual.dimensions?.width || 400} 
+                height={visual.dimensions?.height || 300} 
+                viewBox={`0 0 ${visual.dimensions?.width || 400} ${visual.dimensions?.height || 300}`}
+              >
+                {visual.elements?.map((element, idx) => {
+                  switch (element.type) {
+                    case 'line':
+                      return (
+                        <line
+                          key={idx}
+                          x1={element.x1}
+                          y1={element.y1}
+                          x2={element.x2}
+                          y2={element.y2}
+                          stroke={element.color || '#333'}
+                          strokeWidth={element.width || 2}
+                        />
+                      );
+                    case 'circle':
+                      return (
+                        <circle
+                          key={idx}
+                          cx={element.x}
+                          cy={element.y}
+                          r={element.radius}
+                          fill={element.fill || 'none'}
+                          stroke={element.color || '#333'}
+                          strokeWidth={element.width || 2}
+                        />
+                      );
+                    case 'rectangle':
+                      return (
+                        <rect
+                          key={idx}
+                          x={element.x}
+                          y={element.y}
+                          width={element.width}
+                          height={element.height}
+                          fill={element.fill || 'none'}
+                          stroke={element.color || '#333'}
+                          strokeWidth={element.strokeWidth || 2}
+                        />
+                      );
+                    case 'text':
+                      return (
+                        <text
+                          key={idx}
+                          x={element.x}
+                          y={element.y}
+                          fontSize={element.size || 14}
+                          fill={element.color || '#333'}
+                          textAnchor={element.anchor || 'middle'}
+                          fontWeight={element.weight || 'normal'}
+                        >
+                          {element.content}
+                        </text>
+                      );
+                    case 'path':
+                      return (
+                        <path
+                          key={idx}
+                          d={element.d}
+                          fill={element.fill || 'none'}
+                          stroke={element.color || '#333'}
+                          strokeWidth={element.width || 2}
+                        />
+                      );
+                    default:
+                      return null;
+                  }
+                })}
+              </svg>
+            </div>
+            {visual.caption && (
+              <div style={{ 
+                marginTop: '10px', 
+                fontSize: '14px', 
+                color: '#666',
+                fontStyle: 'italic'
+              }}>
+                {visual.caption}
+              </div>
+            )}
+          </div>
+        );
+
+      case 'equation':
+        return (
+          <div style={{
+            marginBottom: '25px',
+            padding: '20px',
+            backgroundColor: '#f9f9f9',
+            borderRadius: '8px',
+            border: '1px solid #ddd',
+            textAlign: 'center'
+          }}>
+            {visual.title && (
+              <h4 style={{ 
+                marginBottom: '15px', 
+                fontSize: '16px', 
+                color: '#2c3e50',
+                fontWeight: '600'
+              }}>
+                {visual.title}
+              </h4>
+            )}
+            <div style={{
+              backgroundColor: 'white',
+              padding: '15px',
+              borderRadius: '6px',
+              border: '1px solid #ddd',
+              fontSize: '18px',
+              fontFamily: '"Times New Roman", serif'
+            }}>
+              <span dangerouslySetInnerHTML={{ __html: formatMath(visual.content) }}></span>
+            </div>
+            {visual.description && (
+              <div style={{ 
+                marginTop: '10px', 
+                fontSize: '14px', 
+                color: '#666'
+              }}>
+                {visual.description}
+              </div>
+            )}
+          </div>
+        );
+
+      case 'coordinate':
+        return (
+          <div style={{
+            marginBottom: '25px',
+            padding: '20px',
+            backgroundColor: '#f9f9f9',
+            borderRadius: '8px',
+            border: '1px solid #ddd',
+            textAlign: 'center'
+          }}>
+            {visual.title && (
+              <h4 style={{ 
+                marginBottom: '15px', 
+                fontSize: '16px', 
+                color: '#2c3e50',
+                fontWeight: '600'
+              }}>
+                {visual.title}
+              </h4>
+            )}
+            <div style={{
+              backgroundColor: 'white',
+              padding: '20px',
+              borderRadius: '6px',
+              display: 'inline-block',
+              border: '1px solid #ddd'
+            }}>
+              <svg width="400" height="300" viewBox="0 0 400 300">
+                {/* Grid */}
+                <defs>
+                  <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e0e0e0" strokeWidth="1"/>
+                  </pattern>
+                </defs>
+                <rect width="100%" height="100%" fill="url(#grid)" />
+                
+                {/* Axes */}
+                <line x1="0" y1="150" x2="400" y2="150" stroke="#333" strokeWidth="2" />
+                <line x1="200" y1="0" x2="200" y2="300" stroke="#333" strokeWidth="2" />
+                
+                {/* Axis labels */}
+                <text x="390" y="145" fontSize="12" fill="#333">x</text>
+                <text x="205" y="15" fontSize="12" fill="#333">y</text>
+                
+                {/* Origin */}
+                <text x="205" y="165" fontSize="12" fill="#333">0</text>
+                
+                {/* Scale markers */}
+                {[-4, -3, -2, -1, 1, 2, 3, 4].map(val => (
+                  <g key={`x-${val}`}>
+                    <line x1={200 + val * 40} y1="145" x2={200 + val * 40} y2="155" stroke="#333" strokeWidth="1" />
+                    <text x={200 + val * 40} y="170" fontSize="10" fill="#333" textAnchor="middle">{val}</text>
+                  </g>
+                ))}
+                {[-3, -2, -1, 1, 2, 3].map(val => (
+                  <g key={`y-${val}`}>
+                    <line x1="195" y1={150 - val * 40} x2="205" y2={150 - val * 40} stroke="#333" strokeWidth="1" />
+                    <text x="190" y={150 - val * 40 + 4} fontSize="10" fill="#333" textAnchor="end">{val}</text>
+                  </g>
+                ))}
+                
+                {/* Plot elements */}
+                {visual.elements?.map((element, idx) => {
+                  const x = 200 + element.x * 40;
+                  const y = 150 - element.y * 40;
+                  
+                  switch (element.type) {
+                    case 'point':
+                      return (
+                        <g key={idx}>
+                          <circle cx={x} cy={y} r="4" fill={element.color || '#e74c3c'} />
+                          {element.label && (
+                            <text x={x + 8} y={y - 8} fontSize="12" fill="#333">
+                              {element.label}
+                            </text>
+                          )}
+                        </g>
+                      );
+                    case 'line':
+                      const x1 = 200 + element.x1 * 40;
+                      const y1 = 150 - element.y1 * 40;
+                      const x2 = 200 + element.x2 * 40;
+                      const y2 = 150 - element.y2 * 40;
+                      return (
+                        <line
+                          key={idx}
+                          x1={x1}
+                          y1={y1}
+                          x2={x2}
+                          y2={y2}
+                          stroke={element.color || '#3498db'}
+                          strokeWidth={element.width || 2}
+                        />
+                      );
+                    default:
+                      return null;
+                  }
+                })}
+              </svg>
+            </div>
+          </div>
+        );
+
+      default:
+        return (
+          <div style={{
+            marginBottom: '25px',
+            padding: '15px',
+            backgroundColor: '#fff3cd',
+            borderRadius: '8px',
+            border: '1px solid #ffc107',
+            color: '#856404'
+          }}>
+            Unsupported visual type: {visual.type}
+          </div>
+        );
+    }
+  };
+
   // Render data source content for Data Insights
   const renderDataSource = (dataSource) => {
     if (!dataSource) return null;
@@ -536,12 +957,10 @@ const GMATInterface = () => {
               display: 'flex',
               flexDirection: 'column'
             }}>
-              {/* Simple graph representation */}
               <div style={{ marginBottom: '15px', fontSize: '14px', color: '#666' }}>
                 <strong>Y-Axis:</strong> {dataSource.data.yAxis} | <strong>X-Axis:</strong> {dataSource.data.xAxis}
               </div>
               
-              {/* Legend */}
               <div style={{ marginBottom: '20px', display: 'flex', gap: '20px' }}>
                 {dataSource.data.series.map((series, idx) => (
                   <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -556,10 +975,8 @@ const GMATInterface = () => {
                 ))}
               </div>
               
-              {/* Simplified chart visualization */}
               <div style={{ flex: 1, position: 'relative', backgroundColor: 'white', border: '1px solid #ddd' }}>
                 <svg width="100%" height="200" viewBox="0 0 400 200">
-                  {/* Grid lines */}
                   <defs>
                     <pattern id="grid" width="40" height="20" patternUnits="userSpaceOnUse">
                       <path d="M 40 0 L 0 0 0 20" fill="none" stroke="#e0e0e0" strokeWidth="1"/>
@@ -567,12 +984,19 @@ const GMATInterface = () => {
                   </defs>
                   <rect width="100%" height="100%" fill="url(#grid)" />
                   
-                  {/* Data series */}
                   {dataSource.data.series.map((series, seriesIdx) => {
-                    const points = series.points.map((point, idx) => ({
-                      x: 50 + (idx * 50),
-                      y: 180 - (point.y * 4) // Simple scaling
-                    }));
+                    const allYValues = dataSource.data.series.flatMap(s => s.points.map(p => p.y));
+                    const minY = Math.min(...allYValues);
+                    const maxY = Math.max(...allYValues);
+                    const yRange = maxY - minY;
+                    
+                    const points = series.points.map((point, idx) => {
+                      const xPos = 40 + (idx * (320 / (series.points.length - 1)));
+                      const yNormalized = (point.y - minY) / yRange;
+                      const yPos = 160 - (yNormalized * 120);
+                      
+                      return { x: xPos, y: yPos };
+                    });
                     
                     const pathData = points.map((point, idx) => 
                       `${idx === 0 ? 'M' : 'L'} ${point.x} ${point.y}`
@@ -598,6 +1022,11 @@ const GMATInterface = () => {
                       </g>
                     );
                   })}
+                  
+                  <text x="20" y="15" fontSize="10" fill="#666">High</text>
+                  <text x="20" y="190" fontSize="10" fill="#666">Low</text>
+                  <text x="50" y="195" fontSize="10" fill="#666">Start</text>
+                  <text x="350" y="195" fontSize="10" fill="#666">End</text>
                 </svg>
               </div>
             </div>
@@ -654,6 +1083,26 @@ const GMATInterface = () => {
           </div>
         );
 
+      case 'text':
+        return (
+          <div style={{ padding: '20px' }}>
+            <h3 style={{ marginBottom: '20px', fontSize: '18px', color: '#2c3e50' }}>
+              {dataSource.title}
+            </h3>
+            <div style={{
+              padding: '25px',
+              backgroundColor: '#f9f9f9',
+              borderRadius: '8px',
+              lineHeight: '1.6',
+              fontSize: '15px',
+              color: '#333',
+              border: '1px solid #ddd'
+            }}>
+              {dataSource.content}
+            </div>
+          </div>
+        );
+
       case 'multiSource':
         const activeSource = dataSource.sources[activeTab];
         return (
@@ -662,7 +1111,6 @@ const GMATInterface = () => {
               {dataSource.title}
             </h3>
             
-            {/* Tabs */}
             <div style={{ marginBottom: '20px', borderBottom: '2px solid #ddd' }}>
               {dataSource.sources.map((source, idx) => (
                 <button
@@ -685,7 +1133,6 @@ const GMATInterface = () => {
               ))}
             </div>
             
-            {/* Tab content */}
             <div style={{ minHeight: '300px' }}>
               {activeSource.type === 'text' ? (
                 <div style={{
@@ -750,10 +1197,24 @@ const GMATInterface = () => {
     }
   };
 
-  const currentQuestion = adaptiveQuestions[currentQuestionIndex];
+  // Get current question based on state
+  const getCurrentQuestion = () => {
+    if (isEditingPrevious) {
+      return adaptiveQuestions[editQuestionIndex];
+    }
+    if (isReviewingBookmarks) {
+      const bookmarkArray = Array.from(bookmarkedQuestions).map(id => 
+        adaptiveQuestions.find(q => q.id === id)
+      );
+      return bookmarkArray[bookmarkReviewIndex];
+    }
+    return adaptiveQuestions[currentQuestionIndex];
+  };
+
+  const currentQuestion = getCurrentQuestion();
   const isTimeWarning = timeRemaining <= timeLimit / 9;
 
-  // Loading states and error handling (same as before)
+  // Loading states and error handling
   if (hasStarted && adaptiveQuestions.length === 0) {
     return (
       <div style={{ fontFamily: 'Arial, sans-serif', height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
@@ -769,7 +1230,7 @@ const GMATInterface = () => {
     );
   }
 
-  if (hasStarted && (!currentQuestion || currentQuestionIndex >= adaptiveQuestions.length)) {
+  if (hasStarted && (!currentQuestion || (!isReviewingBookmarks && currentQuestionIndex >= adaptiveQuestions.length))) {
     return (
       <div style={{ fontFamily: 'Arial, sans-serif', height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ textAlign: 'center', padding: '20px' }}>
@@ -780,7 +1241,7 @@ const GMATInterface = () => {
     );
   }
 
-  // Start screen (same as before but shows section type)
+  // Start screen
   if (!hasStarted) {
     return (
       <div style={{ fontFamily: 'Arial, sans-serif', height: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -874,8 +1335,8 @@ const GMATInterface = () => {
               <p><strong>Section Type:</strong> {isDataInsights ? 'Data Insights' : 'Quantitative Reasoning'}</p>
               <p style={{ marginTop: '20px', fontSize: '16px', color: '#888' }}>
                 {questionData.adaptiveMode ? 
-                  'This is an adaptive test. Question difficulty will adjust based on your performance. Once you start, the timer will begin and you cannot go back to previous questions.' :
-                  'Once you start, the timer will begin and you cannot go back to previous questions.'
+                  'This is an adaptive test. Question difficulty will adjust based on your performance. You can bookmark questions for review. Once you start, the timer will begin and you cannot go back to previous questions.' :
+                  'You can bookmark questions for review. Once you start, the timer will begin and you cannot go back to previous questions.'
                 }
               </p>
             </div>
@@ -903,330 +1364,276 @@ const GMATInterface = () => {
     );
   }
 
-  // Completion screen (same as before but works for both section types)
-  if (isCompleted) {
-    const score = calculateScore();
-    return (
-      <div style={{ fontFamily: 'Arial, sans-serif', height: '100vh', display: 'flex', flexDirection: 'column' }}>
-        <div style={{
-          backgroundColor: '#2c3e50',
-          color: 'white',
-          padding: '14px 22px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center'
-        }}>
-          <span style={{ fontSize: '16px', fontWeight: '500' }}>
-            GMAT™ Practice Test - {isDataInsights ? 'Data Insights' : 'Quantitative Reasoning'}
-            {questionData.sectionName.includes('Development Mode') && 
-              <span style={{ color: '#f39c12', marginLeft: '8px' }}>(DEV MODE)</span>
-            }
-          </span>
-          <span style={{ fontSize: '16px' }}>Test Complete</span>
-        </div>
+  // Completion screen
+// Replace the completion screen section (around line 800-900) with this updated version:
 
-        <div style={{
-          backgroundColor: '#3498db',
-          color: 'white',
-          padding: '10px 22px',
-          fontSize: '16px',
-          fontWeight: '500'
-        }}>
-          {questionData.sectionName}
-        </div>
+// Completion screen
+if (isCompleted) {
+  const score = calculateScore();
+  
+  // Prepare detailed results data
+  const detailedResults = adaptiveQuestions.map((question, index) => {
+    const userAnswer = selectedAnswers[question.id];
+    const isCorrect = (() => {
+      if (question.questionFormat === 'tableAnalysis') {
+        return question.statements?.every((statement, stmtIndex) => 
+          selectedAnswers[`${question.id}-${stmtIndex}`] === statement.answer
+        ) || false;
+      } else if (question.questionFormat === 'twoPartAnalysis') {
+        if (!question.correctAnswer) return false;
+        return question.columns?.every((_, colIndex) => {
+          const correctKey = colIndex === 0 ? Object.keys(question.correctAnswer)[0] : Object.keys(question.correctAnswer)[1];
+          const correctValue = question.correctAnswer[correctKey];
+          return selectedAnswers[`${question.id}-col${colIndex}`] === correctValue;
+        }) || false;
+      } else {
+        return userAnswer === question.correctAnswer;
+      }
+    })();
 
+    return {
+      sequenceNumber: index + 1,
+      originalId: question.ogQuestionNumber || question.id, // Use OG number if available, fallback to question ID
+      difficulty: question.difficulty,
+      userAnswer: userAnswer || 'No Answer',
+      correctAnswer: question.correctAnswer,
+      isCorrect,
+      wasBookmarked: bookmarkedQuestions.has(question.id)
+    };
+  });
+
+  return (
+    <div style={{ fontFamily: 'Arial, sans-serif', height: '100vh', display: 'flex', flexDirection: 'column' }}>
+      <div style={{
+        backgroundColor: '#2c3e50',
+        color: 'white',
+        padding: '14px 22px',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center'
+      }}>
+        <span style={{ fontSize: '16px', fontWeight: '500' }}>
+          GMAT™ Practice Test - {isDataInsights ? 'Data Insights' : 'Quantitative Reasoning'}
+          {questionData.sectionName.includes('Development Mode') && 
+            <span style={{ color: '#f39c12', marginLeft: '8px' }}>(DEV MODE)</span>
+          }
+        </span>
+        <span style={{ fontSize: '16px' }}>Test Complete</span>
+      </div>
+
+      <div style={{
+        backgroundColor: '#3498db',
+        color: 'white',
+        padding: '10px 22px',
+        fontSize: '16px',
+        fontWeight: '500'
+      }}>
+        {questionData.sectionName}
+      </div>
+
+      <div style={{
+        flex: 1,
+        padding: '30px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        backgroundColor: '#f8f9fa',
+        overflow: 'auto'
+      }}>
         <div style={{
-          flex: 1,
-          padding: '40px',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'flex-start',
-          backgroundColor: '#f8f9fa',
-          overflow: 'auto'
+          backgroundColor: 'white',
+          padding: '30px',
+          borderRadius: '8px',
+          boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+          textAlign: 'center',
+          maxWidth: '1200px',
+          width: '100%'
         }}>
-          <div style={{
-            backgroundColor: 'white',
-            padding: '40px',
-            borderRadius: '8px',
-            boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
-            textAlign: 'center',
-            maxWidth: '800px',
-            width: '100%'
+          <h2 style={{ color: '#2c3e50', marginBottom: '20px', fontSize: '24px' }}>Test Results</h2>
+          
+          {bookmarkedQuestions.size > 0 && (
+            <div style={{ 
+              backgroundColor: '#fff3cd', 
+              padding: '15px', 
+              borderRadius: '6px',
+              marginBottom: '20px',
+              fontSize: '16px'
+            }}>
+              📑 You bookmarked {bookmarkedQuestions.size} question{bookmarkedQuestions.size !== 1 ? 's' : ''} during this test
+            </div>
+          )}
+          
+          {/* GMAT Score Summary */}
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'space-around', 
+            marginBottom: '30px',
+            padding: '20px',
+            backgroundColor: '#f8f9fa',
+            borderRadius: '6px'
           }}>
-            <h2 style={{ color: '#2c3e50', marginBottom: '20px', fontSize: '24px' }}>Test Results</h2>
-            
-            {/* Test Summary */}
-            <div style={{ 
-              backgroundColor: '#f8f9fa', 
-              padding: '20px', 
-              borderRadius: '6px',
-              marginBottom: '25px',
-              textAlign: 'left'
-            }}>
-              <h3 style={{ color: '#2c3e50', marginBottom: '15px', fontSize: '18px', textAlign: 'center' }}>
-                Test Coverage Summary
-              </h3>
-              <div style={{ fontSize: '16px', color: '#666', marginBottom: '15px', lineHeight: '1.6' }}>
-                {questionData.testDescription || `This section tested your ${isDataInsights ? 'data analysis and interpretation' : 'quantitative reasoning'} abilities.`}
+            <div>
+              <div style={{ fontSize: '48px', color: '#27ae60', fontWeight: 'bold' }}>
+                {score.gmatScore}
               </div>
-              {questionData.skillsAssessed && questionData.skillsAssessed.length > 0 && (
-                <div>
-                  <strong style={{ color: '#2c3e50', fontSize: '16px' }}>Skills Assessed:</strong>
-                  <ul style={{ 
-                    marginTop: '8px', 
-                    paddingLeft: '20px',
-                    fontSize: '16px',
-                    color: '#666',
-                    lineHeight: '1.6'
-                  }}>
-                    {questionData.skillsAssessed.map((skill, index) => (
-                      <li key={index} style={{ marginBottom: '4px' }}>{skill}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
-            
-            {/* GMAT Score */}
-            <div style={{ fontSize: '52px', color: '#27ae60', fontWeight: 'bold', marginBottom: '10px' }}>
-              {score.gmatScore}
-            </div>
-            <div style={{ fontSize: '20px', color: '#666', marginBottom: '10px' }}>
-              GMAT {isDataInsights ? 'Data Insights' : 'Quantitative'} Score (60-90 scale)
-            </div>
-            <div style={{ fontSize: '18px', color: '#666', marginBottom: '30px' }}>
-              Accuracy: {score.accuracyPercentage}% ({score.totalCorrect}/{score.totalQuestions} correct)
-            </div>
-            
-            {/* Performance Level - only show for adaptive tests */}
-            {questionData.adaptiveMode && (
-              <div style={{ fontSize: '18px', color: '#666', marginBottom: '25px' }}>
-                Adaptive Performance Level: <strong style={{ 
-                  color: score.performanceLevel === 'hard' ? '#27ae60' : 
-                        score.performanceLevel === 'medium' ? '#f39c12' : '#e74c3c',
-                  textTransform: 'capitalize'
-                }}>{score.performanceLevel}</strong>
-              </div>
-            )}
-            
-            {/* Difficulty Breakdown */}
-            <div style={{ 
-              textAlign: 'left', 
-              backgroundColor: '#f8f9fa', 
-              padding: '25px', 
-              borderRadius: '6px',
-              marginBottom: '25px'
-            }}>
-              <h4 style={{ color: '#2c3e50', marginBottom: '20px', textAlign: 'center', fontSize: '18px' }}>Performance by Difficulty</h4>
-              
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', fontSize: '16px' }}>
-                <span style={{ color: '#27ae60', fontWeight: '500' }}>Easy:</span>
-                <span>{score.correctByDifficulty.easy}/{score.totalByDifficulty.easy} correct ({score.totalByDifficulty.easy > 0 ? Math.round((score.correctByDifficulty.easy / score.totalByDifficulty.easy) * 100) : 0}%)</span>
-              </div>
-              
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '12px', fontSize: '16px' }}>
-                <span style={{ color: '#f39c12', fontWeight: '500' }}>Medium:</span>
-                <span>{score.correctByDifficulty.medium}/{score.totalByDifficulty.medium} correct ({score.totalByDifficulty.medium > 0 ? Math.round((score.correctByDifficulty.medium / score.totalByDifficulty.medium) * 100) : 0}%)</span>
-              </div>
-              
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '16px' }}>
-                <span style={{ color: '#e74c3c', fontWeight: '500' }}>Hard:</span>
-                <span>{score.correctByDifficulty.hard}/{score.totalByDifficulty.hard} correct ({score.totalByDifficulty.hard > 0 ? Math.round((score.correctByDifficulty.hard / score.totalByDifficulty.hard) * 100) : 0}%)</span>
+              <div style={{ fontSize: '16px', color: '#666' }}>
+                GMAT Score (60-90)
               </div>
             </div>
+            <div>
+              <div style={{ fontSize: '48px', color: '#3498db', fontWeight: 'bold' }}>
+                {score.accuracyPercentage}%
+              </div>
+              <div style={{ fontSize: '16px', color: '#666' }}>
+                Overall Accuracy
+              </div>
+            </div>
+            <div>
+              <div style={{ fontSize: '48px', color: '#e67e22', fontWeight: 'bold' }}>
+                {score.totalCorrect}/{score.totalQuestions}
+              </div>
+              <div style={{ fontSize: '16px', color: '#666' }}>
+                Questions Correct
+              </div>
+            </div>
+          </div>
 
-            {/* Question-by-Question Analysis */}
-            <div style={{ 
-              textAlign: 'left', 
-              backgroundColor: '#f8f9fa', 
-              padding: '25px', 
-              borderRadius: '6px',
-              marginBottom: '25px'
-            }}>
-              <h4 style={{ color: '#2c3e50', marginBottom: '20px', textAlign: 'center', fontSize: '18px' }}>Question Analysis</h4>
-              
+          {/* Performance Level - only show for adaptive tests */}
+          {questionData.adaptiveMode && (
+            <div style={{ fontSize: '18px', color: '#666', marginBottom: '25px' }}>
+              Adaptive Performance Level: <strong style={{ 
+                color: score.performanceLevel === 'hard' ? '#27ae60' : 
+                      score.performanceLevel === 'medium' ? '#f39c12' : '#e74c3c',
+                textTransform: 'capitalize'
+              }}>{score.performanceLevel}</strong>
+            </div>
+          )}
+          
+          {/* Difficulty Breakdown */}
+          <div style={{ 
+            textAlign: 'left', 
+            backgroundColor: '#f8f9fa', 
+            padding: '20px', 
+            borderRadius: '6px',
+            marginBottom: '25px'
+          }}>
+            <h4 style={{ color: '#2c3e50', marginBottom: '15px', textAlign: 'center', fontSize: '18px' }}>Performance by Difficulty</h4>
+            
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px', fontSize: '16px' }}>
+              <span style={{ color: '#27ae60', fontWeight: '500' }}>Easy:</span>
+              <span>{score.correctByDifficulty.easy}/{score.totalByDifficulty.easy} correct ({score.totalByDifficulty.easy > 0 ? Math.round((score.correctByDifficulty.easy / score.totalByDifficulty.easy) * 100) : 0}%)</span>
+            </div>
+            
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px', fontSize: '16px' }}>
+              <span style={{ color: '#f39c12', fontWeight: '500' }}>Medium:</span>
+              <span>{score.correctByDifficulty.medium}/{score.totalByDifficulty.medium} correct ({score.totalByDifficulty.medium > 0 ? Math.round((score.correctByDifficulty.medium / score.totalByDifficulty.medium) * 100) : 0}%)</span>
+            </div>
+            
+            <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '16px' }}>
+              <span style={{ color: '#e74c3c', fontWeight: '500' }}>Hard:</span>
+              <span>{score.correctByDifficulty.hard}/{score.totalByDifficulty.hard} correct ({score.totalByDifficulty.hard > 0 ? Math.round((score.correctByDifficulty.hard / score.totalByDifficulty.hard) * 100) : 0}%)</span>
+            </div>
+          </div>
+
+          {/* Detailed Results Table */}
+          <div style={{ marginBottom: '25px' }}>
+            <h4 style={{ color: '#2c3e50', marginBottom: '15px', fontSize: '18px' }}>Detailed Question Analysis</h4>
+            <div style={{ overflow: 'auto', maxHeight: '400px', border: '1px solid #ddd', borderRadius: '6px' }}>
               <table style={{
                 width: '100%',
                 borderCollapse: 'collapse',
-                fontSize: '16px'
+                fontSize: '14px',
+                backgroundColor: 'white'
               }}>
-                <thead>
-                  <tr style={{ backgroundColor: '#e9ecef' }}>
-                    <th style={{ 
-                      padding: '12px 16px', 
-                      textAlign: 'left', 
-                      borderBottom: '2px solid #dee2e6',
-                      fontWeight: '600',
-                      width: '45%'
-                    }}>
-                      Question
+                <thead style={{ position: 'sticky', top: 0, backgroundColor: '#f8f9fa' }}>
+                  <tr>
+                    <th style={{ padding: '12px 10px', borderBottom: '2px solid #dee2e6', fontWeight: '600', color: '#2c3e50', textAlign: 'center' }}>
+                      Test #
                     </th>
-                    <th style={{ 
-                      padding: '12px 16px', 
-                      textAlign: 'center', 
-                      borderBottom: '2px solid #dee2e6',
-                      fontWeight: '600',
-                      width: '18%'
-                    }}>
+                    <th style={{ padding: '12px 10px', borderBottom: '2px solid #dee2e6', fontWeight: '600', color: '#2c3e50', textAlign: 'center' }}>
+                      Original ID
+                    </th>
+                    <th style={{ padding: '12px 10px', borderBottom: '2px solid #dee2e6', fontWeight: '600', color: '#2c3e50', textAlign: 'center' }}>
+                      Difficulty
+                    </th>
+                    <th style={{ padding: '12px 10px', borderBottom: '2px solid #dee2e6', fontWeight: '600', color: '#2c3e50', textAlign: 'center' }}>
                       Your Answer
                     </th>
-                    <th style={{ 
-                      padding: '12px 16px', 
-                      textAlign: 'center', 
-                      borderBottom: '2px solid #dee2e6',
-                      fontWeight: '600',
-                      width: '18%'
-                    }}>
+                    <th style={{ padding: '12px 10px', borderBottom: '2px solid #dee2e6', fontWeight: '600', color: '#2c3e50', textAlign: 'center' }}>
                       Correct Answer
                     </th>
-                    <th style={{ 
-                      padding: '12px 16px', 
-                      textAlign: 'center', 
-                      borderBottom: '2px solid #dee2e6',
-                      fontWeight: '600',
-                      width: '19%'
-                    }}>
+                    <th style={{ padding: '12px 10px', borderBottom: '2px solid #dee2e6', fontWeight: '600', color: '#2c3e50', textAlign: 'center' }}>
                       Result
+                    </th>
+                    <th style={{ padding: '12px 10px', borderBottom: '2px solid #dee2e6', fontWeight: '600', color: '#2c3e50', textAlign: 'center' }}>
+                      Notes
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {adaptiveQuestions.map((question, index) => {
-                    let chosenAnswer, correctAnswer, isCorrect, isUnattempted;
-                    
-                    if (question.questionFormat === 'tableAnalysis') {
-                      const allAnswered = question.statements?.every((_, idx) => selectedAnswers[`${question.id}-${idx}`]);
-                      chosenAnswer = allAnswered ? 'Completed' : 'Incomplete';
-                      correctAnswer = 'All statements';
-                      isCorrect = question.statements?.every((statement, idx) => 
-                        selectedAnswers[`${question.id}-${idx}`] === statement.answer
-                      ) || false;
-                      isUnattempted = !allAnswered;
-                    } else if (question.questionFormat === 'twoPartAnalysis') {
-                      const bothAnswered = question.columns?.every((_, colIdx) => selectedAnswers[`${question.id}-col${colIdx}`]);
-                      chosenAnswer = bothAnswered ? 'Both columns' : 'Incomplete';
-                      correctAnswer = 'Both correct';
-                      isCorrect = question.columns?.every((_, colIdx) => {
-                        const correctKey = colIdx === 0 ? Object.keys(question.correctAnswer || {})[0] : Object.keys(question.correctAnswer || {})[1];
-                        const correctValue = (question.correctAnswer || {})[correctKey];
-                        return selectedAnswers[`${question.id}-col${colIdx}`] === correctValue;
-                      }) || false;
-                      isUnattempted = !bothAnswered;
-                    } else {
-                      chosenAnswer = selectedAnswers[question.id] || '--';
-                      correctAnswer = question.correctAnswer || '--';
-                      isCorrect = chosenAnswer === correctAnswer;
-                      isUnattempted = chosenAnswer === '--';
-                    }
-                    
-                    const questionPreview = question.questionText.length > 50 
-                      ? question.questionText.substring(0, 50) + '...'
-                      : question.questionText;
-                    
-                    const hasOGNumber = question.ogQuestionNumber !== undefined;
-                    
-                    return (
-                      <tr key={question.id} style={{ 
-                        borderBottom: '1px solid #dee2e6',
-                        backgroundColor: index % 2 === 0 ? 'white' : '#f8f9fa'
-                      }}>
-                        <td style={{ 
-                          padding: '12px 16px',
-                          fontWeight: '500'
+                  {detailedResults.map((result, index) => (
+                    <tr key={index} style={{
+                      borderBottom: '1px solid #dee2e6',
+                      backgroundColor: result.isCorrect ? '#f8fff8' : '#fff5f5'
+                    }}>
+                      <td style={{ padding: '10px', textAlign: 'center', fontWeight: '500' }}>
+                        {result.sequenceNumber}
+                      </td>
+                      <td style={{ padding: '10px', textAlign: 'center', fontWeight: '500' }}>
+                        {result.originalId}
+                      </td>
+                      <td style={{ padding: '10px', textAlign: 'center' }}>
+                        <span style={{
+                          padding: '4px 8px',
+                          borderRadius: '12px',
+                          fontSize: '12px',
+                          fontWeight: '500',
+                          backgroundColor: result.difficulty === 'easy' ? '#d4edda' : 
+                                         result.difficulty === 'medium' ? '#fff3cd' : '#f8d7da',
+                          color: result.difficulty === 'easy' ? '#155724' : 
+                                result.difficulty === 'medium' ? '#856404' : '#721c24'
                         }}>
-                          <div style={{ marginBottom: '4px' }}>
-                            Q{question.id}
-                            {hasOGNumber && (
-                              <span style={{ 
-                                color: '#666', 
-                                fontSize: '13px', 
-                                fontWeight: '400',
-                                marginLeft: '6px'
-                              }}>
-                                (OG #{question.ogQuestionNumber})
-                              </span>
-                            )}
-                            <span style={{
-                              marginLeft: '8px',
-                              fontSize: '12px',
-                              color: question.difficulty === 'easy' ? '#27ae60' : 
-                                     question.difficulty === 'medium' ? '#f39c12' : '#e74c3c',
-                              textTransform: 'uppercase',
-                              fontWeight: '600'
-                            }}>
-                              {question.difficulty}
-                            </span>
-                            {question.questionFormat && (
-                              <span style={{
-                                marginLeft: '8px',
-                                fontSize: '10px',
-                                color: '#666',
-                                backgroundColor: '#f0f0f0',
-                                padding: '2px 6px',
-                                borderRadius: '3px',
-                                textTransform: 'uppercase'
-                              }}>
-                                {question.questionFormat}
-                              </span>
-                            )}
-                          </div>
-                          <div style={{ 
-                            fontSize: '14px', 
-                            color: '#666', 
-                            fontWeight: '400',
-                            lineHeight: '1.3'
-                          }}>
-                            {questionPreview}
-                          </div>
-                        </td>
-                        <td style={{ 
-                          padding: '12px 16px', 
-                          textAlign: 'center',
-                          fontWeight: '600',
-                          color: isUnattempted ? '#6c757d' : (isCorrect ? '#27ae60' : '#e74c3c')
+                          {result.difficulty.toUpperCase()}
+                        </span>
+                      </td>
+                      <td style={{ padding: '10px', textAlign: 'center', fontWeight: '500' }}>
+                        {result.userAnswer}
+                      </td>
+                      <td style={{ padding: '10px', textAlign: 'center', fontWeight: '500' }}>
+                        {result.correctAnswer}
+                      </td>
+                      <td style={{ padding: '10px', textAlign: 'center' }}>
+                        <span style={{
+                          color: result.isCorrect ? '#27ae60' : '#e74c3c',
+                          fontWeight: 'bold',
+                          fontSize: '16px'
                         }}>
-                          {chosenAnswer}
-                        </td>
-                        <td style={{ 
-                          padding: '12px 16px', 
-                          textAlign: 'center',
-                          fontWeight: '600',
-                          color: '#27ae60'
-                        }}>
-                          {correctAnswer}
-                        </td>
-                        <td style={{ 
-                          padding: '12px 16px', 
-                          textAlign: 'center',
-                          fontWeight: '600'
-                        }}>
-                          {isUnattempted ? (
-                            <span style={{ color: '#6c757d' }}>--</span>
-                          ) : isCorrect ? (
-                            <span style={{ color: '#27ae60' }}>✓</span>
-                          ) : (
-                            <span style={{ color: '#e74c3c' }}>✗</span>
-                          )}
-                        </td>
-                      </tr>
-                    );
-                  })}
+                          {result.isCorrect ? '✓' : '✗'}
+                        </span>
+                      </td>
+                      <td style={{ padding: '10px', textAlign: 'center' }}>
+                        {result.wasBookmarked && <span style={{ color: '#f39c12' }}>📑</span>}
+                        {result.userAnswer === 'No Answer' && <span style={{ color: '#6c757d', fontSize: '12px' }}>Unanswered</span>}
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
             </div>
-            
-            <div style={{ fontSize: '16px', color: '#888' }}>
-              Time used: {formatTime(timeLimit - timeRemaining)}
-              {timeRemaining === 0 && <span style={{ color: '#e74c3c', marginLeft: '10px' }}>(Time Expired)</span>}
-            </div>
+          </div>
+          
+          <div style={{ fontSize: '16px', color: '#888' }}>
+            Time used: {formatTime(timeLimit - timeRemaining)}
+            {timeRemaining === 0 && <span style={{ color: '#e74c3c', marginLeft: '10px' }}>(Time Expired)</span>}
           </div>
         </div>
       </div>
-    );
-  }
+    </div>
+  );
+}
 
-  // Main test interface - different layouts for Quant vs Data Insights
+  // Main test interface
   return (
     <div style={{ 
       fontFamily: 'Arial, sans-serif', 
@@ -1274,23 +1681,43 @@ const GMATInterface = () => {
             {formatTime(timeRemaining)}
           </span>
           <span style={{ fontSize: '16px' }}>
-            {currentQuestionIndex + 1} of {adaptiveQuestions.length}
+            {isEditingPrevious ? 
+              `Editing Q${editQuestionIndex + 1} (${editsUsed}/${maxEdits} edits used)` :
+              isReviewingBookmarks ? 
+                `Bookmark ${bookmarkReviewIndex + 1} of ${bookmarkedQuestions.size}` :
+                `${currentQuestionIndex + 1} of ${adaptiveQuestions.length}`
+            }
           </span>
+          {bookmarkedQuestions.size > 0 && !isEditingPrevious && (
+            <span style={{ fontSize: '14px', color: '#f39c12' }}>
+              📑 {bookmarkedQuestions.size}
+            </span>
+          )}
+          {editsUsed > 0 && !isEditingPrevious && (
+            <span style={{ fontSize: '14px', color: '#e67e22' }}>
+              ✏️ {editsUsed}/{maxEdits}
+            </span>
+          )}
         </div>
       </div>
 
       {/* Section Header */}
       <div style={{
-        backgroundColor: '#3498db',
+        backgroundColor: isEditingPrevious ? '#e67e22' : isReviewingBookmarks ? '#e67e22' : '#3498db',
         color: 'white',
         padding: '10px 22px',
         fontSize: '16px',
         fontWeight: '500'
       }}>
-        {questionData.sectionName}
+        {isEditingPrevious ? 
+          `✏️ Editing Previous Answer - ${questionData.sectionName}` :
+          isReviewingBookmarks ? 
+            `📑 Reviewing Bookmarked Questions - ${questionData.sectionName}` :
+            questionData.sectionName
+        }
       </div>
 
-      {/* Main Content Area - Different layouts for Quant vs DI */}
+      {/* Main Content Area */}
       <div style={{
         flex: 1,
         display: 'flex',
@@ -1318,6 +1745,16 @@ const GMATInterface = () => {
               padding: '35px 30px',
               overflow: 'auto'
             }}>
+              {/* Question Visual (for Quantitative questions) */}
+            {!isDataInsights && currentQuestion.visual && (
+              renderQuestionVisual(currentQuestion.visual)
+            )}
+
+                          {/* Question Visual (for questions with visual elements) */}
+              {currentQuestion.visual && (
+                renderQuestionVisual(currentQuestion.visual)
+              )}
+
               {/* Question Text */}
               <div style={{
                 fontSize: '18px',
@@ -1325,205 +1762,35 @@ const GMATInterface = () => {
                 marginBottom: '35px',
                 color: '#2c3e50'
               }}>
-                <span style={{ color: '#2c3e50', fontSize: '18px', marginRight: '8px' }}>
-                  {currentQuestionIndex + 1}.
-                </span>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '10px' }}>
+                  <span style={{ color: '#2c3e50', fontSize: '18px', marginRight: '8px' }}>
+                    {isReviewingBookmarks ? 
+                      `Q${currentQuestion.id} (Bookmarked)` :
+                      `${currentQuestionIndex + 1}.`
+                    }
+                  </span>
+                  <button
+                    onClick={() => toggleBookmark(currentQuestion.id)}
+                    style={{
+                      backgroundColor: 'transparent',
+                      border: bookmarkedQuestions.has(currentQuestion.id) ? '2px solid #f39c12' : '2px solid #ddd',
+                      color: bookmarkedQuestions.has(currentQuestion.id) ? '#f39c12' : '#666',
+                      padding: '4px 8px',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      fontSize: '14px',
+                      fontWeight: '500'
+                    }}
+                  >
+                    📑 {bookmarkedQuestions.has(currentQuestion.id) ? 'Bookmarked' : 'Bookmark'}
+                  </button>
+                </div>
                 <span className="math-text" dangerouslySetInnerHTML={{ __html: formatMath(currentQuestion.questionText) }}></span>
               </div>
 
-              {/* Answer Options - Handle different question formats */}
+              {/* Answer Options */}
               <div>
-                {currentQuestion.questionFormat === 'tableAnalysis' ? (
-                  // Table Analysis format
-                  <div>
-                    <div style={{ marginBottom: '20px', padding: '15px', backgroundColor: '#f8f9fa', borderRadius: '6px' }}>
-                      <strong>Instructions:</strong> For each statement, select True, False, or Cannot be determined.
-                    </div>
-                    {currentQuestion.statements?.map((statement, index) => (
-                      <div key={index} style={{ marginBottom: '20px', padding: '15px', border: '1px solid #ddd', borderRadius: '6px' }}>
-                        <div style={{ marginBottom: '10px', fontSize: '16px', fontWeight: '500' }}>
-                          Statement {index + 1}: {statement.text}
-                        </div>
-                        <div style={{ display: 'flex', gap: '15px' }}>
-                          {['True', 'False', 'Cannot be determined'].map((option) => (
-                            <label key={option} style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
-                              <input
-                                type="radio"
-                                name={`question-${currentQuestion.id}-statement-${index}`}
-                                value={option}
-                                checked={selectedAnswers[`${currentQuestion.id}-${index}`] === option}
-                                onChange={() => handleAnswerSelect(`${currentQuestion.id}-${index}`, option)}
-                                style={{ marginRight: '8px', transform: 'scale(1.2)' }}
-                              />
-                              <span style={{ fontSize: '14px' }}>{option}</span>
-                            </label>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : currentQuestion.questionFormat === 'twoPartAnalysis' ? (
-                  // Two-Part Analysis format
-                  <div>
-                    <div style={{ marginBottom: '20px', padding: '15px', backgroundColor: '#f8f9fa', borderRadius: '6px' }}>
-                      <strong>Instructions:</strong> Select one option from each column.
-                    </div>
-                    <div style={{ display: 'flex', gap: '20px' }}>
-                      {currentQuestion.columns?.map((column, colIndex) => (
-                        <div key={colIndex} style={{ flex: 1 }}>
-                          <h4 style={{ marginBottom: '15px', fontSize: '16px', fontWeight: '600', color: '#2c3e50' }}>
-                            {column}
-                          </h4>
-                          {currentQuestion.options?.map((option, optIndex) => {
-                            const optionKey = colIndex === 0 ? Object.keys(option)[0] : Object.keys(option)[1];
-                            const optionValue = option[optionKey];
-                            return (
-                              <div key={optIndex} style={{ marginBottom: '10px' }}>
-                                <label style={{ display: 'flex', alignItems: 'flex-start', cursor: 'pointer', padding: '8px', borderRadius: '4px', backgroundColor: selectedAnswers[`${currentQuestion.id}-col${colIndex}`] === optionValue ? '#fff3cd' : 'transparent' }}>
-                                  <input
-                                    type="radio"
-                                    name={`question-${currentQuestion.id}-col${colIndex}`}
-                                    value={optionValue}
-                                    checked={selectedAnswers[`${currentQuestion.id}-col${colIndex}`] === optionValue}
-                                    onChange={() => handleAnswerSelect(`${currentQuestion.id}-col${colIndex}`, optionValue)}
-                                    style={{ marginRight: '10px', marginTop: '2px', transform: 'scale(1.2)' }}
-                                  />
-                                  <span style={{ fontSize: '14px', lineHeight: '1.4' }}>{optionValue}</span>
-                                </label>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                ) : (
-                  // Standard format with A-E options
-                  currentQuestion.options && Object.entries(currentQuestion.options).map(([letter, text]) => (
-                    <div key={letter} style={{
-                      marginBottom: '15px',
-                      display: 'flex',
-                      alignItems: 'flex-start',
-                      cursor: 'pointer',
-                      padding: '10px 15px',
-                      borderRadius: '4px',
-                      backgroundColor: selectedAnswers[currentQuestion.id] === letter ? '#fff3cd' : 'transparent',
-                      border: selectedAnswers[currentQuestion.id] === letter ? '2px solid #ffc107' : '2px solid transparent',
-                      transition: 'all 0.2s ease'
-                    }}
-                    onClick={() => handleAnswerSelect(currentQuestion.id, letter)}
-                    >
-                      <input
-                        type="radio"
-                        name={`question-${currentQuestion.id}`}
-                        value={letter}
-                        checked={selectedAnswers[currentQuestion.id] === letter}
-                        onChange={() => handleAnswerSelect(currentQuestion.id, letter)}
-                        style={{
-                          marginRight: '15px',
-                          marginTop: '2px',
-                          transform: 'scale(1.3)'
-                        }}
-                      />
-                      <div>
-                        <span className="math-text" style={{ fontSize: '18px', lineHeight: '1.4' }} dangerouslySetInnerHTML={{ __html: formatMath(text) }}>
-                        </span>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-            </div>
-          </>
-        ) : (
-          // Quantitative Layout: Full width question area (original layout)
-          <div style={{
-            flex: 1,
-            padding: '35px 45px',
-            overflow: 'auto'
-          }}>
-            {/* Question Text */}
-            <div style={{
-              fontSize: '18px',
-              lineHeight: '1.6',
-              marginBottom: '35px',
-              color: '#2c3e50'
-            }}>
-              <span style={{ color: '#2c3e50', fontSize: '18px', marginRight: '8px' }}>
-                {currentQuestionIndex + 1}.
-              </span>
-              <span className="math-text" dangerouslySetInnerHTML={{ __html: formatMath(currentQuestion.questionText) }}></span>
-            </div>
-
-            {/* Answer Options - Handle different question formats */}
-            <div style={{ maxWidth: '650px' }}>
-              {currentQuestion.questionFormat === 'tableAnalysis' ? (
-                // Table Analysis format
-                <div>
-                  <div style={{ marginBottom: '20px', padding: '15px', backgroundColor: '#f8f9fa', borderRadius: '6px' }}>
-                    <strong>Instructions:</strong> For each statement, select True, False, or Cannot be determined.
-                  </div>
-                  {currentQuestion.statements?.map((statement, index) => (
-                    <div key={index} style={{ marginBottom: '20px', padding: '15px', border: '1px solid #ddd', borderRadius: '6px' }}>
-                      <div style={{ marginBottom: '10px', fontSize: '16px', fontWeight: '500' }}>
-                        Statement {index + 1}: {statement.text}
-                      </div>
-                      <div style={{ display: 'flex', gap: '15px' }}>
-                        {['True', 'False', 'Cannot be determined'].map((option) => (
-                          <label key={option} style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
-                            <input
-                              type="radio"
-                              name={`question-${currentQuestion.id}-statement-${index}`}
-                              value={option}
-                              checked={selectedAnswers[`${currentQuestion.id}-${index}`] === option}
-                              onChange={() => handleAnswerSelect(`${currentQuestion.id}-${index}`, option)}
-                              style={{ marginRight: '8px', transform: 'scale(1.2)' }}
-                            />
-                            <span style={{ fontSize: '14px' }}>{option}</span>
-                          </label>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : currentQuestion.questionFormat === 'twoPartAnalysis' ? (
-                // Two-Part Analysis format
-                <div>
-                  <div style={{ marginBottom: '20px', padding: '15px', backgroundColor: '#f8f9fa', borderRadius: '6px' }}>
-                    <strong>Instructions:</strong> Select one option from each column.
-                  </div>
-                  <div style={{ display: 'flex', gap: '20px' }}>
-                    {currentQuestion.columns?.map((column, colIndex) => (
-                      <div key={colIndex} style={{ flex: 1 }}>
-                        <h4 style={{ marginBottom: '15px', fontSize: '16px', fontWeight: '600', color: '#2c3e50' }}>
-                          {column}
-                        </h4>
-                        {currentQuestion.options?.map((option, optIndex) => {
-                          const optionKey = colIndex === 0 ? Object.keys(option)[0] : Object.keys(option)[1];
-                          const optionValue = option[optionKey];
-                          return (
-                            <div key={optIndex} style={{ marginBottom: '10px' }}>
-                              <label style={{ display: 'flex', alignItems: 'flex-start', cursor: 'pointer', padding: '8px', borderRadius: '4px', backgroundColor: selectedAnswers[`${currentQuestion.id}-col${colIndex}`] === optionValue ? '#fff3cd' : 'transparent' }}>
-                                <input
-                                  type="radio"
-                                  name={`question-${currentQuestion.id}-col${colIndex}`}
-                                  value={optionValue}
-                                  checked={selectedAnswers[`${currentQuestion.id}-col${colIndex}`] === optionValue}
-                                  onChange={() => handleAnswerSelect(`${currentQuestion.id}-col${colIndex}`, optionValue)}
-                                  style={{ marginRight: '10px', marginTop: '2px', transform: 'scale(1.2)' }}
-                                />
-                                <span style={{ fontSize: '14px', lineHeight: '1.4' }}>{optionValue}</span>
-                              </label>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ) : (
-                // Standard format with A-E options
-                currentQuestion.options && Object.entries(currentQuestion.options).map(([letter, text]) => (
+                {currentQuestion.options && Object.entries(currentQuestion.options).map(([letter, text]) => (
                   <div key={letter} style={{
                     marginBottom: '15px',
                     display: 'flex',
@@ -1554,8 +1821,84 @@ const GMATInterface = () => {
                       </span>
                     </div>
                   </div>
-                ))
-              )}
+                ))}
+              </div>
+            </div>
+          </>
+        ) : (
+          // Quantitative Layout: Full width question area
+          <div style={{
+            flex: 1,
+            padding: '35px 45px',
+            overflow: 'auto'
+          }}>
+            {/* Question Text */}
+            <div style={{
+              fontSize: '18px',
+              lineHeight: '1.6',
+              marginBottom: '35px',
+              color: '#2c3e50'
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '10px' }}>
+                <span style={{ color: '#2c3e50', fontSize: '18px', marginRight: '8px' }}>
+                  {isReviewingBookmarks ? 
+                    `Q${currentQuestion.id} (Bookmarked)` :
+                    `${currentQuestionIndex + 1}.`
+                  }
+                </span>
+                <button
+                  onClick={() => toggleBookmark(currentQuestion.id)}
+                  style={{
+                    backgroundColor: 'transparent',
+                    border: bookmarkedQuestions.has(currentQuestion.id) ? '2px solid #f39c12' : '2px solid #ddd',
+                    color: bookmarkedQuestions.has(currentQuestion.id) ? '#f39c12' : '#666',
+                    padding: '4px 8px',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    fontWeight: '500'
+                  }}
+                >
+                  📑 {bookmarkedQuestions.has(currentQuestion.id) ? 'Bookmarked' : 'Bookmark'}
+                </button>
+              </div>
+              <span className="math-text" dangerouslySetInnerHTML={{ __html: formatMath(currentQuestion.questionText) }}></span>
+            </div>
+
+            {/* Answer Options */}
+            <div style={{ maxWidth: '650px' }}>
+              {currentQuestion.options && Object.entries(currentQuestion.options).map(([letter, text]) => (
+                <div key={letter} style={{
+                  marginBottom: '15px',
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  cursor: 'pointer',
+                  padding: '10px 15px',
+                  borderRadius: '4px',
+                  backgroundColor: selectedAnswers[currentQuestion.id] === letter ? '#fff3cd' : 'transparent',
+                  border: selectedAnswers[currentQuestion.id] === letter ? '2px solid #ffc107' : '2px solid transparent',
+                  transition: 'all 0.2s ease'
+                }}
+                onClick={() => handleAnswerSelect(currentQuestion.id, letter)}
+                >
+                  <input
+                    type="radio"
+                    name={`question-${currentQuestion.id}`}
+                    value={letter}
+                    checked={selectedAnswers[currentQuestion.id] === letter}
+                    onChange={() => handleAnswerSelect(currentQuestion.id, letter)}
+                    style={{
+                      marginRight: '15px',
+                      marginTop: '2px',
+                      transform: 'scale(1.3)'
+                    }}
+                  />
+                  <div>
+                    <span className="math-text" style={{ fontSize: '18px', lineHeight: '1.4' }} dangerouslySetInnerHTML={{ __html: formatMath(text) }}>
+                    </span>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         )}
@@ -1563,7 +1906,7 @@ const GMATInterface = () => {
 
       {/* Bottom Navigation */}
       <div style={{
-        backgroundColor: '#3498db',
+        backgroundColor: isReviewingBookmarks ? '#e67e22' : '#3498db',
         padding: '14px 22px',
         display: 'flex',
         justifyContent: 'space-between',
@@ -1584,6 +1927,40 @@ const GMATInterface = () => {
           >
             {isPaused ? '▶ Resume' : '⏸ Pause'}
           </button>
+          
+          {!isEditingPrevious && !isReviewingBookmarks && editsUsed < maxEdits && currentQuestionIndex > 0 && (
+            <button
+              onClick={() => setShowEditModal(true)}
+              style={{
+                backgroundColor: 'transparent',
+                border: '1px solid white',
+                color: 'white',
+                padding: '8px 15px',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: '16px'
+              }}
+            >
+              ✏️ Edit Previous ({maxEdits - editsUsed} left)
+            </button>
+          )}
+          
+          {(isReviewingBookmarks || isEditingPrevious) && (
+            <button
+              onClick={isReviewingBookmarks ? exitBookmarkReview : exitEditMode}
+              style={{
+                backgroundColor: 'transparent',
+                border: '1px solid white',
+                color: 'white',
+                padding: '8px 15px',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: '16px'
+              }}
+            >
+              Exit {isReviewingBookmarks ? 'Review' : 'Edit'}
+            </button>
+          )}
         </div>
 
         <div style={{ display: 'flex', gap: '10px' }}>
@@ -1601,7 +1978,12 @@ const GMATInterface = () => {
               fontWeight: '500'
             }}
           >
-            {currentQuestionIndex === adaptiveQuestions.length - 1 ? 'Finish Test' : 'Next →'}
+            {isReviewingBookmarks ? 
+              (bookmarkReviewIndex === Array.from(bookmarkedQuestions).length - 1 ? 'Finish Test' : 'Next Bookmark →') :
+              (currentQuestionIndex === adaptiveQuestions.length - 1 ? 
+                (bookmarkedQuestions.size > 0 ? 'Review Bookmarks' : 'Finish Test') : 
+                'Next →')
+            }
           </button>
         </div>
       </div>
@@ -1716,7 +2098,7 @@ const GMATInterface = () => {
             border: '1px solid #dee2e6'
           }}>
             <div style={{
-              backgroundColor: '#3498db',
+              backgroundColor: isReviewingBookmarks ? '#e67e22' : '#3498db',
               color: 'white',
               padding: '14px 22px',
               borderRadius: '8px 8px 0 0',
@@ -1746,7 +2128,7 @@ const GMATInterface = () => {
             <div style={{ padding: '28px' }}>
               <div style={{ display: 'flex', alignItems: 'flex-start', marginBottom: '25px' }}>
                 <div style={{
-                  backgroundColor: '#3498db',
+                  backgroundColor: isReviewingBookmarks ? '#e67e22' : '#3498db',
                   color: 'white',
                   borderRadius: '50%',
                   width: '22px',
@@ -1767,7 +2149,13 @@ const GMATInterface = () => {
                     Have you completed your response?
                   </div>
                   <div style={{ fontSize: '16px', color: '#666', lineHeight: '1.4' }}>
-                    Click <strong>Yes</strong> to move to the {currentQuestionIndex === adaptiveQuestions.length - 1 ? 'results' : 'next question'}.<br />
+                    Click <strong>Yes</strong> to {
+                      isReviewingBookmarks ? 
+                        (bookmarkReviewIndex === Array.from(bookmarkedQuestions).length - 1 ? 'finish the test' : 'move to the next bookmarked question') :
+                        (currentQuestionIndex === adaptiveQuestions.length - 1 ? 
+                          (bookmarkedQuestions.size > 0 ? 'review your bookmarked questions' : 'see your results') : 
+                          'move to the next question')
+                    }.<br />
                     Click <strong>No</strong> to continue responding to this question.
                   </div>
                 </div>
@@ -1829,6 +2217,100 @@ const GMATInterface = () => {
                 >
                   No
                 </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Edit Question Selection Modal */}
+      {showEditModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1002
+        }}>
+          <div style={{
+            backgroundColor: 'white',
+            borderRadius: '8px',
+            minWidth: '450px',
+            maxWidth: '600px',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+            border: '1px solid #dee2e6'
+          }}>
+            <div style={{
+              backgroundColor: '#e67e22',
+              color: 'white',
+              padding: '14px 22px',
+              borderRadius: '8px 8px 0 0',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}>
+              <span style={{ fontSize: '18px', fontWeight: '500' }}>✏️ Edit Previous Answer</span>
+              <button
+                onClick={() => setShowEditModal(false)}
+                style={{
+                  backgroundColor: 'transparent',
+                  border: 'none',
+                  color: 'white',
+                  fontSize: '20px',
+                  cursor: 'pointer',
+                  padding: '2px 6px',
+                  borderRadius: '3px'
+                }}
+              >
+                ✕
+              </button>
+            </div>
+            
+            <div style={{ padding: '20px' }}>
+              <div style={{ marginBottom: '15px', color: '#666' }}>
+                Select a question to edit ({maxEdits - editsUsed} edits remaining):
+              </div>
+              
+              <div style={{ maxHeight: '300px', overflow: 'auto' }}>
+                {adaptiveQuestions.slice(0, currentQuestionIndex).map((question, index) => (
+                  <div key={question.id} style={{
+                    padding: '10px 15px',
+                    border: '1px solid #ddd',
+                    borderRadius: '4px',
+                    marginBottom: '8px',
+                    cursor: answeredQuestions.has(question.id) ? 'pointer' : 'not-allowed',
+                    backgroundColor: answeredQuestions.has(question.id) ? '#f8f9fa' : '#e9ecef',
+                    opacity: answeredQuestions.has(question.id) ? 1 : 0.6
+                  }}
+                  onClick={() => {
+                    if (answeredQuestions.has(question.id)) {
+                      startEditQuestion(index);
+                      setShowEditModal(false);
+                    }
+                  }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontWeight: '500' }}>Q{index + 1}</span>
+                      <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                        {answeredQuestions.has(question.id) && (
+                          <span style={{ color: '#27ae60', fontSize: '14px' }}>✓ Answered</span>
+                        )}
+                        {bookmarkedQuestions.has(question.id) && (
+                          <span style={{ color: '#f39c12', fontSize: '14px' }}>📑</span>
+                        )}
+                        {answeredQuestions.has(question.id) && (
+                          <span style={{ color: '#e67e22', fontSize: '14px' }}>✏️</span>
+                        )}
+                      </div>
+                    </div>
+                    <div style={{ fontSize: '14px', color: '#666', marginTop: '5px' }}>
+                      {question.questionText.substring(0, 60)}...
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
