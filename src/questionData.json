@@ -1,496 +1,111 @@
 {
-    "sectionName": "GMAT Quantitative Reasoning - Mixed Practice",
-    "sectionType": "quantitative",
-    "testDescription": "This section tests your mathematical skills including algebra, arithmetic, geometry, and data analysis through problem-solving questions.",
-    "skillsAssessed": [
-      "Algebraic manipulation and equation solving",
-      "Number properties and arithmetic operations", 
-      "Word problem translation and setup",
-      "Pattern recognition and logical reasoning",
-      "Optimization and constraint analysis"
-    ],
-    "adaptiveMode": true,
-    "targetQuestions": 21,
-    "bufferQuestions": 0,
-    "firstSevenStrategy": "controlled challenge",
-    "questions": [
-      {
-        "id": 1,
-        "ogQuestionNumber": 2,
-        "questionText": "If x + y = 2 and x² + y² = 2, what is the value of xy?",
-        "difficulty": "easy",
-        "options": {
-          "A": "-2",
-          "B": "-1", 
-          "C": "0",
-          "D": "1",
-          "E": "2"
-        },
-        "correctAnswer": "C",
-        "buffer": false
+  "sectionName": "GMAT Verbal Practice - Mixed RC and CR",
+  "sectionType": "verbal", 
+  "testDescription": "This section tests reading comprehension and critical reasoning skills through challenging passages and logical reasoning problems.",
+  "skillsAssessed": [
+    "Reading comprehension and passage analysis",
+    "Critical reasoning and argument evaluation",
+    "Inference and logical thinking"
+  ],
+  "adaptiveMode": true,
+  "targetQuestions": 6,
+  "bufferQuestions": 0,
+  "timeLimit": 1080,
+  "firstSevenStrategy": "controlled challenge",
+  "passages": [
+    {
+      "id": "vietnam_economy",
+      "title": "Vietnam's Economic Transformation",
+      "content": "IT IS A contrarian argument from an improbable contrarian. Vietnam's economy may be the envy of South-East Asia, having averaged 6% annual growth over the past 15 years, but it is in urgent need of radical reform. So, at any rate, asserts To Lam, who spent eight years running Vietnam's ruthless security services before becoming general secretary of the Vietnamese Communist Party last year. He is busy sacking civil servants and amending economic laws in pursuit of a \"revolution\" to \"liberate all productive forces\". \"Time does not wait for us,\" he warned his comrades soon after taking charge.\n\nVietnam's economy has come a long way since the Vietnam war ended 50 years ago, leaving an already poor country in ruins. At first the victorious communist regime tried to \"liquidate\" the private sector. Shortages, rationing and hunger followed. In the 1980s the Soviet Union's economic troubles meant less aid for Vietnam, exacerbating the malaise. Annual inflation reached 454% and half of Vietnamese were living in poverty. The death of one of Mr Lam's predecessors in 1986 paved the way for a new general secretary to legalise private enterprise and embrace market forces.\n\nDoi moi or \"renovation\" has been an astonishing success. Over the past 40 years GDP per person has increased 18-fold and poverty has plummeted. Foreign investors, attracted by Vietnam's cheap labour, political stability (it is a single-party, authoritarian state), proximity to Asian suppliers and generous incentives for manufacturing, have built lots of factories assembling consumer goods for export. A trade deal with America, accession to the World Trade Organisation and, more recently, multinationals' desire to diversify away from China have provided further reasons to invest.\n\nYet the forces that have propelled Vietnam's boom are slowing or reversing. The pool of cheap workers is dwindling and wages are rising. Instead of largely free trade with America, Donald Trump is threatening tariffs of 46%. It is getting harder to maintain good relations with both America and China, Vietnam's second-biggest trading partner. And there has been relatively little spillover from the foreign-owned factories to the rest of the economy. Vietnam risks becoming stuck as an assembly hub, adding little value to components manufactured elsewhere. Shifting onto a more promising developmental path will not be easy—and Mr Lam is staking his tenure on it."
+    }
+  ],
+  "questions": [
+    {
+      "id": 1,
+      "passageId": "vietnam_economy",
+      "questionText": "What is the primary purpose of the passage?",
+      "difficulty": "medium",
+      "options": {
+        "A": "To analyze the historical factors that led to Vietnam's economic transformation since the 1980s",
+        "B": "To explain why Vietnam needs economic reform despite its impressive recent growth performance",
+        "C": "To compare Vietnam's development strategy with other successful Southeast Asian economies",
+        "D": "To describe the dominant role of foreign investment in Vietnam's manufacturing sector",
+        "E": "To evaluate To Lam's leadership credentials and policy proposals for economic reform"
       },
-      {
-        "id": 2,
-        "ogQuestionNumber": 3,
-        "questionText": "The sum S of the first n consecutive positive even integers is given by S = n(n + 1). For what value of n is this sum equal to 110?",
-        "difficulty": "easy",
-        "options": {
-          "A": "10",
-          "B": "11",
-          "C": "12", 
-          "D": "13",
-          "E": "14"
-        },
-        "correctAnswer": "A",
-        "buffer": false
+      "correctAnswer": "B",
+      "buffer": false
+    },
+    {
+      "id": 2,
+      "passageId": "vietnam_economy",
+      "questionText": "According to the passage, which of the following best describes Vietnam's most pressing economic challenge?",
+      "difficulty": "medium",
+      "options": {
+        "A": "Insufficient foreign direct investment to sustain current levels of economic growth",
+        "B": "Political instability that undermines long-term investor confidence in the country",
+        "C": "The risk of being caught between low-wage assembly work and high-tech innovation",
+        "D": "Declining export volumes due to increasing global trade tensions and protectionism",
+        "E": "A critical shortage of agricultural workers needed to maintain food security"
       },
-      {
-        "id": 3,
-        "ogQuestionNumber": 11,
-        "questionText": "Company C produces toy trucks at a cost of $5.00 each for the first 100 trucks and $3.50 for each additional truck. If 500 toy trucks were produced by Company C and sold for $10.00 each, what was Company C's gross profit?",
-        "difficulty": "easy",
-        "options": {
-          "A": "$2,250",
-          "B": "$2,500",
-          "C": "$3,100",
-          "D": "$3,250",
-          "E": "$3,500"
-        },
-        "correctAnswer": "E",
-        "buffer": false
+      "correctAnswer": "C",
+      "buffer": false
+    },
+    {
+      "id": 3,
+      "passageId": "vietnam_economy",
+      "questionText": "The author's attitude toward Vietnam's economic transformation can best be described as:",
+      "difficulty": "medium",
+      "options": {
+        "A": "Unqualified admiration for the country's remarkable developmental achievements",
+        "B": "Deep skepticism about the long-term sustainability of foreign investment-driven growth",
+        "C": "Confident optimism about To Lam's ability to successfully implement necessary reforms",
+        "D": "Appreciative of past success while expressing concern about significant future challenges",
+        "E": "Sharply critical of the government's historical failure to develop competitive local industries"
       },
-      {
-        "id": 4,
-        "ogQuestionNumber": 16,
-        "questionText": "In a field day at a school, each child who competed in n events and scored a total of p points was given an overall score of p/n + n. Andrew competed in 1 event and scored 9 points. Jason competed in 3 events and scored 5, 6, and 7 points, respectively. What was the ratio of Andrew's overall score to Jason's overall score?",
-        "difficulty": "easy",
-        "options": {
-          "A": "10/23",
-          "B": "7/10",
-          "C": "4/5",
-          "D": "10/9",
-          "E": "12/7"
-        },
-        "correctAnswer": "D",
-        "buffer": false
+      "correctAnswer": "D",
+      "buffer": false
+    },
+    {
+      "id": 4,
+      "questionText": "Company X is considering whether to open a new manufacturing facility in Southeast Asia. The company's executives argue that rising labor costs in their current location make expansion necessary for maintaining profitability. Which of the following, if true, would most weaken this argument?",
+      "difficulty": "medium",
+      "options": {
+        "A": "Labor costs in Southeast Asia are currently 30% lower than in the company's current location",
+        "B": "The company's main competitors have recently opened facilities in Southeast Asia",
+        "C": "Automation technology could reduce labor requirements by 40% at the current facility",
+        "D": "Transportation costs from Southeast Asia would add 15% to total production expenses",
+        "E": "The company's current facility is operating at only 60% capacity"
       },
-      {
-        "id": 5,
-        "ogQuestionNumber": 22,
-        "questionText": "For what value of x between -4 and 4, inclusive, is the value of x² - 10x + 16 the greatest?",
-        "difficulty": "easy",
-        "options": {
-          "A": "-4",
-          "B": "-2",
-          "C": "0",
-          "D": "2",
-          "E": "4"
-        },
-        "correctAnswer": "A",
-        "buffer": false
+      "correctAnswer": "C",
+      "buffer": false
+    },
+    {
+      "id": 5,
+      "questionText": "Economist: \"Countries that invest heavily in renewable energy infrastructure will have significant economic advantages in the coming decades. Green energy costs are falling rapidly, and carbon pricing mechanisms will make fossil fuels increasingly expensive.\" Which of the following assumptions is necessary for this argument?",
+      "difficulty": "hard",
+      "options": {
+        "A": "Renewable energy technology will continue to improve at its current rate",
+        "B": "All countries will eventually implement carbon pricing mechanisms",
+        "C": "The economic advantages will outweigh the initial infrastructure investment costs",
+        "D": "Fossil fuel prices will remain volatile in the coming decades",
+        "E": "International cooperation on climate policy will increase significantly"
       },
-      {
-        "id": 6,
-        "ogQuestionNumber": 28,
-        "questionText": "If x and y are integers and x - y is odd, which of the following must be true?\n\nI. xy is even.\nII. x² + y² is odd.\nIII. (x + y)² is even.",
-        "difficulty": "easy",
-        "options": {
-          "A": "I only",
-          "B": "II only",
-          "C": "III only",
-          "D": "I and II only",
-          "E": "I, II, and III"
-        },
-        "correctAnswer": "D",
-        "buffer": false
+      "correctAnswer": "C",
+      "buffer": false
+    },
+    {
+      "id": 6,
+      "questionText": "A recent study found that employees who work remotely are 20% more productive than those who work in traditional offices. However, remote workers also report feeling less connected to their colleagues and company culture. Which of the following best resolves this apparent contradiction?",
+      "difficulty": "medium",
+      "options": {
+        "A": "Productivity and workplace satisfaction are independent factors that don't necessarily correlate",
+        "B": "The study measured short-term productivity but long-term effects may be different",
+        "C": "Remote workers compensate for social isolation by focusing more intensely on their tasks",
+        "D": "Traditional office environments create distractions that reduce individual productivity",
+        "E": "The benefits of remote work vary significantly across different types of job roles"
       },
-      {
-        "id": 7,
-        "ogQuestionNumber": 36,
-        "questionText": "As shown in the diagram above, a lever resting on a fulcrum has weights of w₁ pounds and w₂ pounds, located d₁ feet and d₂ feet from the fulcrum. The lever is balanced and w₁d₁ = w₂d₂. Suppose w₁ is 50 pounds and w₂ is 30 pounds. If d₁ is 4 feet less than d₂, what is d₂, in feet?",
-        "difficulty": "easy",
-        "visual": {
-          "type": "diagram",
-          "title": "Lever and Fulcrum System",
-          "dimensions": {
-            "width": 500,
-            "height": 200
-          },
-          "elements": [
-            {
-              "type": "line",
-              "x1": 50,
-              "y1": 100,
-              "x2": 450,
-              "y2": 100,
-              "color": "#2c3e50",
-              "width": 4
-            },
-            {
-              "type": "path",
-              "d": "M 250 100 L 235 130 L 265 130 Z",
-              "fill": "#95a5a6",
-              "color": "#7f8c8d",
-              "width": 2
-            },
-            {
-              "type": "rectangle",
-              "x": 120,
-              "y": 70,
-              "width": 30,
-              "height": 20,
-              "fill": "#3498db",
-              "color": "#2980b9",
-              "strokeWidth": 2
-            },
-            {
-              "type": "rectangle",
-              "x": 350,
-              "y": 70,
-              "width": 30,
-              "height": 20,
-              "fill": "#e74c3c",
-              "color": "#c0392b",
-              "strokeWidth": 2
-            },
-            {
-              "type": "line",
-              "x1": 135,
-              "y1": 100,
-              "x2": 135,
-              "y2": 140,
-              "color": "#34495e",
-              "width": 1
-            },
-            {
-              "type": "line",
-              "x1": 250,
-              "y1": 100,
-              "x2": 250,
-              "y2": 140,
-              "color": "#34495e",
-              "width": 1
-            },
-            {
-              "type": "line",
-              "x1": 365,
-              "y1": 100,
-              "x2": 365,
-              "y2": 140,
-              "color": "#34495e",
-              "width": 1
-            },
-            {
-              "type": "line",
-              "x1": 135,
-              "y1": 150,
-              "x2": 250,
-              "y2": 150,
-              "color": "#34495e",
-              "width": 1
-            },
-            {
-              "type": "line",
-              "x1": 250,
-              "y1": 150,
-              "x2": 365,
-              "y2": 150,
-              "color": "#34495e",
-              "width": 1
-            },
-            {
-              "type": "text",
-              "x": 135,
-              "y": 65,
-              "content": "w₁",
-              "size": 16,
-              "color": "#2c3e50",
-              "anchor": "middle",
-              "weight": "bold"
-            },
-            {
-              "type": "text",
-              "x": 365,
-              "y": 65,
-              "content": "w₂",
-              "size": 16,
-              "color": "#2c3e50",
-              "anchor": "middle",
-              "weight": "bold"
-            },
-            {
-              "type": "text",
-              "x": 192,
-              "y": 165,
-              "content": "d₁",
-              "size": 14,
-              "color": "#2c3e50",
-              "anchor": "middle"
-            },
-            {
-              "type": "text",
-              "x": 307,
-              "y": 165,
-              "content": "d₂",
-              "size": 14,
-              "color": "#2c3e50",
-              "anchor": "middle"
-            },
-            {
-              "type": "text",
-              "x": 240,
-              "y": 185,
-              "content": "fulcrum",
-              "size": 12,
-              "color": "#7f8c8d",
-              "anchor": "middle"
-            },
-            {
-              "type": "text",
-              "x": 450,
-              "y": 185,
-              "content": "lever",
-              "size": 12,
-              "color": "#7f8c8d",
-              "anchor": "end"
-            }
-          ],
-          "caption": "Lever system showing weights w₁ and w₂ at distances d₁ and d₂ from the fulcrum"
-        },
-        "options": {
-          "A": "1.5",
-          "B": "2.5",
-          "C": "6",
-          "D": "10",
-          "E": "20"
-        },
-        "correctAnswer": "D",
-        "buffer": false
-      },
-      {
-        "id": 8,
-        "ogQuestionNumber": 44,
-        "questionText": "Stephanie has 2¼ cups of milk on hand and makes 2 batches of cookies, using ⅔ cup of milk for each batch of cookies. Which of the following describes the amount of milk remaining after she makes the cookies?",
-        "difficulty": "easy",
-        "options": {
-          "A": "Less than ½ cup",
-          "B": "Between ½ cup and ¾ cup",
-          "C": "Between ¾ cup and 1 cup",
-          "D": "Between 1 cup and 1½ cups",
-          "E": "More than 1½ cups"
-        },
-        "correctAnswer": "C",
-        "buffer": false
-      },
-      {
-        "id": 9,
-        "ogQuestionNumber": 47,
-        "questionText": "A nursery sells fruit trees priced as shown in the chart above. In its inventory 54 trees are less than 5 feet in height. If the expected revenue from the sale of its entire stock is estimated at $2,450, approximately how much of this will come from the sale of trees that are at least 5 feet tall?",
-        "difficulty": "easy",
-        "visual": {
-          "type": "table",
-          "title": "Fruit Tree Pricing by Height",
-          "data": {
-            "headers": ["Tree Height", "Price per Tree"],
-            "rows": [
-              ["Less than 3 feet", "$8"],
-              ["3 to 4 feet", "$12"],
-              ["4 to 5 feet", "$15"],
-              ["5 to 6 feet", "$22"],
-              ["6 to 7 feet", "$28"],
-              ["Over 7 feet", "$35"]
-            ]
-          }
-        },
-        "options": {
-          "A": "$1,730",
-          "B": "$1,640",
-          "C": "$1,410",
-          "D": "$1,080",
-          "E": "$810"
-        },
-        "correctAnswer": "A",
-        "buffer": false
-      },
-      {
-        "id": 10,
-        "ogQuestionNumber": 52,
-        "questionText": "What is the larger of the 2 solutions of the equation x² - 4x = 96?",
-        "difficulty": "easy",
-        "options": {
-          "A": "8",
-          "B": "12",
-          "C": "16",
-          "D": "32",
-          "E": "100"
-        },
-        "correctAnswer": "B",
-        "buffer": false
-      },
-      {
-        "id": 11,
-        "ogQuestionNumber": 83,
-        "questionText": "If ½ the result obtained when 2 is subtracted from 5x is equal to the sum of 10 and 3x, what is the value of x?",
-        "difficulty": "medium",
-        "options": {
-          "A": "-22",
-          "B": "-4",
-          "C": "4",
-          "D": "18",
-          "E": "22"
-        },
-        "correctAnswer": "E",
-        "buffer": false
-      },
-      {
-        "id": 12,
-        "ogQuestionNumber": 86,
-        "questionText": "Consider the following set of inequalities: p > q, s > r, q > t, s > p, and r > q. Between which two quantities is no relationship established?",
-        "difficulty": "medium",
-        "options": {
-          "A": "p and r",
-          "B": "s and t",
-          "C": "s and q",
-          "D": "p and t",
-          "E": "r and t"
-        },
-        "correctAnswer": "E",
-        "buffer": false
-      },
-      {
-        "id": 13,
-        "ogQuestionNumber": 99,
-        "questionText": "If x = -½, then (6x³ + 3x² - 8x - 4)/(2x + 1) =",
-        "difficulty": "medium",
-        "options": {
-          "A": "3x² + (3/2)x - 8",
-          "B": "3x² + (3/2)x - 4",
-          "C": "3x² - 4",
-          "D": "3x - 4",
-          "E": "3x + 4"
-        },
-        "correctAnswer": "C",
-        "buffer": false
-      },
-      {
-        "id": 14,
-        "ogQuestionNumber": 106,
-        "questionText": "The average (arithmetic mean) of the positive integers x, y, and z is 3. If x < y < z, what is the greatest possible value of z?",
-        "difficulty": "medium",
-        "options": {
-          "A": "5",
-          "B": "6",
-          "C": "7",
-          "D": "8",
-          "E": "9"
-        },
-        "correctAnswer": "C",
-        "buffer": false
-      },
-      {
-        "id": 15,
-        "ogQuestionNumber": 111,
-        "questionText": "The average (arithmetic mean) length per film for a group of 21 films is t minutes. If a film that runs for 66 minutes is removed from the group and replaced by one that runs for 52 minutes, what is the average length per film, in minutes, for the new group of films, in terms of t?",
-        "difficulty": "medium",
-        "options": {
-          "A": "t + 2/3",
-          "B": "t - 2/3",
-          "C": "21t + 14",
-          "D": "t + 3/2",
-          "E": "t - 3/2"
-        },
-        "correctAnswer": "B",
-        "buffer": false
-      },
-      {
-        "id": 16,
-        "ogQuestionNumber": 118,
-        "questionText": "If m is an even integer, v is an odd integer, and m > v > 0, which of the following represents the number of even integers less than m and greater than v?",
-        "difficulty": "medium",
-        "options": {
-          "A": "(m - v)/2 - 1",
-          "B": "(m - v - 1)/2",
-          "C": "(m - v)/2",
-          "D": "m - v - 1",
-          "E": "m - v"
-        },
-        "correctAnswer": "B",
-        "buffer": false
-      },
-      {
-        "id": 17,
-        "ogQuestionNumber": 123,
-        "questionText": "If the average (arithmetic mean) of x, y, and z is 7x and x ≠ 0, what is the ratio of x to the sum of y and z?",
-        "difficulty": "medium",
-        "options": {
-          "A": "1:21",
-          "B": "1:20",
-          "C": "1:6",
-          "D": "6:1",
-          "E": "20:1"
-        },
-        "correctAnswer": "B",
-        "buffer": false
-      },
-      {
-        "id": 18,
-        "ogQuestionNumber": 129,
-        "questionText": "José has a collection of 100 coins, consisting of nickels, dimes, quarters, and half-dollars. If he has a total of 35 nickels and dimes, a total of 45 dimes and quarters, and a total of 50 nickels and quarters, how many half-dollars does he have?",
-        "difficulty": "medium",
-        "options": {
-          "A": "15",
-          "B": "20",
-          "C": "25",
-          "D": "30",
-          "E": "35"
-        },
-        "correctAnswer": "B",
-        "buffer": false
-      },
-      {
-        "id": 19,
-        "ogQuestionNumber": 133,
-        "questionText": "If x is a positive integer, r is the remainder when x is divided by 4, and R is the remainder when x is divided by 9, what is the greatest possible value of r² + R²?",
-        "difficulty": "medium",
-        "options": {
-          "A": "25",
-          "B": "21",
-          "C": "17",
-          "D": "13",
-          "E": "11"
-        },
-        "correctAnswer": "A",
-        "buffer": false
-      },
-      {
-        "id": 20,
-        "ogQuestionNumber": 149,
-        "questionText": "If m is an integer and m = 10³² - 32, what is the sum of the digits of m?",
-        "difficulty": "hard",
-        "options": {
-          "A": "257",
-          "B": "264",
-          "C": "275",
-          "D": "284",
-          "E": "292"
-        },
-        "correctAnswer": "D",
-        "buffer": false
-      },
-      {
-        "id": 21,
-        "ogQuestionNumber": 154,
-        "questionText": "The sequence a₁, a₂, ... aₙ, ... is such that aₙ = 2aₙ₋₁ - x for all positive integers n ≥ 2 and for a certain number x. If a₅ = 99 and a₃ = 27, what is the value of x?",
-        "difficulty": "hard",
-        "options": {
-          "A": "3",
-          "B": "9",
-          "C": "18",
-          "D": "36",
-          "E": "45"
-        },
-        "correctAnswer": "A",
-        "buffer": false
-      }
-    ]
-  }
+      "correctAnswer": "A",
+      "buffer": false
+    }
+  ]
+}

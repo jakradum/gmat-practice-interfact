@@ -170,15 +170,17 @@ try {
 const GMATInterface = () => {
   // Check if this is a Data Insights section
   const isDataInsights = questionData.sectionType === 'dataInsights';
+  const isVerbal = questionData.sectionType === 'verbal';
 
   // Calculate GMAT timing correctly
   const targetQuestions = questionData.targetQuestions || 21;
   const timeLimit =
     questionData.timeLimit ||
     (() => {
-      // Fallback calculation based on section type if timeLimit not specified
       if (isDataInsights) {
         return Math.round((45 * 60 * targetQuestions) / 20); // DI: 45 min for 20 questions
+      } else if (isVerbal) {
+        return Math.round((65 * 60 * targetQuestions) / 23); // Verbal: 65 min for 23 questions
       } else {
         return Math.round((45 * 60 * targetQuestions) / 21); // Quant: 45 min for 21 questions
       }
@@ -196,6 +198,8 @@ const GMATInterface = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const [questionStartTime, setQuestionStartTime] = useState(null);
   const [questionTimes, setQuestionTimes] = useState({});
+  const [testStartTime, setTestStartTime] = useState(null);
+  const [currentPassage, setCurrentPassage] = useState(null);
 
   // Bookmark functionality
   const [bookmarkedQuestions, setBookmarkedQuestions] = useState(new Set());
@@ -224,7 +228,15 @@ const GMATInterface = () => {
       return bookmarkArray[bookmarkReviewIndex];
     }
     return adaptiveQuestions[currentQuestionIndex];
-  }, [isEditingPrevious, editQuestionIndex, isReviewingBookmarks, bookmarkedQuestions, bookmarkReviewIndex, adaptiveQuestions, currentQuestionIndex]);
+  }, [
+    isEditingPrevious,
+    editQuestionIndex,
+    isReviewingBookmarks,
+    bookmarkedQuestions,
+    bookmarkReviewIndex,
+    adaptiveQuestions,
+    currentQuestionIndex,
+  ]);
 
   // FIXED: Use useMemo for currentQuestion
   const currentQuestion = useMemo(() => getCurrentQuestion(), [getCurrentQuestion]);
@@ -259,13 +271,19 @@ const GMATInterface = () => {
   }, [timeRemaining, timeLimit]);
 
   // FIXED: Update current data source when question changes (for DI)
+  // Update current data source when question changes (for DI and Verbal)
   useEffect(() => {
-    if (isDataInsights && adaptiveQuestions.length > 0 && currentQuestion) {
-      const dataSource = questionData.dataSources?.find((ds) => ds.id === currentQuestion.dataSourceId);
-      setCurrentDataSource(dataSource);
-      setActiveTab(0); // Reset to first tab for multi-source
+    if (adaptiveQuestions.length > 0 && currentQuestion) {
+      if (isDataInsights) {
+        const dataSource = questionData.dataSources?.find((ds) => ds.id === currentQuestion.dataSourceId);
+        setCurrentDataSource(dataSource);
+        setActiveTab(0); // Reset to first tab for multi-source
+      } else if (isVerbal && currentQuestion.passageId) {
+        const passage = questionData.passages?.find((p) => p.id === currentQuestion.passageId);
+        setCurrentPassage(passage);
+      }
     }
-  }, [currentQuestion, isDataInsights, adaptiveQuestions.length]);
+  }, [currentQuestion, isDataInsights, isVerbal, adaptiveQuestions.length]);
 
   // FIXED: Question timing effect
   useEffect(() => {
@@ -286,15 +304,55 @@ const GMATInterface = () => {
     isPaused,
     isCompleted,
     bookmarkReviewIndex,
-    editQuestionIndex
+    editQuestionIndex,
   ]);
 
   // Initialize questions
-  const initializeAdaptiveQuestions = useCallback(() => {
-    if (questionData.adaptiveMode) {
-      const allQuestions = questionData.questions.filter((q) => !q.buffer);
-      const bufferQuestions = questionData.questions.filter((q) => q.buffer);
+const initializeAdaptiveQuestions = useCallback(() => {
+  if (questionData.adaptiveMode) {
+    const allQuestions = questionData.questions.filter((q) => !q.buffer);
+    const bufferQuestions = questionData.questions.filter((q) => q.buffer);
 
+    // Group questions by passage for verbal sections
+    if (isVerbal) {
+      const passageGroups = {};
+      const crQuestions = [];
+      
+      allQuestions.forEach(q => {
+        if (q.passageId) {
+          if (!passageGroups[q.passageId]) {
+            passageGroups[q.passageId] = [];
+          }
+          passageGroups[q.passageId].push(q);
+        } else {
+          crQuestions.push(q);
+        }
+      });
+
+      // Combine passage groups with CR questions
+      const questionsToUse = [];
+      const passageGroupArrays = Object.values(passageGroups);
+      
+      // Interleave passage groups with CR questions
+      let crIndex = 0;
+      passageGroupArrays.forEach((passageGroup, index) => {
+        questionsToUse.push(...passageGroup);
+        // Add CR questions between passages
+        if (crIndex < crQuestions.length && index < passageGroupArrays.length - 1) {
+          questionsToUse.push(crQuestions[crIndex]);
+          crIndex++;
+        }
+      });
+      
+      // Add remaining CR questions
+      while (crIndex < crQuestions.length) {
+        questionsToUse.push(crQuestions[crIndex]);
+        crIndex++;
+      }
+
+      setAdaptiveQuestions(questionsToUse.slice(0, targetQuestions));
+    } else {
+      // Original logic for non-verbal sections
       const questionsByDifficulty = {
         easy: [...allQuestions.filter((q) => q.difficulty === 'easy')],
         medium: [...allQuestions.filter((q) => q.difficulty === 'medium')],
@@ -312,7 +370,6 @@ const GMATInterface = () => {
       });
 
       const difficultyPattern = createAdaptiveDifficultyPattern(targetQuestions);
-
       const questionsToUse = [];
       const usedQuestionIds = new Set();
 
@@ -349,11 +406,12 @@ const GMATInterface = () => {
       }
 
       setAdaptiveQuestions(questionsToUse);
-    } else {
-      const questionsToUse = questionData.questions.slice(0, targetQuestions);
-      setAdaptiveQuestions(questionsToUse);
     }
-  }, [targetQuestions]);
+  } else {
+    const questionsToUse = questionData.questions.slice(0, targetQuestions);
+    setAdaptiveQuestions(questionsToUse);
+  }
+}, [targetQuestions, isVerbal]);
 
   // Helper functions
   const createAdaptiveDifficultyPattern = useCallback((numQuestions) => {
@@ -444,12 +502,15 @@ const GMATInterface = () => {
   }, []);
 
   // Edit functions
-  const startEditQuestion = useCallback((questionIndex) => {
-    if (editsUsed >= maxEdits) return;
-    setIsEditingPrevious(true);
-    setEditQuestionIndex(questionIndex);
-    setEditsUsed((prev) => prev + 1);
-  }, [editsUsed, maxEdits]);
+  const startEditQuestion = useCallback(
+    (questionIndex) => {
+      if (editsUsed >= maxEdits) return;
+      setIsEditingPrevious(true);
+      setEditQuestionIndex(questionIndex);
+      setEditsUsed((prev) => prev + 1);
+    },
+    [editsUsed, maxEdits]
+  );
 
   const exitEditMode = useCallback(() => {
     setIsEditingPrevious(false);
@@ -487,26 +548,30 @@ const GMATInterface = () => {
 
   const startTest = useCallback(() => {
     setHasStarted(true);
+    setTestStartTime(new Date());
     initializeAdaptiveQuestions();
   }, [initializeAdaptiveQuestions]);
 
   // Check if current question is answered based on its format
-  const isQuestionAnswered = useCallback((question) => {
-    if (!question) return false;
-    
-    if (question.questionFormat === 'tableAnalysis') {
-      return (
-        question.statements?.every((_, index) => selectedAnswers[`${question.id}-${index}`] !== undefined) || false
-      );
-    } else if (question.questionFormat === 'twoPartAnalysis') {
-      return (
-        question.columns?.every((_, colIndex) => selectedAnswers[`${question.id}-col${colIndex}`] !== undefined) ||
-        false
-      );
-    } else {
-      return selectedAnswers[question.id] !== undefined;
-    }
-  }, [selectedAnswers]);
+  const isQuestionAnswered = useCallback(
+    (question) => {
+      if (!question) return false;
+
+      if (question.questionFormat === 'tableAnalysis') {
+        return (
+          question.statements?.every((_, index) => selectedAnswers[`${question.id}-${index}`] !== undefined) || false
+        );
+      } else if (question.questionFormat === 'twoPartAnalysis') {
+        return (
+          question.columns?.every((_, colIndex) => selectedAnswers[`${question.id}-col${colIndex}`] !== undefined) ||
+          false
+        );
+      } else {
+        return selectedAnswers[question.id] !== undefined;
+      }
+    },
+    [selectedAnswers]
+  );
 
   const handleAnswerSelect = useCallback((questionId, answer) => {
     setSelectedAnswers((prev) => ({
@@ -560,7 +625,18 @@ const GMATInterface = () => {
         }
       }
     }
-  }, [questionStartTime, currentQuestion, updatePerformanceLevel, isReviewingBookmarks, bookmarkedQuestions, bookmarkReviewIndex, currentQuestionIndex, adaptiveQuestions.length, timeRemaining, startBookmarkReview]);
+  }, [
+    questionStartTime,
+    currentQuestion,
+    updatePerformanceLevel,
+    isReviewingBookmarks,
+    bookmarkedQuestions,
+    bookmarkReviewIndex,
+    currentQuestionIndex,
+    adaptiveQuestions.length,
+    timeRemaining,
+    startBookmarkReview,
+  ]);
 
   const cancelNext = useCallback(() => {
     setShowConfirmModal(false);
@@ -673,677 +749,714 @@ const GMATInterface = () => {
   }, [adaptiveQuestions, selectedAnswers, performanceLevel]);
 
   // Render question visual content (for Quantitative questions)
-  const renderQuestionVisual = useCallback((visual) => {
-    if (!visual) return null;
+  const renderQuestionVisual = useCallback(
+    (visual) => {
+      if (!visual) return null;
 
-    switch (visual.type) {
-      case 'table':
-        return (
-          <div
-            style={{
-              marginBottom: '25px',
-              padding: '20px',
-              backgroundColor: '#f9f9f9',
-              borderRadius: '8px',
-              border: '1px solid #ddd',
-            }}
-          >
-            {visual.title && (
-              <h4
-                style={{
-                  marginBottom: '15px',
-                  fontSize: '16px',
-                  color: '#2c3e50',
-                  textAlign: 'center',
-                  fontWeight: '600',
-                }}
-              >
-                {visual.title}
-              </h4>
-            )}
-            <div style={{ overflow: 'auto' }}>
-              <table
-                style={{
-                  width: '100%',
-                  borderCollapse: 'collapse',
-                  fontSize: '14px',
-                  backgroundColor: 'white',
-                  margin: '0 auto',
-                }}
-              >
-                <thead>
-                  <tr style={{ backgroundColor: '#f8f9fa' }}>
-                    {visual.data.headers.map((header, idx) => (
-                      <th
-                        key={idx}
-                        style={{
-                          padding: '10px 12px',
-                          textAlign: 'center',
-                          borderBottom: '2px solid #dee2e6',
-                          fontWeight: '600',
-                          color: '#2c3e50',
-                        }}
-                      >
-                        <span dangerouslySetInnerHTML={{ __html: formatMath(header) }}></span>
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {visual.data.rows.map((row, rowIdx) => (
-                    <tr
-                      key={rowIdx}
-                      style={{
-                        borderBottom: '1px solid #dee2e6',
-                      }}
-                    >
-                      {row.map((cell, cellIdx) => (
-                        <td
-                          key={cellIdx}
+      switch (visual.type) {
+        case 'table':
+          return (
+            <div
+              style={{
+                marginBottom: '25px',
+                padding: '20px',
+                backgroundColor: '#f9f9f9',
+                borderRadius: '8px',
+                border: '1px solid #ddd',
+              }}
+            >
+              {visual.title && (
+                <h4
+                  style={{
+                    marginBottom: '15px',
+                    fontSize: '16px',
+                    color: '#2c3e50',
+                    textAlign: 'center',
+                    fontWeight: '600',
+                  }}
+                >
+                  {visual.title}
+                </h4>
+              )}
+              <div style={{ overflow: 'auto' }}>
+                <table
+                  style={{
+                    width: '100%',
+                    borderCollapse: 'collapse',
+                    fontSize: '14px',
+                    backgroundColor: 'white',
+                    margin: '0 auto',
+                  }}
+                >
+                  <thead>
+                    <tr style={{ backgroundColor: '#f8f9fa' }}>
+                      {visual.data.headers.map((header, idx) => (
+                        <th
+                          key={idx}
                           style={{
-                            padding: '8px 12px',
+                            padding: '10px 12px',
                             textAlign: 'center',
-                            color: '#333',
+                            borderBottom: '2px solid #dee2e6',
+                            fontWeight: '600',
+                            color: '#2c3e50',
                           }}
                         >
-                          <span dangerouslySetInnerHTML={{ __html: formatMath(cell) }}></span>
-                        </td>
+                          <span dangerouslySetInnerHTML={{ __html: formatMath(header) }}></span>
+                        </th>
                       ))}
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        );
-
-      case 'diagram':
-        return (
-          <div
-            style={{
-              marginBottom: '25px',
-              padding: '20px',
-              backgroundColor: '#f9f9f9',
-              borderRadius: '8px',
-              border: '1px solid #ddd',
-              textAlign: 'center',
-            }}
-          >
-            {visual.title && (
-              <h4
-                style={{
-                  marginBottom: '15px',
-                  fontSize: '16px',
-                  color: '#2c3e50',
-                  fontWeight: '600',
-                }}
-              >
-                {visual.title}
-              </h4>
-            )}
-            <div
-              style={{
-                backgroundColor: 'white',
-                padding: '20px',
-                borderRadius: '6px',
-                display: 'inline-block',
-                border: '1px solid #ddd',
-              }}
-            >
-              <svg
-                width={visual.dimensions?.width || 400}
-                height={visual.dimensions?.height || 300}
-                viewBox={`0 0 ${visual.dimensions?.width || 400} ${visual.dimensions?.height || 300}`}
-              >
-                {visual.elements?.map((element, idx) => {
-                  switch (element.type) {
-                    case 'line':
-                      return (
-                        <line
-                          key={idx}
-                          x1={element.x1}
-                          y1={element.y1}
-                          x2={element.x2}
-                          y2={element.y2}
-                          stroke={element.color || '#333'}
-                          strokeWidth={element.width || 2}
-                        />
-                      );
-                    case 'circle':
-                      return (
-                        <circle
-                          key={idx}
-                          cx={element.x}
-                          cy={element.y}
-                          r={element.radius}
-                          fill={element.fill || 'none'}
-                          stroke={element.color || '#333'}
-                          strokeWidth={element.width || 2}
-                        />
-                      );
-                    case 'rectangle':
-                      return (
-                        <rect
-                          key={idx}
-                          x={element.x}
-                          y={element.y}
-                          width={element.width}
-                          height={element.height}
-                          fill={element.fill || 'none'}
-                          stroke={element.color || '#333'}
-                          strokeWidth={element.strokeWidth || 2}
-                        />
-                      );
-                    case 'text':
-                      return (
-                        <text
-                          key={idx}
-                          x={element.x}
-                          y={element.y}
-                          fontSize={element.size || 14}
-                          fill={element.color || '#333'}
-                          textAnchor={element.anchor || 'middle'}
-                          fontWeight={element.weight || 'normal'}
-                        >
-                          {element.content}
-                        </text>
-                      );
-                    case 'path':
-                      return (
-                        <path
-                          key={idx}
-                          d={element.d}
-                          fill={element.fill || 'none'}
-                          stroke={element.color || '#333'}
-                          strokeWidth={element.width || 2}
-                        />
-                      );
-                    default:
-                      return null;
-                  }
-                })}
-              </svg>
-            </div>
-            {visual.caption && (
-              <div
-                style={{
-                  marginTop: '10px',
-                  fontSize: '14px',
-                  color: '#666',
-                  fontStyle: 'italic',
-                }}
-              >
-                {visual.caption}
+                  </thead>
+                  <tbody>
+                    {visual.data.rows.map((row, rowIdx) => (
+                      <tr
+                        key={rowIdx}
+                        style={{
+                          borderBottom: '1px solid #dee2e6',
+                        }}
+                      >
+                        {row.map((cell, cellIdx) => (
+                          <td
+                            key={cellIdx}
+                            style={{
+                              padding: '8px 12px',
+                              textAlign: 'center',
+                              color: '#333',
+                            }}
+                          >
+                            <span dangerouslySetInnerHTML={{ __html: formatMath(cell) }}></span>
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
-            )}
-          </div>
-        );
-
-      case 'equation':
-        return (
-          <div
-            style={{
-              marginBottom: '25px',
-              padding: '20px',
-              backgroundColor: '#f9f9f9',
-              borderRadius: '8px',
-              border: '1px solid #ddd',
-              textAlign: 'center',
-            }}
-          >
-            {visual.title && (
-              <h4
-                style={{
-                  marginBottom: '15px',
-                  fontSize: '16px',
-                  color: '#2c3e50',
-                  fontWeight: '600',
-                }}
-              >
-                {visual.title}
-              </h4>
-            )}
-            <div
-              style={{
-                backgroundColor: 'white',
-                padding: '15px',
-                borderRadius: '6px',
-                border: '1px solid #ddd',
-                fontSize: '18px',
-                fontFamily: '"Times New Roman", serif',
-              }}
-            >
-              <span dangerouslySetInnerHTML={{ __html: formatMath(visual.content) }}></span>
             </div>
-            {visual.description && (
-              <div
-                style={{
-                  marginTop: '10px',
-                  fontSize: '14px',
-                  color: '#666',
-                }}
-              >
-                {visual.description}
-              </div>
-            )}
-          </div>
-        );
+          );
 
-      case 'coordinate':
-        return (
-          <div
-            style={{
-              marginBottom: '25px',
-              padding: '20px',
-              backgroundColor: '#f9f9f9',
-              borderRadius: '8px',
-              border: '1px solid #ddd',
-              textAlign: 'center',
-            }}
-          >
-            {visual.title && (
-              <h4
-                style={{
-                  marginBottom: '15px',
-                  fontSize: '16px',
-                  color: '#2c3e50',
-                  fontWeight: '600',
-                }}
-              >
-                {visual.title}
-              </h4>
-            )}
+        case 'diagram':
+          return (
             <div
               style={{
-                backgroundColor: 'white',
+                marginBottom: '25px',
                 padding: '20px',
-                borderRadius: '6px',
-                display: 'inline-block',
-                border: '1px solid #ddd',
-              }}
-            >
-              <svg width="400" height="300" viewBox="0 0 400 300">
-                {/* Grid */}
-                <defs>
-                  <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
-                    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e0e0e0" strokeWidth="1" />
-                  </pattern>
-                </defs>
-                <rect width="100%" height="100%" fill="url(#grid)" />
-
-                {/* Axes */}
-                <line x1="0" y1="150" x2="400" y2="150" stroke="#333" strokeWidth="2" />
-                <line x1="200" y1="0" x2="200" y2="300" stroke="#333" strokeWidth="2" />
-
-                {/* Axis labels */}
-                <text x="390" y="145" fontSize="12" fill="#333">
-                  x
-                </text>
-                <text x="205" y="15" fontSize="12" fill="#333">
-                  y
-                </text>
-
-                {/* Origin */}
-                <text x="205" y="165" fontSize="12" fill="#333">
-                  0
-                </text>
-
-                {/* Scale markers */}
-                {[-4, -3, -2, -1, 1, 2, 3, 4].map((val) => (
-                  <g key={`x-${val}`}>
-                    <line x1={200 + val * 40} y1="145" x2={200 + val * 40} y2="155" stroke="#333" strokeWidth="1" />
-                    <text x={200 + val * 40} y="170" fontSize="10" fill="#333" textAnchor="middle">
-                      {val}
-                    </text>
-                  </g>
-                ))}
-                {[-3, -2, -1, 1, 2, 3].map((val) => (
-                  <g key={`y-${val}`}>
-                    <line x1="195" y1={150 - val * 40} x2="205" y2={150 - val * 40} stroke="#333" strokeWidth="1" />
-                    <text x="190" y={150 - val * 40 + 4} fontSize="10" fill="#333" textAnchor="end">
-                      {val}
-                    </text>
-                  </g>
-                ))}
-
-                {/* Plot elements */}
-                {visual.elements?.map((element, idx) => {
-                  const x = 200 + element.x * 40;
-                  const y = 150 - element.y * 40;
-
-                  switch (element.type) {
-                    case 'point':
-                      return (
-                        <g key={idx}>
-                          <circle cx={x} cy={y} r="4" fill={element.color || '#e74c3c'} />
-                          {element.label && (
-                            <text x={x + 8} y={y - 8} fontSize="12" fill="#333">
-                              {element.label}
-                            </text>
-                          )}
-                        </g>
-                      );
-                    case 'line':
-                      const x1 = 200 + element.x1 * 40;
-                      const y1 = 150 - element.y1 * 40;
-                      const x2 = 200 + element.x2 * 40;
-                      const y2 = 150 - element.y2 * 40;
-                      return (
-                        <line
-                          key={idx}
-                          x1={x1}
-                          y1={y1}
-                          x2={x2}
-                          y2={y2}
-                          stroke={element.color || '#3498db'}
-                          strokeWidth={element.width || 2}
-                        />
-                      );
-                    default:
-                      return null;
-                  }
-                })}
-              </svg>
-            </div>
-          </div>
-        );
-
-      default:
-        return (
-          <div
-            style={{
-              marginBottom: '25px',
-              padding: '15px',
-              backgroundColor: '#fff3cd',
-              borderRadius: '8px',
-              border: '1px solid #ffc107',
-              color: '#856404',
-            }}
-          >
-            Unsupported visual type: {visual.type}
-          </div>
-        );
-    }
-  }, [formatMath]);
-
-  // Render data source content for Data Insights
-  const renderDataSource = useCallback((dataSource) => {
-    if (!dataSource) return null;
-
-    switch (dataSource.type) {
-      case 'graph':
-        return (
-          <div style={{ padding: '20px' }}>
-            <h3 style={{ marginBottom: '20px', fontSize: '18px', color: '#2c3e50' }}>{dataSource.title}</h3>
-            <div
-              style={{
-                border: '2px solid #ddd',
-                borderRadius: '8px',
-                padding: '30px',
                 backgroundColor: '#f9f9f9',
-                minHeight: '300px',
-                display: 'flex',
-                flexDirection: 'column',
+                borderRadius: '8px',
+                border: '1px solid #ddd',
+                textAlign: 'center',
               }}
             >
-              <div style={{ marginBottom: '15px', fontSize: '14px', color: '#666' }}>
-                <strong>Y-Axis:</strong> {dataSource.data.yAxis} | <strong>X-Axis:</strong> {dataSource.data.xAxis}
+              {visual.title && (
+                <h4
+                  style={{
+                    marginBottom: '15px',
+                    fontSize: '16px',
+                    color: '#2c3e50',
+                    fontWeight: '600',
+                  }}
+                >
+                  {visual.title}
+                </h4>
+              )}
+              <div
+                style={{
+                  backgroundColor: 'white',
+                  padding: '20px',
+                  borderRadius: '6px',
+                  display: 'inline-block',
+                  border: '1px solid #ddd',
+                }}
+              >
+                <svg
+                  width={visual.dimensions?.width || 400}
+                  height={visual.dimensions?.height || 300}
+                  viewBox={`0 0 ${visual.dimensions?.width || 400} ${visual.dimensions?.height || 300}`}
+                >
+                  {visual.elements?.map((element, idx) => {
+                    switch (element.type) {
+                      case 'line':
+                        return (
+                          <line
+                            key={idx}
+                            x1={element.x1}
+                            y1={element.y1}
+                            x2={element.x2}
+                            y2={element.y2}
+                            stroke={element.color || '#333'}
+                            strokeWidth={element.width || 2}
+                          />
+                        );
+                      case 'circle':
+                        return (
+                          <circle
+                            key={idx}
+                            cx={element.x}
+                            cy={element.y}
+                            r={element.radius}
+                            fill={element.fill || 'none'}
+                            stroke={element.color || '#333'}
+                            strokeWidth={element.width || 2}
+                          />
+                        );
+                      case 'rectangle':
+                        return (
+                          <rect
+                            key={idx}
+                            x={element.x}
+                            y={element.y}
+                            width={element.width}
+                            height={element.height}
+                            fill={element.fill || 'none'}
+                            stroke={element.color || '#333'}
+                            strokeWidth={element.strokeWidth || 2}
+                          />
+                        );
+                      case 'text':
+                        return (
+                          <text
+                            key={idx}
+                            x={element.x}
+                            y={element.y}
+                            fontSize={element.size || 14}
+                            fill={element.color || '#333'}
+                            textAnchor={element.anchor || 'middle'}
+                            fontWeight={element.weight || 'normal'}
+                          >
+                            {element.content}
+                          </text>
+                        );
+                      case 'path':
+                        return (
+                          <path
+                            key={idx}
+                            d={element.d}
+                            fill={element.fill || 'none'}
+                            stroke={element.color || '#333'}
+                            strokeWidth={element.width || 2}
+                          />
+                        );
+                      default:
+                        return null;
+                    }
+                  })}
+                </svg>
               </div>
+              {visual.caption && (
+                <div
+                  style={{
+                    marginTop: '10px',
+                    fontSize: '14px',
+                    color: '#666',
+                    fontStyle: 'italic',
+                  }}
+                >
+                  {visual.caption}
+                </div>
+              )}
+            </div>
+          );
 
-              <div style={{ marginBottom: '20px', display: 'flex', gap: '20px' }}>
-                {dataSource.data.series.map((series, idx) => (
-                  <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                    <div
-                      style={{
-                        width: '12px',
-                        height: '12px',
-                        backgroundColor: series.color,
-                        borderRadius: '2px',
-                      }}
-                    ></div>
-                    <span style={{ fontSize: '14px' }}>{series.name}</span>
-                  </div>
-                ))}
+        case 'equation':
+          return (
+            <div
+              style={{
+                marginBottom: '25px',
+                padding: '20px',
+                backgroundColor: '#f9f9f9',
+                borderRadius: '8px',
+                border: '1px solid #ddd',
+                textAlign: 'center',
+              }}
+            >
+              {visual.title && (
+                <h4
+                  style={{
+                    marginBottom: '15px',
+                    fontSize: '16px',
+                    color: '#2c3e50',
+                    fontWeight: '600',
+                  }}
+                >
+                  {visual.title}
+                </h4>
+              )}
+              <div
+                style={{
+                  backgroundColor: 'white',
+                  padding: '15px',
+                  borderRadius: '6px',
+                  border: '1px solid #ddd',
+                  fontSize: '18px',
+                  fontFamily: '"Times New Roman", serif',
+                }}
+              >
+                <span dangerouslySetInnerHTML={{ __html: formatMath(visual.content) }}></span>
               </div>
+              {visual.description && (
+                <div
+                  style={{
+                    marginTop: '10px',
+                    fontSize: '14px',
+                    color: '#666',
+                  }}
+                >
+                  {visual.description}
+                </div>
+              )}
+            </div>
+          );
 
-              <div style={{ flex: 1, position: 'relative', backgroundColor: 'white', border: '1px solid #ddd' }}>
-                <svg width="100%" height="200" viewBox="0 0 400 200">
+        case 'coordinate':
+          return (
+            <div
+              style={{
+                marginBottom: '25px',
+                padding: '20px',
+                backgroundColor: '#f9f9f9',
+                borderRadius: '8px',
+                border: '1px solid #ddd',
+                textAlign: 'center',
+              }}
+            >
+              {visual.title && (
+                <h4
+                  style={{
+                    marginBottom: '15px',
+                    fontSize: '16px',
+                    color: '#2c3e50',
+                    fontWeight: '600',
+                  }}
+                >
+                  {visual.title}
+                </h4>
+              )}
+              <div
+                style={{
+                  backgroundColor: 'white',
+                  padding: '20px',
+                  borderRadius: '6px',
+                  display: 'inline-block',
+                  border: '1px solid #ddd',
+                }}
+              >
+                <svg width="400" height="300" viewBox="0 0 400 300">
+                  {/* Grid */}
                   <defs>
-                    <pattern id="grid" width="40" height="20" patternUnits="userSpaceOnUse">
-                      <path d="M 40 0 L 0 0 0 20" fill="none" stroke="#e0e0e0" strokeWidth="1" />
+                    <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                      <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#e0e0e0" strokeWidth="1" />
                     </pattern>
                   </defs>
                   <rect width="100%" height="100%" fill="url(#grid)" />
 
-                  {dataSource.data.series.map((series, seriesIdx) => {
-                    const allYValues = dataSource.data.series.flatMap((s) => s.points.map((p) => p.y));
-                    const minY = Math.min(...allYValues);
-                    const maxY = Math.max(...allYValues);
-                    const yRange = maxY - minY;
+                  {/* Axes */}
+                  <line x1="0" y1="150" x2="400" y2="150" stroke="#333" strokeWidth="2" />
+                  <line x1="200" y1="0" x2="200" y2="300" stroke="#333" strokeWidth="2" />
 
-                    const points = series.points.map((point, idx) => {
-                      const xPos = 40 + idx * (320 / (series.points.length - 1));
-                      const yNormalized = (point.y - minY) / yRange;
-                      const yPos = 160 - yNormalized * 120;
+                  {/* Axis labels */}
+                  <text x="390" y="145" fontSize="12" fill="#333">
+                    x
+                  </text>
+                  <text x="205" y="15" fontSize="12" fill="#333">
+                    y
+                  </text>
 
-                      return { x: xPos, y: yPos };
-                    });
+                  {/* Origin */}
+                  <text x="205" y="165" fontSize="12" fill="#333">
+                    0
+                  </text>
 
-                    const pathData = points
-                      .map((point, idx) => `${idx === 0 ? 'M' : 'L'} ${point.x} ${point.y}`)
-                      .join(' ');
+                  {/* Scale markers */}
+                  {[-4, -3, -2, -1, 1, 2, 3, 4].map((val) => (
+                    <g key={`x-${val}`}>
+                      <line x1={200 + val * 40} y1="145" x2={200 + val * 40} y2="155" stroke="#333" strokeWidth="1" />
+                      <text x={200 + val * 40} y="170" fontSize="10" fill="#333" textAnchor="middle">
+                        {val}
+                      </text>
+                    </g>
+                  ))}
+                  {[-3, -2, -1, 1, 2, 3].map((val) => (
+                    <g key={`y-${val}`}>
+                      <line x1="195" y1={150 - val * 40} x2="205" y2={150 - val * 40} stroke="#333" strokeWidth="1" />
+                      <text x="190" y={150 - val * 40 + 4} fontSize="10" fill="#333" textAnchor="end">
+                        {val}
+                      </text>
+                    </g>
+                  ))}
 
-                    return (
-                      <g key={seriesIdx}>
-                        <path d={pathData} fill="none" stroke={series.color} strokeWidth="2" />
-                        {points.map((point, idx) => (
-                          <circle key={idx} cx={point.x} cy={point.y} r="3" fill={series.color} />
-                        ))}
-                      </g>
-                    );
+                  {/* Plot elements */}
+                  {visual.elements?.map((element, idx) => {
+                    const x = 200 + element.x * 40;
+                    const y = 150 - element.y * 40;
+
+                    switch (element.type) {
+                      case 'point':
+                        return (
+                          <g key={idx}>
+                            <circle cx={x} cy={y} r="4" fill={element.color || '#e74c3c'} />
+                            {element.label && (
+                              <text x={x + 8} y={y - 8} fontSize="12" fill="#333">
+                                {element.label}
+                              </text>
+                            )}
+                          </g>
+                        );
+                      case 'line':
+                        const x1 = 200 + element.x1 * 40;
+                        const y1 = 150 - element.y1 * 40;
+                        const x2 = 200 + element.x2 * 40;
+                        const y2 = 150 - element.y2 * 40;
+                        return (
+                          <line
+                            key={idx}
+                            x1={x1}
+                            y1={y1}
+                            x2={x2}
+                            y2={y2}
+                            stroke={element.color || '#3498db'}
+                            strokeWidth={element.width || 2}
+                          />
+                        );
+                      default:
+                        return null;
+                    }
                   })}
-
-                  <text x="20" y="15" fontSize="10" fill="#666">
-                    High
-                  </text>
-                  <text x="20" y="190" fontSize="10" fill="#666">
-                    Low
-                  </text>
-                  <text x="50" y="195" fontSize="10" fill="#666">
-                    Start
-                  </text>
-                  <text x="350" y="195" fontSize="10" fill="#666">
-                    End
-                  </text>
                 </svg>
               </div>
             </div>
-          </div>
-        );
+          );
 
-      case 'table':
-        return (
-          <div style={{ padding: '20px' }}>
-            <h3 style={{ marginBottom: '20px', fontSize: '18px', color: '#2c3e50' }}>{dataSource.title}</h3>
-            <div style={{ overflow: 'auto', border: '1px solid #ddd', borderRadius: '8px' }}>
-              <table
-                style={{
-                  width: '100%',
-                  borderCollapse: 'collapse',
-                  fontSize: '14px',
-                  backgroundColor: 'white',
-                }}
-              >
-                <thead>
-                  <tr style={{ backgroundColor: '#f8f9fa' }}>
-                    {dataSource.data.headers.map((header, idx) => (
-                      <th
-                        key={idx}
-                        style={{
-                          padding: '12px 10px',
-                          textAlign: 'left',
-                          borderBottom: '2px solid #dee2e6',
-                          fontWeight: '600',
-                          color: '#2c3e50',
-                        }}
-                      >
-                        {header}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {dataSource.data.rows.map((row, rowIdx) => (
-                    <tr
-                      key={rowIdx}
-                      style={{
-                        borderBottom: '1px solid #dee2e6',
-                        backgroundColor: rowIdx % 2 === 0 ? 'white' : '#f8f9fa',
-                      }}
-                    >
-                      {row.map((cell, cellIdx) => (
-                        <td
-                          key={cellIdx}
-                          style={{
-                            padding: '10px',
-                            color: '#333',
-                          }}
-                        >
-                          {cell}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        );
-
-      case 'text':
-        return (
-          <div style={{ padding: '20px' }}>
-            <h3 style={{ marginBottom: '20px', fontSize: '18px', color: '#2c3e50' }}>{dataSource.title}</h3>
+        default:
+          return (
             <div
               style={{
-                padding: '25px',
-                backgroundColor: '#f9f9f9',
+                marginBottom: '25px',
+                padding: '15px',
+                backgroundColor: '#fff3cd',
                 borderRadius: '8px',
-                lineHeight: '1.6',
-                fontSize: '15px',
-                color: '#333',
-                border: '1px solid #ddd',
+                border: '1px solid #ffc107',
+                color: '#856404',
               }}
             >
-              {dataSource.content}
+              Unsupported visual type: {visual.type}
             </div>
-          </div>
-        );
+          );
+      }
+    },
+    [formatMath]
+  );
 
-      case 'multiSource':
-        const activeSource = dataSource.sources[activeTab];
-        return (
-          <div style={{ padding: '20px' }}>
-            <h3 style={{ marginBottom: '20px', fontSize: '18px', color: '#2c3e50' }}>{dataSource.title}</h3>
+  // Render data source content for Data Insights
+  const renderDataSource = useCallback(
+    (dataSource) => {
+      if (!dataSource) return null;
 
-            <div style={{ marginBottom: '20px', borderBottom: '2px solid #ddd' }}>
-              {dataSource.sources.map((source, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => setActiveTab(idx)}
-                  style={{
-                    padding: '10px 20px',
-                    border: 'none',
-                    backgroundColor: activeTab === idx ? '#3498db' : 'transparent',
-                    color: activeTab === idx ? 'white' : '#666',
-                    cursor: 'pointer',
-                    borderRadius: '8px 8px 0 0',
-                    marginRight: '5px',
-                    fontSize: '14px',
-                    fontWeight: activeTab === idx ? '600' : '400',
-                  }}
-                >
-                  {source.tabName}
-                </button>
-              ))}
-            </div>
-
-            <div style={{ minHeight: '300px' }}>
-              {activeSource.type === 'text' ? (
-                <div
-                  style={{
-                    padding: '20px',
-                    backgroundColor: '#f9f9f9',
-                    borderRadius: '8px',
-                    lineHeight: '1.6',
-                    fontSize: '15px',
-                    color: '#333',
-                  }}
-                >
-                  {activeSource.content}
+      switch (dataSource.type) {
+        case 'graph':
+          return (
+            <div style={{ padding: '20px' }}>
+              <h3 style={{ marginBottom: '20px', fontSize: '18px', color: '#2c3e50' }}>{dataSource.title}</h3>
+              <div
+                style={{
+                  border: '2px solid #ddd',
+                  borderRadius: '8px',
+                  padding: '30px',
+                  backgroundColor: '#f9f9f9',
+                  minHeight: '300px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                }}
+              >
+                <div style={{ marginBottom: '15px', fontSize: '14px', color: '#666' }}>
+                  <strong>Y-Axis:</strong> {dataSource.data.yAxis} | <strong>X-Axis:</strong> {dataSource.data.xAxis}
                 </div>
-              ) : activeSource.type === 'table' ? (
-                <div style={{ overflow: 'auto', border: '1px solid #ddd', borderRadius: '8px' }}>
-                  <table
-                    style={{
-                      width: '100%',
-                      borderCollapse: 'collapse',
-                      fontSize: '14px',
-                      backgroundColor: 'white',
-                    }}
-                  >
-                    <thead>
-                      <tr style={{ backgroundColor: '#f8f9fa' }}>
-                        {activeSource.data.headers.map((header, idx) => (
-                          <th
-                            key={idx}
-                            style={{
-                              padding: '12px 10px',
-                              textAlign: 'left',
-                              borderBottom: '2px solid #dee2e6',
-                              fontWeight: '600',
-                              color: '#2c3e50',
-                            }}
-                          >
-                            {header}
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {activeSource.data.rows.map((row, rowIdx) => (
-                        <tr
-                          key={rowIdx}
+
+                <div style={{ marginBottom: '20px', display: 'flex', gap: '20px' }}>
+                  {dataSource.data.series.map((series, idx) => (
+                    <div key={idx} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <div
+                        style={{
+                          width: '12px',
+                          height: '12px',
+                          backgroundColor: series.color,
+                          borderRadius: '2px',
+                        }}
+                      ></div>
+                      <span style={{ fontSize: '14px' }}>{series.name}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div style={{ flex: 1, position: 'relative', backgroundColor: 'white', border: '1px solid #ddd' }}>
+                  <svg width="100%" height="200" viewBox="0 0 400 200">
+                    <defs>
+                      <pattern id="grid" width="40" height="20" patternUnits="userSpaceOnUse">
+                        <path d="M 40 0 L 0 0 0 20" fill="none" stroke="#e0e0e0" strokeWidth="1" />
+                      </pattern>
+                    </defs>
+                    <rect width="100%" height="100%" fill="url(#grid)" />
+
+                    {dataSource.data.series.map((series, seriesIdx) => {
+                      const allYValues = dataSource.data.series.flatMap((s) => s.points.map((p) => p.y));
+                      const minY = Math.min(...allYValues);
+                      const maxY = Math.max(...allYValues);
+                      const yRange = maxY - minY;
+
+                      const points = series.points.map((point, idx) => {
+                        const xPos = 40 + idx * (320 / (series.points.length - 1));
+                        const yNormalized = (point.y - minY) / yRange;
+                        const yPos = 160 - yNormalized * 120;
+
+                        return { x: xPos, y: yPos };
+                      });
+
+                      const pathData = points
+                        .map((point, idx) => `${idx === 0 ? 'M' : 'L'} ${point.x} ${point.y}`)
+                        .join(' ');
+
+                      return (
+                        <g key={seriesIdx}>
+                          <path d={pathData} fill="none" stroke={series.color} strokeWidth="2" />
+                          {points.map((point, idx) => (
+                            <circle key={idx} cx={point.x} cy={point.y} r="3" fill={series.color} />
+                          ))}
+                        </g>
+                      );
+                    })}
+
+                    <text x="20" y="15" fontSize="10" fill="#666">
+                      High
+                    </text>
+                    <text x="20" y="190" fontSize="10" fill="#666">
+                      Low
+                    </text>
+                    <text x="50" y="195" fontSize="10" fill="#666">
+                      Start
+                    </text>
+                    <text x="350" y="195" fontSize="10" fill="#666">
+                      End
+                    </text>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          );
+
+        case 'table':
+          return (
+            <div style={{ padding: '20px' }}>
+              <h3 style={{ marginBottom: '20px', fontSize: '18px', color: '#2c3e50' }}>{dataSource.title}</h3>
+              <div style={{ overflow: 'auto', border: '1px solid #ddd', borderRadius: '8px' }}>
+                <table
+                  style={{
+                    width: '100%',
+                    borderCollapse: 'collapse',
+                    fontSize: '14px',
+                    backgroundColor: 'white',
+                  }}
+                >
+                  <thead>
+                    <tr style={{ backgroundColor: '#f8f9fa' }}>
+                      {dataSource.data.headers.map((header, idx) => (
+                        <th
+                          key={idx}
                           style={{
-                            borderBottom: '1px solid #dee2e6',
-                            backgroundColor: rowIdx % 2 === 0 ? 'white' : '#f8f9fa',
+                            padding: '12px 10px',
+                            textAlign: 'left',
+                            borderBottom: '2px solid #dee2e6',
+                            fontWeight: '600',
+                            color: '#2c3e50',
                           }}
                         >
-                          {row.map((cell, cellIdx) => (
-                            <td
-                              key={cellIdx}
+                          {header}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {dataSource.data.rows.map((row, rowIdx) => (
+                      <tr
+                        key={rowIdx}
+                        style={{
+                          borderBottom: '1px solid #dee2e6',
+                          backgroundColor: rowIdx % 2 === 0 ? 'white' : '#f8f9fa',
+                        }}
+                      >
+                        {row.map((cell, cellIdx) => (
+                          <td
+                            key={cellIdx}
+                            style={{
+                              padding: '10px',
+                              color: '#333',
+                            }}
+                          >
+                            {cell}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          );
+
+        case 'text':
+          return (
+            <div style={{ padding: '20px' }}>
+              <h3 style={{ marginBottom: '20px', fontSize: '18px', color: '#2c3e50' }}>{dataSource.title}</h3>
+              <div
+                style={{
+                  padding: '25px',
+                  backgroundColor: '#f9f9f9',
+                  borderRadius: '8px',
+                  lineHeight: '1.6',
+                  fontSize: '15px',
+                  color: '#333',
+                  border: '1px solid #ddd',
+                }}
+              >
+                {dataSource.content}
+              </div>
+            </div>
+          );
+
+        case 'multiSource':
+          const activeSource = dataSource.sources[activeTab];
+          return (
+            <div style={{ padding: '20px' }}>
+              <h3 style={{ marginBottom: '20px', fontSize: '18px', color: '#2c3e50' }}>{dataSource.title}</h3>
+
+              <div style={{ marginBottom: '20px', borderBottom: '2px solid #ddd' }}>
+                {dataSource.sources.map((source, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setActiveTab(idx)}
+                    style={{
+                      padding: '10px 20px',
+                      border: 'none',
+                      backgroundColor: activeTab === idx ? '#3498db' : 'transparent',
+                      color: activeTab === idx ? 'white' : '#666',
+                      cursor: 'pointer',
+                      borderRadius: '8px 8px 0 0',
+                      marginRight: '5px',
+                      fontSize: '14px',
+                      fontWeight: activeTab === idx ? '600' : '400',
+                    }}
+                  >
+                    {source.tabName}
+                  </button>
+                ))}
+              </div>
+
+              <div style={{ minHeight: '300px' }}>
+                {activeSource.type === 'text' ? (
+                  <div
+                    style={{
+                      padding: '20px',
+                      backgroundColor: '#f9f9f9',
+                      borderRadius: '8px',
+                      lineHeight: '1.6',
+                      fontSize: '15px',
+                      color: '#333',
+                    }}
+                  >
+                    {activeSource.content}
+                  </div>
+                ) : activeSource.type === 'table' ? (
+                  <div style={{ overflow: 'auto', border: '1px solid #ddd', borderRadius: '8px' }}>
+                    <table
+                      style={{
+                        width: '100%',
+                        borderCollapse: 'collapse',
+                        fontSize: '14px',
+                        backgroundColor: 'white',
+                      }}
+                    >
+                      <thead>
+                        <tr style={{ backgroundColor: '#f8f9fa' }}>
+                          {activeSource.data.headers.map((header, idx) => (
+                            <th
+                              key={idx}
                               style={{
-                                padding: '10px',
-                                color: '#333',
+                                padding: '12px 10px',
+                                textAlign: 'left',
+                                borderBottom: '2px solid #dee2e6',
+                                fontWeight: '600',
+                                color: '#2c3e50',
                               }}
                             >
-                              {cell}
-                            </td>
+                              {header}
+                            </th>
                           ))}
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              ) : null}
+                      </thead>
+                      <tbody>
+                        {activeSource.data.rows.map((row, rowIdx) => (
+                          <tr
+                            key={rowIdx}
+                            style={{
+                              borderBottom: '1px solid #dee2e6',
+                              backgroundColor: rowIdx % 2 === 0 ? 'white' : '#f8f9fa',
+                            }}
+                          >
+                            {row.map((cell, cellIdx) => (
+                              <td
+                                key={cellIdx}
+                                style={{
+                                  padding: '10px',
+                                  color: '#333',
+                                }}
+                              >
+                                {cell}
+                              </td>
+                            ))}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ) : null}
+              </div>
             </div>
-          </div>
-        );
+          );
 
-      default:
-        return <div>Unsupported data source type</div>;
-    }
-  }, [activeTab]);
+        default:
+          return <div>Unsupported data source type</div>;
+      }
+    },
+    [activeTab]
+  );
+
+  // Render passage content for Verbal questions
+const renderPassage = useCallback((passage) => {
+  if (!passage) return null;
+
+  return (
+    <div style={{ padding: '20px' }}>
+      <h3 style={{ marginBottom: '20px', fontSize: '18px', color: '#2c3e50' }}>
+        {passage.title || 'Reading Passage'}
+      </h3>
+      <div
+        style={{
+          padding: '25px',
+          backgroundColor: '#f9f9f9',
+          borderRadius: '8px',
+          lineHeight: '1.8',
+          fontSize: '16px',
+          color: '#333',
+          border: '1px solid #ddd',
+          fontFamily: 'Georgia, serif',
+        }}
+      >
+        {passage.content.split('\n\n').map((paragraph, idx) => (
+          <p key={idx} style={{ marginBottom: '16px', textIndent: '20px' }}>
+            {paragraph}
+          </p>
+        ))}
+      </div>
+    </div>
+  );
+}, []);
 
   const isTimeWarning = timeRemaining <= timeLimit / 9;
 
@@ -1405,7 +1518,7 @@ const GMATInterface = () => {
           }}
         >
           <span style={{ fontSize: '16px', fontWeight: '500' }}>
-            GMAT™ Practice Test - {isDataInsights ? 'Data Insights' : 'Quantitative Reasoning'}
+GMAT™ Practice Test - {isDataInsights ? 'Data Insights' : isVerbal ? 'Verbal Reasoning' : 'Quantitative Reasoning'}
             {questionData.sectionName.includes('Development Mode') && (
               <span style={{ color: '#f39c12', marginLeft: '8px' }}>(DEV MODE)</span>
             )}
@@ -1542,7 +1655,7 @@ const GMATInterface = () => {
     // Prepare detailed results data
     const detailedResults = adaptiveQuestions.map((question, index) => {
       const userAnswer = selectedAnswers[question.id];
-      
+
       const isCorrect = (() => {
         if (question.questionFormat === 'tableAnalysis') {
           return (
@@ -1573,7 +1686,7 @@ const GMATInterface = () => {
         correctAnswer: question.correctAnswer,
         isCorrect,
         wasBookmarked: bookmarkedQuestions.has(question.id),
-        timeSpent: questionTimes[question.id] || 0
+        timeSpent: questionTimes[question.id] || 0,
       };
     });
 
@@ -1590,7 +1703,7 @@ const GMATInterface = () => {
           }}
         >
           <span style={{ fontSize: '16px', fontWeight: '500' }}>
-            GMAT™ Practice Test - {isDataInsights ? 'Data Insights' : 'Quantitative Reasoning'}
+GMAT™ Practice Test - {isDataInsights ? 'Data Insights' : isVerbal ? 'Verbal Reasoning' : 'Quantitative Reasoning'}
             {questionData.sectionName.includes('Development Mode') && (
               <span style={{ color: '#f39c12', marginLeft: '8px' }}>(DEV MODE)</span>
             )}
@@ -1634,6 +1747,19 @@ const GMATInterface = () => {
             }}
           >
             <h2 style={{ color: '#2c3e50', marginBottom: '20px', fontSize: '24px' }}>Test Results</h2>
+
+            {testStartTime && (
+              <div
+                style={{
+                  fontSize: '14px',
+                  color: '#666',
+                  marginBottom: '20px',
+                  textAlign: 'center',
+                }}
+              >
+                Test started: {testStartTime.toLocaleDateString()} at {testStartTime.toLocaleTimeString()}
+              </div>
+            )}
 
             {bookmarkedQuestions.size > 0 && (
               <div
@@ -1926,6 +2052,121 @@ const GMATInterface = () => {
             </div>
 
             <div style={{ fontSize: '16px', color: '#888' }}>
+              {/* Time Pressure Graph */}
+<div style={{ marginBottom: '25px' }}>
+  <h4 style={{ color: '#2c3e50', marginBottom: '15px', fontSize: '18px' }}>
+    Time Pressure Analysis
+  </h4>
+  <div style={{ 
+    border: '1px solid #ddd', 
+    borderRadius: '6px', 
+    padding: '20px',
+    backgroundColor: 'white'
+  }}>
+    <svg width="100%" height="300" viewBox="0 0 800 300">
+      {/* Grid lines */}
+      {[1, 2, 3, 4, 5].map(i => (
+        <g key={`grid-${i}`}>
+          <line 
+            x1="60" 
+            y1={60 + i * 40} 
+            x2="740" 
+            y2={60 + i * 40} 
+            stroke="#f0f0f0" 
+            strokeWidth="1" 
+          />
+          <text x="50" y={60 + i * 40 + 4} fontSize="12" fill="#666" textAnchor="end">
+            {5 - i}
+          </text>
+        </g>
+      ))}
+      
+      {/* Vertical grid */}
+      {Array.from({length: Math.min(adaptiveQuestions.length, 21)}, (_, i) => (
+        <line 
+          key={`vgrid-${i}`}
+          x1={80 + i * 30} 
+          y1="60" 
+          x2={80 + i * 30} 
+          y2="260" 
+          stroke="#f0f0f0" 
+          strokeWidth="1" 
+        />
+      ))}
+      
+      {/* Average line */}
+      <line x1="60" y1="180" x2="740" y2="180" stroke="#999" strokeWidth="2" strokeDasharray="5,5" />
+      <text x="745" y="185" fontSize="12" fill="#666">Your Average</text>
+      
+      {/* Data points */}
+      {detailedResults.slice(0, 21).map((result, index) => {
+        const x = 80 + index * 30;
+        const timeInMinutes = result.timeSpent / 60;
+        const y = 260 - (timeInMinutes * 40); // Scale: 5 minutes = 200px height
+        const clampedY = Math.max(60, Math.min(260, y));
+        
+        return (
+          <g key={`point-${index}`}>
+            <circle
+              cx={x}
+              cy={clampedY}
+              r="6"
+              fill={result.isCorrect ? '#4caf50' : '#f44336'}
+              stroke="white"
+              strokeWidth="2"
+            />
+            {result.timeSpent > 300 && ( // Show warning for >5 min
+              <circle
+                cx={x}
+                cy={clampedY}
+                r="10"
+                fill="none"
+                stroke="#f44336"
+                strokeWidth="2"
+              />
+            )}
+          </g>
+        );
+      })}
+      
+      {/* Axes */}
+      <line x1="60" y1="60" x2="60" y2="260" stroke="#333" strokeWidth="2" />
+      <line x1="60" y1="260" x2="740" y2="260" stroke="#333" strokeWidth="2" />
+      
+      {/* Labels */}
+      <text x="400" y="290" fontSize="14" fill="#333" textAnchor="middle">Question Number</text>
+      <text x="20" y="160" fontSize="14" fill="#333" textAnchor="middle" transform="rotate(-90 20 160)">
+        Response Time (Minutes)
+      </text>
+      
+      {/* X-axis numbers */}
+      {Array.from({length: Math.min(adaptiveQuestions.length, 21)}, (_, i) => (
+        <text 
+          key={`xlabel-${i}`}
+          x={80 + i * 30} 
+          y="275" 
+          fontSize="12" 
+          fill="#666" 
+          textAnchor="middle"
+        >
+          {i + 1}
+        </text>
+      ))}
+    </svg>
+    
+    {/* Legend */}
+    <div style={{ marginTop: '15px', display: 'flex', gap: '20px', justifyContent: 'center' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+        <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: '#4caf50' }}></div>
+        <span style={{ fontSize: '14px' }}>Correctly Answered</span>
+      </div>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+        <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: '#f44336' }}></div>
+        <span style={{ fontSize: '14px' }}>Incorrectly Answered</span>
+      </div>
+    </div>
+  </div>
+</div>
               Time used: {formatTime(timeLimit - timeRemaining)}
               {timeRemaining === 0 && <span style={{ color: '#e74c3c', marginLeft: '10px' }}>(Time Expired)</span>}
             </div>
@@ -2033,10 +2274,10 @@ const GMATInterface = () => {
           transition: 'filter 0.3s ease',
         }}
       >
-        {isDataInsights ? (
-          // Data Insights Layout: Data on left, Question on right
+       {(isDataInsights || (isVerbal && currentQuestion?.passageId)) ? (
+          // Split Layout: Data/Passage on left, Question on right
           <>
-            {/* Data Panel */}
+            {/* Data/Passage Panel */}
             <div
               style={{
                 width: '50%',
@@ -2045,7 +2286,8 @@ const GMATInterface = () => {
                 backgroundColor: '#f9f9f9',
               }}
             >
-              {currentDataSource && renderDataSource(currentDataSource)}
+              {isDataInsights && currentDataSource && renderDataSource(currentDataSource)}
+              {isVerbal && currentPassage && renderPassage(currentPassage)}
             </div>
 
             {/* Question Panel */}
@@ -2600,7 +2842,7 @@ const GMATInterface = () => {
           </div>
         </div>
       )}
-      
+
       {/* Edit Question Selection Modal */}
       {showEditModal && (
         <div
