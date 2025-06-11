@@ -1,348 +1,356 @@
-# Enhanced GMAT Practice Test System - Updated Technical Implementation
+# GMAT Practice Test System
 
-## Overview of Changes
+A comprehensive React-based practice test interface supporting all three GMAT Focus Edition sections: Quantitative Reasoning, Data Insights, and Verbal Reasoning.
 
-The enhanced system now supports both **Quantitative Reasoning** and **Data Insights** sections with dynamic layouts, data visualization capabilities, and optimized React performance.
+## Project Attribution
 
-## Updated JSON Structure
+**Concept & Design**: Original idea and specifications by jakradum  
+**Implementation**: Built with Claude (Anthropic's AI assistant) as coding partner
 
-### Core Configuration Fields
+This project demonstrates collaborative human-AI development - the vision, requirements, and testing were human-driven, while Claude handled the technical implementation and React development.
 
+## Features
+
+### Test Sections Supported
+- **Quantitative Reasoning**: Full-width layout with mathematical formatting and visual elements
+- **Data Insights**: Split layout with data visualizations (graphs, tables, multi-source) on left, questions on right
+- **Verbal Reasoning**: 
+  - Reading Comprehension: Split layout with numbered passages on left, questions on right
+  - Critical Reasoning: Full-width layout for standalone questions
+
+### Advanced Features
+- **Adaptive Testing**: Dynamic difficulty adjustment based on performance
+- **Custom Timing**: Set your own time limits or use section defaults
+- **Bookmark System**: Mark questions for review with visual indicators
+- **Edit Previous**: Limited ability to revise previous answers (1/7th ratio)
+- **Time Pressure Analysis**: Visual graph showing response times and patterns
+- **Performance Analytics**: Detailed scoring and difficulty breakdowns
+- **Question Types**: Support for multiple choice, table analysis, two-part analysis, and more
+
+## Quick Start
+
+### Prerequisites
+- Node.js 14+ and npm
+
+### Installation
+```bash
+git clone [your-repo-url]
+cd gmat-practice-test
+npm install
+npm start
+```
+
+The application will run on `http://localhost:3000`
+
+### Setting Up Questions
+
+Create a `questionData.json` file in the `src` directory with your test content. See examples below for each section type.
+
+## JSON Configuration Examples
+
+### Quantitative Reasoning
 ```json
 {
-  "sectionName": "GMAT Data Insights - Mixed Practice",
-  "sectionType": "dataInsights", // NEW: "quantitative" or "dataInsights"
-  "testDescription": "This section tests your data interpretation and analysis abilities through graphics interpretation, table analysis, and multi-source reasoning.",
+  "sectionName": "GMAT Quantitative Practice",
+  "sectionType": "quantitative",
+  "testDescription": "This section tests mathematical reasoning and problem-solving abilities.",
   "skillsAssessed": [
-    "Graphics interpretation and trend analysis",
-    "Table analysis and data comparison", 
-    "Multi-source reasoning and synthesis",
-    "Data sufficiency evaluation"
+    "Algebra and arithmetic",
+    "Geometry and coordinate geometry", 
+    "Data analysis and probability"
   ],
   "adaptiveMode": true,
-  "targetQuestions": 20,
-  "bufferQuestions": 5,
-  "timeLimit": 1920, // NEW: Optional time limit in seconds
-  "firstSevenStrategy": "controlled challenge",
-  "dataSources": [ /* NEW: Array of data sources for Data Insights */ ],
-  "questions": [ /* Enhanced with dataSourceId field */ ]
-}
-```
-
-### New Field: sectionType
-- **"quantitative"**: Renders full-width question layout (original behavior)
-- **"dataInsights"**: Renders split layout with data on left, questions on right
-
-### New Field: timeLimit (Optional)
-- **Number**: Time limit in seconds for the section
-- **Fallback**: Auto-calculated based on section type if not provided
-  - Data Insights: `(45 * 60 * targetQuestions) / 20`
-  - Quantitative: `(45 * 60 * targetQuestions) / 21`
-
-### New Structure: dataSources (Data Insights Only)
-
-#### 1. Graph Data Source
-```json
-{
-  "id": "graph1",
-  "type": "graph",
-  "title": "Company Revenue by Quarter (2020-2024)",
-  "data": {
-    "type": "line", // Future: "bar", "scatter", "area"
-    "xAxis": "Quarter",
-    "yAxis": "Revenue ($ millions)",
-    "series": [
-      {
-        "name": "Product A",
-        "color": "#3498db",
-        "points": [
-          {"x": "Q1 2020", "y": 15},
-          {"x": "Q2 2020", "y": 18},
-          {"x": "Q3 2020", "y": 22}
-        ]
-      }
-    ]
-  }
-}
-```
-
-#### 2. Table Data Source
-```json
-{
-  "id": "table1", 
-  "type": "table",
-  "title": "Employee Performance Metrics by Department",
-  "data": {
-    "headers": ["Department", "Employees", "Avg Salary ($)", "Satisfaction (%)", "Turnover (%)"],
-    "rows": [
-      ["Engineering", "45", "95000", "87", "8"],
-      ["Marketing", "23", "75000", "82", "12"]
-    ]
-  }
-}
-```
-
-#### 3. Text Data Source
-```json
-{
-  "id": "text1",
-  "type": "text", 
-  "title": "Market Research Summary",
-  "content": "A recent consumer survey of 1,200 participants revealed that 68% prefer Brand X over competitors. The survey was conducted across three age groups..."
-}
-```
-
-#### 4. Multi-Source Data Source (Tabs)
-```json
-{
-  "id": "multiSource1",
-  "type": "multiSource", 
-  "title": "Market Research Analysis",
-  "sources": [
+  "targetQuestions": 21,
+  "timeLimit": 2700,
+  "questions": [
     {
-      "tabName": "Survey Results",
-      "type": "text",
-      "content": "Survey content here..."
-    },
-    {
-      "tabName": "Sales Data", 
-      "type": "table",
-      "data": {
-        "headers": ["Region", "Q1 Sales", "Q2 Sales", "Growth %"],
-        "rows": [
-          ["North", "$2.1M", "$2.4M", "14.3"],
-          ["South", "$1.8M", "$2.0M", "11.1"]
-        ]
+      "id": 1,
+      "questionText": "If 3x + 7 = 22, what is the value of x^2 + 2x?",
+      "difficulty": "medium",
+      "options": {
+        "A": "15",
+        "B": "20", 
+        "C": "25",
+        "D": "30",
+        "E": "35"
+      },
+      "correctAnswer": "C",
+      "visual": {
+        "type": "equation",
+        "content": "3x + 7 = 22"
       }
     }
   ]
 }
 ```
 
-### Enhanced Question Structure
-
-#### For Quantitative Reasoning (no changes)
+### Data Insights
 ```json
 {
-  "id": 1,
-  "ogQuestionNumber": 85, // Optional: Official Guide reference
-  "questionText": "If 3x + 7 = 22, what is the value of x^2 + 2x?",
-  "difficulty": "medium",
-  "visual": { /* Optional: Visual elements for complex problems */ },
-  "options": {
-    "A": "15",
-    "B": "20",
-    "C": "25",
-    "D": "30",
-    "E": "35"
-  },
-  "correctAnswer": "C",
-  "buffer": false
+  "sectionName": "GMAT Data Insights Practice",
+  "sectionType": "dataInsights", 
+  "testDescription": "This section tests data interpretation and analysis abilities.",
+  "adaptiveMode": true,
+  "targetQuestions": 20,
+  "timeLimit": 2700,
+  "dataSources": [
+    {
+      "id": "graph1",
+      "type": "graph",
+      "title": "Company Revenue by Quarter",
+      "data": {
+        "type": "line",
+        "xAxis": "Quarter",
+        "yAxis": "Revenue ($ millions)",
+        "series": [
+          {
+            "name": "Product A",
+            "color": "#3498db",
+            "points": [
+              {"x": "Q1 2020", "y": 15},
+              {"x": "Q2 2020", "y": 18}
+            ]
+          }
+        ]
+      }
+    }
+  ],
+  "questions": [
+    {
+      "id": 1,
+      "dataSourceId": "graph1",
+      "questionText": "What was the approximate revenue for Product A in Q1 2020?",
+      "difficulty": "easy",
+      "options": {
+        "A": "$10 million",
+        "B": "$15 million",
+        "C": "$20 million"
+      },
+      "correctAnswer": "B"
+    }
+  ]
 }
 ```
 
-#### For Data Insights (with dataSourceId)
+### Verbal Reasoning
 ```json
 {
-  "id": 1,
-  "dataSourceId": "graph1", // NEW: Links to data source
-  "questionText": "Based on the revenue data shown, what was the approximate total revenue for Product A in 2020?",
-  "difficulty": "easy",
-  "options": {
-    "A": "$65 million",
-    "B": "$70 million",
-    "C": "$80 million",
-    "D": "$85 million",
-    "E": "$90 million"
-  },
-  "correctAnswer": "C",
-  "buffer": false
+  "sectionName": "GMAT Verbal Practice",
+  "sectionType": "verbal",
+  "testDescription": "This section tests reading comprehension and critical reasoning skills.",
+  "adaptiveMode": true,
+  "targetQuestions": 23,
+  "timeLimit": 3900,
+  "passages": [
+    {
+      "id": "passage1", 
+      "title": "Economic Theory",
+      "content": "Traditional economic theory assumes that markets operate efficiently when left to their own devices. This assumption, known as the efficient market hypothesis, suggests that prices reflect all available information.\n\nHowever, behavioral economists have challenged this view by demonstrating that human psychology significantly influences economic decisions."
+    }
+  ],
+  "questions": [
+    {
+      "id": 1,
+      "passageId": "passage1",
+      "questionText": "The primary purpose of the passage is to:",
+      "difficulty": "medium", 
+      "options": {
+        "A": "Explain traditional economic theory",
+        "B": "Present contrasting economic views",
+        "C": "Prove behavioral economics is superior"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 2,
+      "questionText": "Which strengthens the argument that markets are inefficient?",
+      "difficulty": "hard",
+      "options": {
+        "A": "Evidence of rational investor behavior",
+        "B": "Data showing market bubbles",
+        "C": "Research supporting efficient markets"
+      },
+      "correctAnswer": "B"
+    }
+  ]
 }
 ```
 
-### Visual Elements for Quantitative Questions
+## Configuration Options
+
+### Core Fields
+- **sectionName**: Display name for your test
+- **sectionType**: `"quantitative"`, `"dataInsights"`, or `"verbal"`
+- **testDescription**: Brief description shown on start screen
+- **skillsAssessed**: Array of skills being tested
+- **adaptiveMode**: Enable/disable adaptive difficulty
+- **targetQuestions**: Number of questions in test
+- **timeLimit**: Custom time limit in seconds (optional)
+
+### Section-Specific Fields
+
+#### Data Insights
+- **dataSources**: Array of data visualizations (graphs, tables, text, multi-source)
+
+#### Verbal Reasoning  
+- **passages**: Array of reading passages with line numbering
+
+### Question Properties
+- **id**: Unique identifier
+- **questionText**: The question content
+- **difficulty**: `"easy"`, `"medium"`, or `"hard"`
+- **options**: Object with answer choices (A, B, C, D, E)
+- **correctAnswer**: The correct option letter
+- **buffer**: Boolean for buffer questions in adaptive mode
+- **dataSourceId**: (Data Insights) Links to data source
+- **passageId**: (Verbal RC) Links to reading passage
+- **visual**: (Quantitative) Visual elements like diagrams, tables
+
+## Visual Elements (Quantitative)
+
+### Supported Types
+- **table**: Data tables with headers and rows
+- **diagram**: SVG-based geometric diagrams  
+- **equation**: Mathematical expressions with formatting
+- **coordinate**: Coordinate plane with plotting capabilities
+
+### Example Visual Element
 ```json
 {
   "visual": {
-    "type": "table|diagram|equation|coordinate",
-    "title": "Optional title",
-    "data": { /* Structure varies by type */ },
-    "elements": [ /* For diagrams and coordinates */ ],
-    "content": "...", // For equations
-    "caption": "Optional caption"
+    "type": "table",
+    "title": "Sales Data",
+    "data": {
+      "headers": ["Quarter", "Revenue", "Growth"],
+      "rows": [
+        ["Q1", "$100M", "5%"],
+        ["Q2", "$110M", "10%"]
+      ]
+    }
   }
 }
 ```
 
-## Enhanced Features
+## Data Source Types (Data Insights)
 
-### 1. Dynamic Layout Selection
-- **Quantitative**: Full-width question area with mathematical formatting
-- **Data Insights**: 50/50 split with data visualization on left, questions on right
-
-### 2. Multi-Source Reasoning Support
-- Tabbed interface for multiple data sources
-- Questions refresh without data changing when linked to same dataSourceId
-- Seamless navigation between different data types
-
-### 3. Data Visualization
-- **Graphs**: SVG-based line charts with multiple series, legend, and grid
-- **Tables**: Professional formatting with alternating row colors and headers
-- **Text**: Formatted paragraphs with proper spacing and readability
-- **Multi-Source**: Tab navigation with mixed content types
-
-### 4. Enhanced Question Association
-- Questions automatically linked to relevant data sources
-- Data sources persist across multiple questions
-- Tab state resets when switching to new multi-source data
-
-### 5. Advanced Test Features
-- **Bookmark System**: Mark questions for review with visual indicators
-- **Edit Previous**: Limited ability to revise previous answers (1/7th ratio)
-- **Adaptive Algorithm**: Dynamic difficulty adjustment based on performance
-- **Time Management**: Section-specific timing with warning alerts
-- **Performance Tracking**: Real-time accuracy and timing analytics
-
-## Technical Implementation Notes
-
-### React Performance Optimizations
-- **Memoized Functions**: All major functions use `useCallback` to prevent unnecessary re-renders
-- **Optimized State**: `useMemo` for computed values like `currentQuestion`
-- **Efficient Renders**: Data sources rendered once and cached per question
-- **Hooks Optimization**: Proper dependency arrays in all `useEffect` hooks
-- **Memory Management**: Cleanup functions for timers and event listeners
-
-### Performance Optimizations
-- **Component Lifecycle**: Optimized re-rendering with React.memo patterns
-- **Data Caching**: Questions and data sources cached in memory for instant access
-- **Tab Switching**: Uses React state management (no re-rendering of data)
-- **SVG Graphics**: Optimized for responsive scaling with efficient calculations
-- **Table Rendering**: Efficient scrolling for large datasets with virtual scrolling considerations
-- **Mathematical Formatting**: Cached formatting functions for math expressions
-
-### State Management Architecture
-```javascript
-// Core state structure
-const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-const [adaptiveQuestions, setAdaptiveQuestions] = useState([]);
-const [selectedAnswers, setSelectedAnswers] = useState({});
-const [questionTimes, setQuestionTimes] = useState({});
-
-// Computed values
-const currentQuestion = useMemo(() => getCurrentQuestion(), [getCurrentQuestion]);
-
-// Memoized functions
-const handleAnswerSelect = useCallback((questionId, answer) => {
-  // Optimized answer handling
-}, []);
+### Graph
+Line charts with multiple series, customizable colors and scaling
+```json
+{
+  "type": "graph",
+  "data": {
+    "type": "line",
+    "xAxis": "Time Period", 
+    "yAxis": "Value",
+    "series": [...]
+  }
+}
 ```
 
-### Responsive Design Considerations
-- **Desktop First**: 50/50 split optimized for screens 1024px+ width
-- **Mobile Adaptations**: Responsive breakpoints for production deployment
-- **Independent Scrolling**: Data panel scrolls independently from question panel
-- **Mathematical Rendering**: Preserved formatting across all layouts and devices
-- **Touch Interactions**: Optimized for both mouse and touch interfaces
+### Table
+Professional data tables with alternating row colors
+```json
+{
+  "type": "table", 
+  "data": {
+    "headers": ["Column 1", "Column 2"],
+    "rows": [["Data 1", "Data 2"]]
+  }
+}
+```
 
-### Browser Compatibility
-- **Modern ES6+**: Uses modern JavaScript features with babel compilation
-- **React 18+**: Optimized for latest React features and concurrent rendering
-- **SVG Support**: Requires SVG support for data visualizations
-- **Local Storage**: Uses React state only (no browser storage dependencies)
+### Multi-Source
+Tabbed interface combining multiple data types
+```json
+{
+  "type": "multiSource",
+  "sources": [
+    {"tabName": "Survey", "type": "text", "content": "..."},
+    {"tabName": "Data", "type": "table", "data": {...}}
+  ]
+}
+```
 
-## Migration Guide
+## Advanced Features
 
-### From Quantitative to Data Insights
-1. Change `sectionType` from `"quantitative"` to `"dataInsights"`
-2. Add `dataSources` array with appropriate data structures
-3. Add `dataSourceId` field to each question linking to relevant data source
-4. Update `testDescription` and `skillsAssessed` for Data Insights content
-5. Optionally add `timeLimit` for custom timing (auto-calculated if omitted)
+### Adaptive Algorithm
+- Adjusts question difficulty based on recent performance
+- Weighted scoring with early question bonuses
+- Performance level tracking (easy/medium/hard)
 
-### Maintaining Backward Compatibility
-- Quantitative sections work exactly as before
-- No changes required for existing quantitative JSON files
-- New fields are optional and ignored for quantitative sections
-- Visual elements remain compatible with existing question structure
-
-### Upgrading Existing Implementations
-- Existing JSON files continue to work without modification
-- New features are opt-in through additional JSON fields
-- Performance improvements apply automatically to all question types
-- No breaking changes to existing question or answer structures
-
-## Data Source Design Guidelines
-
-### Graph Data Sources
-- Use distinct colors for multiple series (#3498db, #e74c3c, #27ae60, #f39c12)
-- Provide clear axis labels and units
-- Include 4-8 data points per series for optimal readability
-- Consider y-axis scaling for effective visualization
-- Ensure color contrast meets accessibility standards
-
-### Table Data Sources  
-- Keep tables to 5-7 columns maximum for readability
-- Use clear, concise headers with units specified
-- Include consistent data formatting within columns
-- Consider alternating row colors for better scanning
-- Implement responsive table design for mobile viewing
-
-### Text Data Sources
-- Keep paragraphs focused and scannable (100-200 words)
-- Include specific numerical data when relevant for questions
-- Structure information logically with clear hierarchies
-- Use consistent formatting for improved readability
-
-### Multi-Source Data Sources
-- Limit to 2-4 tabs for optimal usability and cognitive load
-- Use descriptive tab names (8-15 characters) for clarity
-- Ensure content types complement each other thematically
-- Design for questions requiring synthesis across multiple sources
-
-## Error Handling & Validation
-
-### JSON Validation
-- Automatic fallback to mock data if questionData.json not found
-- Console warnings for missing required fields
-- Graceful degradation for malformed data structures
-- Runtime validation of question and data source relationships
-
-### Performance Monitoring
-- Question timing tracking for performance analysis
-- Memory usage optimization for large question sets
-- Error boundaries for React component failures
-- Automatic recovery from temporary state inconsistencies
-
-## Future Enhancement Opportunities
-
-### Data Visualization Expansions
-- Bar charts, scatter plots, and area charts for graphs
-- Interactive graph elements (hover data, zoom capabilities)
-- Sortable table columns with filtering options
-- Advanced mathematical equation rendering with LaTeX support
-
-### User Experience Improvements
-- Export functionality for performance data analysis
-- Customizable themes and accessibility options
-- Advanced keyboard navigation for accessibility compliance
-- Offline capability with service worker implementation
+### Time Management
+- Section-specific default timing
+- Custom time limits with user input
+- Time pressure visualization and analysis
+- Warning alerts at 1/9th time remaining
 
 ### Analytics & Reporting
-- Detailed performance analytics with trend analysis
-- Question difficulty calibration based on user performance
-- Advanced adaptive algorithm with machine learning integration
-- Real-time performance comparison with benchmarks
+- **Performance by Difficulty**: Accuracy breakdown by question difficulty
+- **Time Pressure Graph**: Visual analysis of response times with hexadecimal averaging
+- **Question Type Analysis**: Performance patterns by question format (RC vs CR for Verbal)
+- **Detailed Results Table**: Complete question-by-question breakdown with timing
 
-## Security Considerations
+### User Experience
+- **Bookmark System**: Mark questions for end-of-test review
+- **Edit Previous**: Limited ability to revise answers (1/7th of questions)
+- **Mathematical Formatting**: Automatic rendering of mathematical expressions
+- **Responsive Design**: Optimized layouts for different screen sizes
 
-### Data Privacy
-- No external data transmission during test execution
-- Local storage only (no cloud dependencies)
-- User responses stored in memory only during session
-- No persistent data storage without explicit user consent
+## Technical Architecture
 
-### Code Security
-- Input validation for all user interactions
-- XSS prevention through React's built-in protections
-- Safe HTML rendering for mathematical expressions
-- Secure state management without external dependencies
+### Built With
+- **React 18+** with modern hooks (useState, useEffect, useCallback, useMemo)
+- **No external dependencies** beyond React
+- **SVG-based visualizations** for data graphics
+- **Local state management** (no browser storage)
+
+### Performance Optimizations
+- Memoized functions with useCallback to prevent re-renders
+- Optimized state management with useMemo for computed values
+- Efficient component rendering with proper dependency arrays
+- Memory cleanup for timers and event listeners
+
+### Browser Compatibility
+- Modern ES6+ features
+- SVG support required for data visualizations
+- No external storage dependencies
+- Touch and mouse interaction support
+
+## Development
+
+### File Structure
+```
+src/
+├── questionData.json      # Your test content
+├── GMATInterface.js       # Main component  
+└── index.js              # App entry point
+```
+
+### Key Functions
+- **initializeAdaptiveQuestions**: Handles question selection and ordering
+- **renderDataSource**: Renders data visualizations for DI section
+- **renderPassage**: Renders reading passages with line numbers
+- **calculateScore**: Implements adaptive scoring algorithm
+
+### Customization
+- Modify scoring algorithms in `calculateScore`
+- Add new visual types in `renderQuestionVisual`
+- Extend data source types in `renderDataSource`
+- Customize timing defaults for different sections
+
+## Contributing
+
+This is an open-source GMAT practice tool. Contributions welcome for:
+- Additional question formats
+- New data visualization types
+- Enhanced analytics and reporting
+- Mobile optimization improvements
+- Accessibility enhancements
+
+## License
+
+MIT License - free to use, modify, and distribute.
+
+---
+
+**Note**: This tool is for practice purposes only and is not affiliated with or endorsed by GMAC or the official GMAT exam.
