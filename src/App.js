@@ -174,17 +174,17 @@ const GMATInterface = () => {
 
   // Calculate GMAT timing correctly
   const targetQuestions = questionData.targetQuestions || 21;
-  const timeLimit =
-    questionData.timeLimit ||
-    (() => {
-      if (isDataInsights) {
-        return Math.round((45 * 60 * targetQuestions) / 20); // DI: 45 min for 20 questions
-      } else if (isVerbal) {
-        return Math.round((65 * 60 * targetQuestions) / 23); // Verbal: 65 min for 23 questions
-      } else {
-        return Math.round((45 * 60 * targetQuestions) / 21); // Quant: 45 min for 21 questions
-      }
-    })();
+const defaultTimeLimit = (() => {
+  if (isDataInsights) {
+    return Math.round((45 * 60 * targetQuestions) / 20); // DI: 45 min for 20 questions
+  } else if (isVerbal) {
+    return Math.round((65 * 60 * targetQuestions) / 23); // Verbal: 65 min for 23 questions  
+  } else {
+    return Math.round((45 * 60 * targetQuestions) / 21); // Quant: 45 min for 21 questions
+  }
+})();
+
+const timeLimit = questionData.timeLimit || (customTimeLimit ? parseInt(customTimeLimit) * 60 : defaultTimeLimit);
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState({});
@@ -200,6 +200,7 @@ const GMATInterface = () => {
   const [questionTimes, setQuestionTimes] = useState({});
   const [testStartTime, setTestStartTime] = useState(null);
   const [currentPassage, setCurrentPassage] = useState(null);
+  const [customTimeLimit, setCustomTimeLimit] = useState(null);
 
   // Bookmark functionality
   const [bookmarkedQuestions, setBookmarkedQuestions] = useState(new Set());
@@ -308,110 +309,110 @@ const GMATInterface = () => {
   ]);
 
   // Initialize questions
-const initializeAdaptiveQuestions = useCallback(() => {
-  if (questionData.adaptiveMode) {
-    const allQuestions = questionData.questions.filter((q) => !q.buffer);
-    const bufferQuestions = questionData.questions.filter((q) => q.buffer);
+  const initializeAdaptiveQuestions = useCallback(() => {
+    if (questionData.adaptiveMode) {
+      const allQuestions = questionData.questions.filter((q) => !q.buffer);
+      const bufferQuestions = questionData.questions.filter((q) => q.buffer);
 
-    // Group questions by passage for verbal sections
-    if (isVerbal) {
-      const passageGroups = {};
-      const crQuestions = [];
-      
-      allQuestions.forEach(q => {
-        if (q.passageId) {
-          if (!passageGroups[q.passageId]) {
-            passageGroups[q.passageId] = [];
+      // Group questions by passage for verbal sections
+      if (isVerbal) {
+        const passageGroups = {};
+        const crQuestions = [];
+
+        allQuestions.forEach((q) => {
+          if (q.passageId) {
+            if (!passageGroups[q.passageId]) {
+              passageGroups[q.passageId] = [];
+            }
+            passageGroups[q.passageId].push(q);
+          } else {
+            crQuestions.push(q);
           }
-          passageGroups[q.passageId].push(q);
-        } else {
-          crQuestions.push(q);
-        }
-      });
+        });
 
-      // Combine passage groups with CR questions
-      const questionsToUse = [];
-      const passageGroupArrays = Object.values(passageGroups);
-      
-      // Interleave passage groups with CR questions
-      let crIndex = 0;
-      passageGroupArrays.forEach((passageGroup, index) => {
-        questionsToUse.push(...passageGroup);
-        // Add CR questions between passages
-        if (crIndex < crQuestions.length && index < passageGroupArrays.length - 1) {
+        // Combine passage groups with CR questions
+        const questionsToUse = [];
+        const passageGroupArrays = Object.values(passageGroups);
+
+        // Interleave passage groups with CR questions
+        let crIndex = 0;
+        passageGroupArrays.forEach((passageGroup, index) => {
+          questionsToUse.push(...passageGroup);
+          // Add CR questions between passages
+          if (crIndex < crQuestions.length && index < passageGroupArrays.length - 1) {
+            questionsToUse.push(crQuestions[crIndex]);
+            crIndex++;
+          }
+        });
+
+        // Add remaining CR questions
+        while (crIndex < crQuestions.length) {
           questionsToUse.push(crQuestions[crIndex]);
           crIndex++;
         }
-      });
-      
-      // Add remaining CR questions
-      while (crIndex < crQuestions.length) {
-        questionsToUse.push(crQuestions[crIndex]);
-        crIndex++;
-      }
 
-      setAdaptiveQuestions(questionsToUse.slice(0, targetQuestions));
-    } else {
-      // Original logic for non-verbal sections
-      const questionsByDifficulty = {
-        easy: [...allQuestions.filter((q) => q.difficulty === 'easy')],
-        medium: [...allQuestions.filter((q) => q.difficulty === 'medium')],
-        hard: [...allQuestions.filter((q) => q.difficulty === 'hard')],
-      };
+        setAdaptiveQuestions(questionsToUse.slice(0, targetQuestions));
+      } else {
+        // Original logic for non-verbal sections
+        const questionsByDifficulty = {
+          easy: [...allQuestions.filter((q) => q.difficulty === 'easy')],
+          medium: [...allQuestions.filter((q) => q.difficulty === 'medium')],
+          hard: [...allQuestions.filter((q) => q.difficulty === 'hard')],
+        };
 
-      bufferQuestions.forEach((q) => {
-        if (questionsByDifficulty[q.difficulty]) {
-          questionsByDifficulty[q.difficulty].push(q);
-        }
-      });
+        bufferQuestions.forEach((q) => {
+          if (questionsByDifficulty[q.difficulty]) {
+            questionsByDifficulty[q.difficulty].push(q);
+          }
+        });
 
-      Object.keys(questionsByDifficulty).forEach((difficulty) => {
-        questionsByDifficulty[difficulty] = shuffleArray(questionsByDifficulty[difficulty]);
-      });
+        Object.keys(questionsByDifficulty).forEach((difficulty) => {
+          questionsByDifficulty[difficulty] = shuffleArray(questionsByDifficulty[difficulty]);
+        });
 
-      const difficultyPattern = createAdaptiveDifficultyPattern(targetQuestions);
-      const questionsToUse = [];
-      const usedQuestionIds = new Set();
+        const difficultyPattern = createAdaptiveDifficultyPattern(targetQuestions);
+        const questionsToUse = [];
+        const usedQuestionIds = new Set();
 
-      for (let i = 0; i < difficultyPattern.length; i++) {
-        const targetDifficulty = difficultyPattern[i];
-        let selectedQuestion = null;
+        for (let i = 0; i < difficultyPattern.length; i++) {
+          const targetDifficulty = difficultyPattern[i];
+          let selectedQuestion = null;
 
-        const pool = questionsByDifficulty[targetDifficulty];
-        if (pool && pool.length > 0) {
-          selectedQuestion = pool.find((q) => !usedQuestionIds.has(q.id));
-        }
+          const pool = questionsByDifficulty[targetDifficulty];
+          if (pool && pool.length > 0) {
+            selectedQuestion = pool.find((q) => !usedQuestionIds.has(q.id));
+          }
 
-        if (!selectedQuestion) {
-          const fallbackOrder =
-            targetDifficulty === 'easy'
-              ? ['medium', 'hard']
-              : targetDifficulty === 'medium'
-              ? ['easy', 'hard']
-              : ['medium', 'easy'];
+          if (!selectedQuestion) {
+            const fallbackOrder =
+              targetDifficulty === 'easy'
+                ? ['medium', 'hard']
+                : targetDifficulty === 'medium'
+                ? ['easy', 'hard']
+                : ['medium', 'easy'];
 
-          for (const fallbackDiff of fallbackOrder) {
-            const fallbackPool = questionsByDifficulty[fallbackDiff];
-            if (fallbackPool && fallbackPool.length > 0) {
-              selectedQuestion = fallbackPool.find((q) => !usedQuestionIds.has(q.id));
-              if (selectedQuestion) break;
+            for (const fallbackDiff of fallbackOrder) {
+              const fallbackPool = questionsByDifficulty[fallbackDiff];
+              if (fallbackPool && fallbackPool.length > 0) {
+                selectedQuestion = fallbackPool.find((q) => !usedQuestionIds.has(q.id));
+                if (selectedQuestion) break;
+              }
             }
+          }
+
+          if (selectedQuestion) {
+            questionsToUse.push(selectedQuestion);
+            usedQuestionIds.add(selectedQuestion.id);
           }
         }
 
-        if (selectedQuestion) {
-          questionsToUse.push(selectedQuestion);
-          usedQuestionIds.add(selectedQuestion.id);
-        }
+        setAdaptiveQuestions(questionsToUse);
       }
-
+    } else {
+      const questionsToUse = questionData.questions.slice(0, targetQuestions);
       setAdaptiveQuestions(questionsToUse);
     }
-  } else {
-    const questionsToUse = questionData.questions.slice(0, targetQuestions);
-    setAdaptiveQuestions(questionsToUse);
-  }
-}, [targetQuestions, isVerbal]);
+  }, [targetQuestions, isVerbal]);
 
   // Helper functions
   const createAdaptiveDifficultyPattern = useCallback((numQuestions) => {
@@ -1428,35 +1429,35 @@ const initializeAdaptiveQuestions = useCallback(() => {
   );
 
   // Render passage content for Verbal questions
-const renderPassage = useCallback((passage) => {
-  if (!passage) return null;
+  const renderPassage = useCallback((passage) => {
+    if (!passage) return null;
 
-  return (
-    <div style={{ padding: '20px' }}>
-      <h3 style={{ marginBottom: '20px', fontSize: '18px', color: '#2c3e50' }}>
-        {passage.title || 'Reading Passage'}
-      </h3>
-      <div
-        style={{
-          padding: '25px',
-          backgroundColor: '#f9f9f9',
-          borderRadius: '8px',
-          lineHeight: '1.8',
-          fontSize: '16px',
-          color: '#333',
-          border: '1px solid #ddd',
-          fontFamily: 'Georgia, serif',
-        }}
-      >
-        {passage.content.split('\n\n').map((paragraph, idx) => (
-          <p key={idx} style={{ marginBottom: '16px', textIndent: '20px' }}>
-            {paragraph}
-          </p>
-        ))}
+    return (
+      <div style={{ padding: '20px' }}>
+        <h3 style={{ marginBottom: '20px', fontSize: '18px', color: '#2c3e50' }}>
+          {passage.title || 'Reading Passage'}
+        </h3>
+        <div
+          style={{
+            padding: '25px',
+            backgroundColor: '#f9f9f9',
+            borderRadius: '8px',
+            lineHeight: '1.8',
+            fontSize: '16px',
+            color: '#333',
+            border: '1px solid #ddd',
+            fontFamily: 'Georgia, serif',
+          }}
+        >
+          {passage.content.split('\n\n').map((paragraph, idx) => (
+            <p key={idx} style={{ marginBottom: '16px', textIndent: '20px' }}>
+              {paragraph}
+            </p>
+          ))}
+        </div>
       </div>
-    </div>
-  );
-}, []);
+    );
+  }, []);
 
   const isTimeWarning = timeRemaining <= timeLimit / 9;
 
@@ -1518,7 +1519,8 @@ const renderPassage = useCallback((passage) => {
           }}
         >
           <span style={{ fontSize: '16px', fontWeight: '500' }}>
-GMAT™ Practice Test - {isDataInsights ? 'Data Insights' : isVerbal ? 'Verbal Reasoning' : 'Quantitative Reasoning'}
+            GMAT™ Practice Test -{' '}
+            {isDataInsights ? 'Data Insights' : isVerbal ? 'Verbal Reasoning' : 'Quantitative Reasoning'}
             {questionData.sectionName.includes('Development Mode') && (
               <span style={{ color: '#f39c12', marginLeft: '8px' }}>(DEV MODE)</span>
             )}
@@ -1609,9 +1611,51 @@ GMAT™ Practice Test - {isDataInsights ? 'Data Insights' : isVerbal ? 'Verbal R
             </div>
 
             <div style={{ fontSize: '18px', color: '#666', marginBottom: '25px', lineHeight: '1.6' }}>
-              <p>
-                <strong>Time Limit:</strong> {Math.floor(timeLimit / 60)} minutes
-              </p>
+              <div style={{ marginBottom: '10px' }}>
+                <strong>Time Limit:</strong>
+                <div
+                  style={{
+                    marginTop: '8px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px',
+                    justifyContent: 'center',
+                  }}
+                >
+                 <div style={{ marginBottom: '10px' }}>
+  <strong>Time Limit:</strong>
+  <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center', gap: '10px', justifyContent: 'center' }}>
+    <input
+      type="number"
+      min="1"
+      max="120"
+      value={customTimeLimit !== null ? customTimeLimit : Math.floor(defaultTimeLimit / 60)}
+      onChange={(e) => setCustomTimeLimit(e.target.value ? parseInt(e.target.value) : null)}
+      style={{
+        padding: '8px 12px',
+        border: '1px solid #ddd',
+        borderRadius: '4px',
+        width: '80px',
+        fontSize: '16px',
+        textAlign: 'center'
+      }}
+    />
+    <span style={{ fontSize: '16px', color: '#666' }}>
+      minutes (default: {Math.floor(defaultTimeLimit / 60)})
+    </span>
+  </div>
+  <div style={{ fontSize: '14px', color: '#888', marginTop: '5px' }}>
+    Modify time or leave as default
+  </div>
+</div>
+                  <span style={{ fontSize: '16px', color: '#666' }}>
+                    minutes (default: {Math.floor(defaultTimeLimit / 60)})
+                  </span>
+                </div>
+                <div style={{ fontSize: '14px', color: '#888', marginTop: '5px' }}>
+                  Leave blank to use default timing
+                </div>
+              </div>
               <p>
                 <strong>Questions:</strong> {targetQuestions} {questionData.adaptiveMode ? '(Adaptive)' : ''}
               </p>
@@ -1703,7 +1747,8 @@ GMAT™ Practice Test - {isDataInsights ? 'Data Insights' : isVerbal ? 'Verbal R
           }}
         >
           <span style={{ fontSize: '16px', fontWeight: '500' }}>
-GMAT™ Practice Test - {isDataInsights ? 'Data Insights' : isVerbal ? 'Verbal Reasoning' : 'Quantitative Reasoning'}
+            GMAT™ Practice Test -{' '}
+            {isDataInsights ? 'Data Insights' : isVerbal ? 'Verbal Reasoning' : 'Quantitative Reasoning'}
             {questionData.sectionName.includes('Development Mode') && (
               <span style={{ color: '#f39c12', marginLeft: '8px' }}>(DEV MODE)</span>
             )}
@@ -2053,120 +2098,117 @@ GMAT™ Practice Test - {isDataInsights ? 'Data Insights' : isVerbal ? 'Verbal R
 
             <div style={{ fontSize: '16px', color: '#888' }}>
               {/* Time Pressure Graph */}
-<div style={{ marginBottom: '25px' }}>
-  <h4 style={{ color: '#2c3e50', marginBottom: '15px', fontSize: '18px' }}>
-    Time Pressure Analysis
-  </h4>
-  <div style={{ 
-    border: '1px solid #ddd', 
-    borderRadius: '6px', 
-    padding: '20px',
-    backgroundColor: 'white'
-  }}>
-    <svg width="100%" height="300" viewBox="0 0 800 300">
-      {/* Grid lines */}
-      {[1, 2, 3, 4, 5].map(i => (
-        <g key={`grid-${i}`}>
-          <line 
-            x1="60" 
-            y1={60 + i * 40} 
-            x2="740" 
-            y2={60 + i * 40} 
-            stroke="#f0f0f0" 
-            strokeWidth="1" 
-          />
-          <text x="50" y={60 + i * 40 + 4} fontSize="12" fill="#666" textAnchor="end">
-            {5 - i}
-          </text>
-        </g>
-      ))}
-      
-      {/* Vertical grid */}
-      {Array.from({length: Math.min(adaptiveQuestions.length, 21)}, (_, i) => (
-        <line 
-          key={`vgrid-${i}`}
-          x1={80 + i * 30} 
-          y1="60" 
-          x2={80 + i * 30} 
-          y2="260" 
-          stroke="#f0f0f0" 
-          strokeWidth="1" 
-        />
-      ))}
-      
-      {/* Average line */}
-      <line x1="60" y1="180" x2="740" y2="180" stroke="#999" strokeWidth="2" strokeDasharray="5,5" />
-      <text x="745" y="185" fontSize="12" fill="#666">Your Average</text>
-      
-      {/* Data points */}
-      {detailedResults.slice(0, 21).map((result, index) => {
-        const x = 80 + index * 30;
-        const timeInMinutes = result.timeSpent / 60;
-        const y = 260 - (timeInMinutes * 40); // Scale: 5 minutes = 200px height
-        const clampedY = Math.max(60, Math.min(260, y));
-        
-        return (
-          <g key={`point-${index}`}>
-            <circle
-              cx={x}
-              cy={clampedY}
-              r="6"
-              fill={result.isCorrect ? '#4caf50' : '#f44336'}
-              stroke="white"
-              strokeWidth="2"
-            />
-            {result.timeSpent > 300 && ( // Show warning for >5 min
-              <circle
-                cx={x}
-                cy={clampedY}
-                r="10"
-                fill="none"
-                stroke="#f44336"
-                strokeWidth="2"
-              />
-            )}
-          </g>
-        );
-      })}
-      
-      {/* Axes */}
-      <line x1="60" y1="60" x2="60" y2="260" stroke="#333" strokeWidth="2" />
-      <line x1="60" y1="260" x2="740" y2="260" stroke="#333" strokeWidth="2" />
-      
-      {/* Labels */}
-      <text x="400" y="290" fontSize="14" fill="#333" textAnchor="middle">Question Number</text>
-      <text x="20" y="160" fontSize="14" fill="#333" textAnchor="middle" transform="rotate(-90 20 160)">
-        Response Time (Minutes)
+              <div style={{ marginBottom: '25px' }}>
+                <h4 style={{ color: '#2c3e50', marginBottom: '15px', fontSize: '18px' }}>Time Pressure Analysis</h4>
+                <div
+                  style={{
+                    border: '1px solid #ddd',
+                    borderRadius: '6px',
+                    padding: '20px',
+                    backgroundColor: 'white',
+                  }}
+                >
+                  <svg width="100%" height="300" viewBox="0 0 800 300">
+                    {/* Grid lines */}
+                    {[1, 2, 3, 4, 5].map((i) => (
+                      <g key={`grid-${i}`}>
+                        <line x1="60" y1={60 + i * 40} x2="740" y2={60 + i * 40} stroke="#f0f0f0" strokeWidth="1" />
+                        <text x="50" y={60 + i * 40 + 4} fontSize="12" fill="#666" textAnchor="end">
+                          {5 - i}
+                        </text>
+                      </g>
+                    ))}
+
+                    {/* Vertical grid */}
+                    {Array.from({ length: Math.min(adaptiveQuestions.length, 21) }, (_, i) => (
+                      <line
+                        key={`vgrid-${i}`}
+                        x1={80 + i * 30}
+                        y1="60"
+                        x2={80 + i * 30}
+                        y2="260"
+                        stroke="#f0f0f0"
+                        strokeWidth="1"
+                      />
+                    ))}
+
+                 {/* Average line */}
+{(() => {
+  const totalTime = detailedResults.reduce((sum, result) => sum + result.timeSpent, 0);
+  const avgTimeMinutes = totalTime / detailedResults.length / 60;
+  const avgY = Math.max(60, Math.min(260, 260 - (avgTimeMinutes * 40)));
+  
+  return (
+    <>
+      <line x1="60" y1={avgY} x2="740" y2={avgY} stroke="#999" strokeWidth="2" strokeDasharray="5,5" />
+      <text x="745" y={avgY + 5} fontSize="12" fill="#666">
+        Your Average ({avgTimeMinutes.toFixed(1)}m)
       </text>
-      
-      {/* X-axis numbers */}
-      {Array.from({length: Math.min(adaptiveQuestions.length, 21)}, (_, i) => (
-        <text 
-          key={`xlabel-${i}`}
-          x={80 + i * 30} 
-          y="275" 
-          fontSize="12" 
-          fill="#666" 
-          textAnchor="middle"
-        >
-          {i + 1}
-        </text>
-      ))}
-    </svg>
-    
-    {/* Legend */}
-    <div style={{ marginTop: '15px', display: 'flex', gap: '20px', justifyContent: 'center' }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-        <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: '#4caf50' }}></div>
-        <span style={{ fontSize: '14px' }}>Correctly Answered</span>
-      </div>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-        <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: '#f44336' }}></div>
-        <span style={{ fontSize: '14px' }}>Incorrectly Answered</span>
-      </div>
-    </div>
-  </div>
-</div>
+    </>
+  );
+})()}
+
+                    {/* Data points */}
+                    {detailedResults.slice(0, 21).map((result, index) => {
+                      const x = 80 + index * 30;
+                      const timeInMinutes = result.timeSpent / 60;
+                      const y = 260 - timeInMinutes * 40; // Scale: 5 minutes = 200px height
+                      const clampedY = Math.max(60, Math.min(260, y));
+
+                      return (
+                        <g key={`point-${index}`}>
+                          <circle
+                            cx={x}
+                            cy={clampedY}
+                            r="6"
+                            fill={result.isCorrect ? '#4caf50' : '#f44336'}
+                            stroke="white"
+                            strokeWidth="2"
+                          />
+                          {result.timeSpent > 300 && ( // Show warning for >5 min
+                            <circle cx={x} cy={clampedY} r="10" fill="none" stroke="#f44336" strokeWidth="2" />
+                          )}
+                        </g>
+                      );
+                    })}
+
+                    {/* Axes */}
+                    <line x1="60" y1="60" x2="60" y2="260" stroke="#333" strokeWidth="2" />
+                    <line x1="60" y1="260" x2="740" y2="260" stroke="#333" strokeWidth="2" />
+
+                    {/* Labels */}
+                    <text x="400" y="290" fontSize="14" fill="#333" textAnchor="middle">
+                      Question Number
+                    </text>
+                    <text x="20" y="160" fontSize="14" fill="#333" textAnchor="middle" transform="rotate(-90 20 160)">
+                      Response Time (Minutes)
+                    </text>
+
+                    {/* X-axis numbers */}
+                    {Array.from({ length: Math.min(adaptiveQuestions.length, 21) }, (_, i) => (
+                      <text key={`xlabel-${i}`} x={80 + i * 30} y="275" fontSize="12" fill="#666" textAnchor="middle">
+                        {i + 1}
+                      </text>
+                    ))}
+                  </svg>
+
+                  {/* Legend */}
+                  <div style={{ marginTop: '15px', display: 'flex', gap: '20px', justifyContent: 'center' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                      <div
+                        style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: '#4caf50' }}
+                      ></div>
+                      <span style={{ fontSize: '14px' }}>Correctly Answered</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                      <div
+                        style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: '#f44336' }}
+                      ></div>
+                      <span style={{ fontSize: '14px' }}>Incorrectly Answered</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
               Time used: {formatTime(timeLimit - timeRemaining)}
               {timeRemaining === 0 && <span style={{ color: '#e74c3c', marginLeft: '10px' }}>(Time Expired)</span>}
             </div>
@@ -2274,7 +2316,7 @@ GMAT™ Practice Test - {isDataInsights ? 'Data Insights' : isVerbal ? 'Verbal R
           transition: 'filter 0.3s ease',
         }}
       >
-       {(isDataInsights || (isVerbal && currentQuestion?.passageId)) ? (
+        {isDataInsights || (isVerbal && currentQuestion?.passageId) ? (
           // Split Layout: Data/Passage on left, Question on right
           <>
             {/* Data/Passage Panel */}
