@@ -174,17 +174,17 @@ const GMATInterface = () => {
 
   // Calculate GMAT timing correctly
   const targetQuestions = questionData.targetQuestions || 21;
-const defaultTimeLimit = (() => {
-  if (isDataInsights) {
-    return Math.round((45 * 60 * targetQuestions) / 20); // DI: 45 min for 20 questions
-  } else if (isVerbal) {
-    return Math.round((65 * 60 * targetQuestions) / 23); // Verbal: 65 min for 23 questions  
-  } else {
-    return Math.round((45 * 60 * targetQuestions) / 21); // Quant: 45 min for 21 questions
-  }
-})();
+  const defaultTimeLimit = (() => {
+    if (isDataInsights) {
+      return Math.round((45 * 60 * targetQuestions) / 20); // DI: 45 min for 20 questions
+    } else if (isVerbal) {
+      return Math.round((65 * 60 * targetQuestions) / 23); // Verbal: 65 min for 23 questions
+    } else {
+      return Math.round((45 * 60 * targetQuestions) / 21); // Quant: 45 min for 21 questions
+    }
+  })();
 
-const timeLimit = questionData.timeLimit || (customTimeLimit ? parseInt(customTimeLimit) * 60 : defaultTimeLimit);
+  const timeLimit = questionData.timeLimit || (customTimeLimit ? parseInt(customTimeLimit) * 60 : defaultTimeLimit);
 
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState({});
@@ -1429,8 +1429,29 @@ const timeLimit = questionData.timeLimit || (customTimeLimit ? parseInt(customTi
   );
 
   // Render passage content for Verbal questions
+  // Render passage content for Verbal questions
+  // Render passage content for Verbal questions
   const renderPassage = useCallback((passage) => {
     if (!passage) return null;
+
+    // Split content into paragraphs and then into lines
+    const paragraphs = passage.content.split('\n\n');
+    const allLines = [];
+
+    paragraphs.forEach((paragraph, paragraphIndex) => {
+      const words = paragraph.split(/\s+/);
+      const wordsPerLine = 12;
+
+      for (let i = 0; i < words.length; i += wordsPerLine) {
+        const lineWords = words.slice(i, i + wordsPerLine);
+        allLines.push(lineWords.join(' '));
+      }
+
+      // Add spacing between paragraphs
+      if (paragraphIndex < paragraphs.length - 1) {
+        allLines.push(''); // Empty line for paragraph break
+      }
+    });
 
     return (
       <div style={{ padding: '20px' }}>
@@ -1442,18 +1463,67 @@ const timeLimit = questionData.timeLimit || (customTimeLimit ? parseInt(customTi
             padding: '25px',
             backgroundColor: '#f9f9f9',
             borderRadius: '8px',
-            lineHeight: '1.8',
-            fontSize: '16px',
-            color: '#333',
             border: '1px solid #ddd',
             fontFamily: 'Georgia, serif',
+            fontSize: '16px',
+            color: '#333',
           }}
         >
-          {passage.content.split('\n\n').map((paragraph, idx) => (
-            <p key={idx} style={{ marginBottom: '16px', textIndent: '20px' }}>
-              {paragraph}
-            </p>
-          ))}
+          <div style={{ display: 'flex' }}>
+            {/* Line numbers column */}
+            {/* Line numbers column */}
+            <div
+              style={{
+                width: '60px',
+                paddingRight: '15px',
+                borderRight: '1px solid #ddd',
+                marginRight: '15px',
+                flexShrink: 0,
+              }}
+            >
+              {allLines.map((_, lineIndex) => (
+                <div
+                  key={lineIndex}
+                  style={{
+                    lineHeight: '1.6',
+                    minHeight: '25.6px', // 16px * 1.6
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  {(lineIndex + 1) % 5 === 0 && (
+                    <span
+                      style={{
+                        fontSize: '12px',
+                        color: '#666',
+                        fontWeight: 'bold',
+                      }}
+                    >
+                      ({lineIndex + 1})
+                    </span>
+                  )}
+                </div>
+              ))}
+            </div>
+
+            {/* Content column */}
+            <div style={{ flex: 1 }}>
+              {allLines.map((line, lineIndex) => (
+                <div
+                  key={lineIndex}
+                  style={{
+                    lineHeight: '1.6',
+                    minHeight: '25.6px', // 16px * 1.6
+                    display: 'flex',
+                    alignItems: 'center',
+                  }}
+                >
+                  {line || '\u00A0'} {/* Non-breaking space for empty lines */}
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -1622,32 +1692,40 @@ const timeLimit = questionData.timeLimit || (customTimeLimit ? parseInt(customTi
                     justifyContent: 'center',
                   }}
                 >
-                 <div style={{ marginBottom: '10px' }}>
-  <strong>Time Limit:</strong>
-  <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center', gap: '10px', justifyContent: 'center' }}>
-    <input
-      type="number"
-      min="1"
-      max="120"
-      value={customTimeLimit !== null ? customTimeLimit : Math.floor(defaultTimeLimit / 60)}
-      onChange={(e) => setCustomTimeLimit(e.target.value ? parseInt(e.target.value) : null)}
-      style={{
-        padding: '8px 12px',
-        border: '1px solid #ddd',
-        borderRadius: '4px',
-        width: '80px',
-        fontSize: '16px',
-        textAlign: 'center'
-      }}
-    />
-    <span style={{ fontSize: '16px', color: '#666' }}>
-      minutes (default: {Math.floor(defaultTimeLimit / 60)})
-    </span>
-  </div>
-  <div style={{ fontSize: '14px', color: '#888', marginTop: '5px' }}>
-    Modify time or leave as default
-  </div>
-</div>
+                  <div style={{ marginBottom: '10px' }}>
+                    <strong>Time Limit:</strong>
+                    <div
+                      style={{
+                        marginTop: '8px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '10px',
+                        justifyContent: 'center',
+                      }}
+                    >
+                      <input
+                        type="number"
+                        min="1"
+                        max="120"
+                        value={customTimeLimit !== null ? customTimeLimit : Math.floor(defaultTimeLimit / 60)}
+                        onChange={(e) => setCustomTimeLimit(e.target.value ? parseInt(e.target.value) : null)}
+                        style={{
+                          padding: '8px 12px',
+                          border: '1px solid #ddd',
+                          borderRadius: '4px',
+                          width: '80px',
+                          fontSize: '16px',
+                          textAlign: 'center',
+                        }}
+                      />
+                      <span style={{ fontSize: '16px', color: '#666' }}>
+                        minutes (default: {Math.floor(defaultTimeLimit / 60)})
+                      </span>
+                    </div>
+                    <div style={{ fontSize: '14px', color: '#888', marginTop: '5px' }}>
+                      Modify time or leave as default
+                    </div>
+                  </div>
                   <span style={{ fontSize: '16px', color: '#666' }}>
                     minutes (default: {Math.floor(defaultTimeLimit / 60)})
                   </span>
@@ -2132,21 +2210,29 @@ const timeLimit = questionData.timeLimit || (customTimeLimit ? parseInt(customTi
                       />
                     ))}
 
-                 {/* Average line */}
-{(() => {
-  const totalTime = detailedResults.reduce((sum, result) => sum + result.timeSpent, 0);
-  const avgTimeMinutes = totalTime / detailedResults.length / 60;
-  const avgY = Math.max(60, Math.min(260, 260 - (avgTimeMinutes * 40)));
-  
-  return (
-    <>
-      <line x1="60" y1={avgY} x2="740" y2={avgY} stroke="#999" strokeWidth="2" strokeDasharray="5,5" />
-      <text x="745" y={avgY + 5} fontSize="12" fill="#666">
-        Your Average ({avgTimeMinutes.toFixed(1)}m)
-      </text>
-    </>
-  );
-})()}
+                    {/* Average line */}
+                    {(() => {
+                      const totalTime = detailedResults.reduce((sum, result) => sum + result.timeSpent, 0);
+                      const avgTimeMinutes = totalTime / detailedResults.length / 60;
+                      const avgY = Math.max(60, Math.min(260, 260 - avgTimeMinutes * 40));
+
+                      return (
+                        <>
+                          <line
+                            x1="60"
+                            y1={avgY}
+                            x2="740"
+                            y2={avgY}
+                            stroke="#999"
+                            strokeWidth="2"
+                            strokeDasharray="5,5"
+                          />
+                          <text x="745" y={avgY + 5} fontSize="12" fill="#666">
+                            Your Average ({avgTimeMinutes.toFixed(1)}m)
+                          </text>
+                        </>
+                      );
+                    })()}
 
                     {/* Data points */}
                     {detailedResults.slice(0, 21).map((result, index) => {

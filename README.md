@@ -1,70 +1,348 @@
-# Getting Started with Create React App
+# Enhanced GMAT Practice Test System - Updated Technical Implementation
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Overview of Changes
 
-## Available Scripts
+The enhanced system now supports both **Quantitative Reasoning** and **Data Insights** sections with dynamic layouts, data visualization capabilities, and optimized React performance.
 
-In the project directory, you can run:
+## Updated JSON Structure
 
-### `npm start`
+### Core Configuration Fields
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+```json
+{
+  "sectionName": "GMAT Data Insights - Mixed Practice",
+  "sectionType": "dataInsights", // NEW: "quantitative" or "dataInsights"
+  "testDescription": "This section tests your data interpretation and analysis abilities through graphics interpretation, table analysis, and multi-source reasoning.",
+  "skillsAssessed": [
+    "Graphics interpretation and trend analysis",
+    "Table analysis and data comparison", 
+    "Multi-source reasoning and synthesis",
+    "Data sufficiency evaluation"
+  ],
+  "adaptiveMode": true,
+  "targetQuestions": 20,
+  "bufferQuestions": 5,
+  "timeLimit": 1920, // NEW: Optional time limit in seconds
+  "firstSevenStrategy": "controlled challenge",
+  "dataSources": [ /* NEW: Array of data sources for Data Insights */ ],
+  "questions": [ /* Enhanced with dataSourceId field */ ]
+}
+```
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### New Field: sectionType
+- **"quantitative"**: Renders full-width question layout (original behavior)
+- **"dataInsights"**: Renders split layout with data on left, questions on right
 
-### `npm test`
+### New Field: timeLimit (Optional)
+- **Number**: Time limit in seconds for the section
+- **Fallback**: Auto-calculated based on section type if not provided
+  - Data Insights: `(45 * 60 * targetQuestions) / 20`
+  - Quantitative: `(45 * 60 * targetQuestions) / 21`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### New Structure: dataSources (Data Insights Only)
 
-### `npm run build`
+#### 1. Graph Data Source
+```json
+{
+  "id": "graph1",
+  "type": "graph",
+  "title": "Company Revenue by Quarter (2020-2024)",
+  "data": {
+    "type": "line", // Future: "bar", "scatter", "area"
+    "xAxis": "Quarter",
+    "yAxis": "Revenue ($ millions)",
+    "series": [
+      {
+        "name": "Product A",
+        "color": "#3498db",
+        "points": [
+          {"x": "Q1 2020", "y": 15},
+          {"x": "Q2 2020", "y": 18},
+          {"x": "Q3 2020", "y": 22}
+        ]
+      }
+    ]
+  }
+}
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+#### 2. Table Data Source
+```json
+{
+  "id": "table1", 
+  "type": "table",
+  "title": "Employee Performance Metrics by Department",
+  "data": {
+    "headers": ["Department", "Employees", "Avg Salary ($)", "Satisfaction (%)", "Turnover (%)"],
+    "rows": [
+      ["Engineering", "45", "95000", "87", "8"],
+      ["Marketing", "23", "75000", "82", "12"]
+    ]
+  }
+}
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+#### 3. Text Data Source
+```json
+{
+  "id": "text1",
+  "type": "text", 
+  "title": "Market Research Summary",
+  "content": "A recent consumer survey of 1,200 participants revealed that 68% prefer Brand X over competitors. The survey was conducted across three age groups..."
+}
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+#### 4. Multi-Source Data Source (Tabs)
+```json
+{
+  "id": "multiSource1",
+  "type": "multiSource", 
+  "title": "Market Research Analysis",
+  "sources": [
+    {
+      "tabName": "Survey Results",
+      "type": "text",
+      "content": "Survey content here..."
+    },
+    {
+      "tabName": "Sales Data", 
+      "type": "table",
+      "data": {
+        "headers": ["Region", "Q1 Sales", "Q2 Sales", "Growth %"],
+        "rows": [
+          ["North", "$2.1M", "$2.4M", "14.3"],
+          ["South", "$1.8M", "$2.0M", "11.1"]
+        ]
+      }
+    }
+  ]
+}
+```
 
-### `npm run eject`
+### Enhanced Question Structure
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+#### For Quantitative Reasoning (no changes)
+```json
+{
+  "id": 1,
+  "ogQuestionNumber": 85, // Optional: Official Guide reference
+  "questionText": "If 3x + 7 = 22, what is the value of x^2 + 2x?",
+  "difficulty": "medium",
+  "visual": { /* Optional: Visual elements for complex problems */ },
+  "options": {
+    "A": "15",
+    "B": "20",
+    "C": "25",
+    "D": "30",
+    "E": "35"
+  },
+  "correctAnswer": "C",
+  "buffer": false
+}
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+#### For Data Insights (with dataSourceId)
+```json
+{
+  "id": 1,
+  "dataSourceId": "graph1", // NEW: Links to data source
+  "questionText": "Based on the revenue data shown, what was the approximate total revenue for Product A in 2020?",
+  "difficulty": "easy",
+  "options": {
+    "A": "$65 million",
+    "B": "$70 million",
+    "C": "$80 million",
+    "D": "$85 million",
+    "E": "$90 million"
+  },
+  "correctAnswer": "C",
+  "buffer": false
+}
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### Visual Elements for Quantitative Questions
+```json
+{
+  "visual": {
+    "type": "table|diagram|equation|coordinate",
+    "title": "Optional title",
+    "data": { /* Structure varies by type */ },
+    "elements": [ /* For diagrams and coordinates */ ],
+    "content": "...", // For equations
+    "caption": "Optional caption"
+  }
+}
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Enhanced Features
 
-## Learn More
+### 1. Dynamic Layout Selection
+- **Quantitative**: Full-width question area with mathematical formatting
+- **Data Insights**: 50/50 split with data visualization on left, questions on right
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### 2. Multi-Source Reasoning Support
+- Tabbed interface for multiple data sources
+- Questions refresh without data changing when linked to same dataSourceId
+- Seamless navigation between different data types
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 3. Data Visualization
+- **Graphs**: SVG-based line charts with multiple series, legend, and grid
+- **Tables**: Professional formatting with alternating row colors and headers
+- **Text**: Formatted paragraphs with proper spacing and readability
+- **Multi-Source**: Tab navigation with mixed content types
 
-### Code Splitting
+### 4. Enhanced Question Association
+- Questions automatically linked to relevant data sources
+- Data sources persist across multiple questions
+- Tab state resets when switching to new multi-source data
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### 5. Advanced Test Features
+- **Bookmark System**: Mark questions for review with visual indicators
+- **Edit Previous**: Limited ability to revise previous answers (1/7th ratio)
+- **Adaptive Algorithm**: Dynamic difficulty adjustment based on performance
+- **Time Management**: Section-specific timing with warning alerts
+- **Performance Tracking**: Real-time accuracy and timing analytics
 
-### Analyzing the Bundle Size
+## Technical Implementation Notes
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### React Performance Optimizations
+- **Memoized Functions**: All major functions use `useCallback` to prevent unnecessary re-renders
+- **Optimized State**: `useMemo` for computed values like `currentQuestion`
+- **Efficient Renders**: Data sources rendered once and cached per question
+- **Hooks Optimization**: Proper dependency arrays in all `useEffect` hooks
+- **Memory Management**: Cleanup functions for timers and event listeners
 
-### Making a Progressive Web App
+### Performance Optimizations
+- **Component Lifecycle**: Optimized re-rendering with React.memo patterns
+- **Data Caching**: Questions and data sources cached in memory for instant access
+- **Tab Switching**: Uses React state management (no re-rendering of data)
+- **SVG Graphics**: Optimized for responsive scaling with efficient calculations
+- **Table Rendering**: Efficient scrolling for large datasets with virtual scrolling considerations
+- **Mathematical Formatting**: Cached formatting functions for math expressions
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+### State Management Architecture
+```javascript
+// Core state structure
+const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+const [adaptiveQuestions, setAdaptiveQuestions] = useState([]);
+const [selectedAnswers, setSelectedAnswers] = useState({});
+const [questionTimes, setQuestionTimes] = useState({});
 
-### Advanced Configuration
+// Computed values
+const currentQuestion = useMemo(() => getCurrentQuestion(), [getCurrentQuestion]);
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+// Memoized functions
+const handleAnswerSelect = useCallback((questionId, answer) => {
+  // Optimized answer handling
+}, []);
+```
 
-### Deployment
+### Responsive Design Considerations
+- **Desktop First**: 50/50 split optimized for screens 1024px+ width
+- **Mobile Adaptations**: Responsive breakpoints for production deployment
+- **Independent Scrolling**: Data panel scrolls independently from question panel
+- **Mathematical Rendering**: Preserved formatting across all layouts and devices
+- **Touch Interactions**: Optimized for both mouse and touch interfaces
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+### Browser Compatibility
+- **Modern ES6+**: Uses modern JavaScript features with babel compilation
+- **React 18+**: Optimized for latest React features and concurrent rendering
+- **SVG Support**: Requires SVG support for data visualizations
+- **Local Storage**: Uses React state only (no browser storage dependencies)
 
-### `npm run build` fails to minify
+## Migration Guide
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+### From Quantitative to Data Insights
+1. Change `sectionType` from `"quantitative"` to `"dataInsights"`
+2. Add `dataSources` array with appropriate data structures
+3. Add `dataSourceId` field to each question linking to relevant data source
+4. Update `testDescription` and `skillsAssessed` for Data Insights content
+5. Optionally add `timeLimit` for custom timing (auto-calculated if omitted)
+
+### Maintaining Backward Compatibility
+- Quantitative sections work exactly as before
+- No changes required for existing quantitative JSON files
+- New fields are optional and ignored for quantitative sections
+- Visual elements remain compatible with existing question structure
+
+### Upgrading Existing Implementations
+- Existing JSON files continue to work without modification
+- New features are opt-in through additional JSON fields
+- Performance improvements apply automatically to all question types
+- No breaking changes to existing question or answer structures
+
+## Data Source Design Guidelines
+
+### Graph Data Sources
+- Use distinct colors for multiple series (#3498db, #e74c3c, #27ae60, #f39c12)
+- Provide clear axis labels and units
+- Include 4-8 data points per series for optimal readability
+- Consider y-axis scaling for effective visualization
+- Ensure color contrast meets accessibility standards
+
+### Table Data Sources  
+- Keep tables to 5-7 columns maximum for readability
+- Use clear, concise headers with units specified
+- Include consistent data formatting within columns
+- Consider alternating row colors for better scanning
+- Implement responsive table design for mobile viewing
+
+### Text Data Sources
+- Keep paragraphs focused and scannable (100-200 words)
+- Include specific numerical data when relevant for questions
+- Structure information logically with clear hierarchies
+- Use consistent formatting for improved readability
+
+### Multi-Source Data Sources
+- Limit to 2-4 tabs for optimal usability and cognitive load
+- Use descriptive tab names (8-15 characters) for clarity
+- Ensure content types complement each other thematically
+- Design for questions requiring synthesis across multiple sources
+
+## Error Handling & Validation
+
+### JSON Validation
+- Automatic fallback to mock data if questionData.json not found
+- Console warnings for missing required fields
+- Graceful degradation for malformed data structures
+- Runtime validation of question and data source relationships
+
+### Performance Monitoring
+- Question timing tracking for performance analysis
+- Memory usage optimization for large question sets
+- Error boundaries for React component failures
+- Automatic recovery from temporary state inconsistencies
+
+## Future Enhancement Opportunities
+
+### Data Visualization Expansions
+- Bar charts, scatter plots, and area charts for graphs
+- Interactive graph elements (hover data, zoom capabilities)
+- Sortable table columns with filtering options
+- Advanced mathematical equation rendering with LaTeX support
+
+### User Experience Improvements
+- Export functionality for performance data analysis
+- Customizable themes and accessibility options
+- Advanced keyboard navigation for accessibility compliance
+- Offline capability with service worker implementation
+
+### Analytics & Reporting
+- Detailed performance analytics with trend analysis
+- Question difficulty calibration based on user performance
+- Advanced adaptive algorithm with machine learning integration
+- Real-time performance comparison with benchmarks
+
+## Security Considerations
+
+### Data Privacy
+- No external data transmission during test execution
+- Local storage only (no cloud dependencies)
+- User responses stored in memory only during session
+- No persistent data storage without explicit user consent
+
+### Code Security
+- Input validation for all user interactions
+- XSS prevention through React's built-in protections
+- Safe HTML rendering for mathematical expressions
+- Secure state management without external dependencies
