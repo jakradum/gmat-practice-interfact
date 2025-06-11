@@ -34,7 +34,7 @@ This project demonstrates collaborative human-AI development - the vision, requi
 
 ### Installation
 ```bash
-git clone [your-repo-url]
+git clone https://github.com/jakradum/gmat-practice-interfact
 cd gmat-practice-test
 npm install
 npm start
