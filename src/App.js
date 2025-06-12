@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import GMATTimeline from './GMATTimeline';
 
 // Try to import actual data, fallback to mock data
 let questionData;
@@ -98,6 +99,7 @@ const GMATInterface = () => {
   const [isEditingPrevious, setIsEditingPrevious] = useState(false);
   const [editQuestionIndex, setEditQuestionIndex] = useState(0);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showTimeline, setShowTimeline] = useState(false);
 
   // Computed values
   const currentData = useMemo(() => {
@@ -1291,6 +1293,34 @@ const calculateScore = useCallback(() => {
                 </div>
               )}
             </div>
+            {/* Navigation Tabs */}
+            <div style={{ marginBottom: '25px' }}>
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '15px', marginBottom: '20px' }}>
+                <button
+                  onClick={() => setShowTimeline(true)}
+                  style={{
+                    backgroundColor: '#3498db',
+                    color: 'white',
+                    border: 'none',
+                    padding: '10px 20px',
+                    borderRadius: '6px',
+                    fontSize: '16px',
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                    transition: 'background-color 0.2s ease',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}
+                  onMouseOver={(e) => (e.target.style.backgroundColor = '#2980b9')}
+                  onMouseOut={(e) => (e.target.style.backgroundColor = '#3498db')}
+                >
+                  📅 View Timeline
+                </button>
+              </div>
+            </div>
+
+        
 
             <div style={{ fontSize: '18px', color: '#666', marginBottom: '25px', lineHeight: '1.6' }}>
               <div style={{ marginBottom: '10px' }}>
@@ -1531,9 +1561,34 @@ const calculateScore = useCallback(() => {
               </div>
             </div>
 
-            <div style={{ fontSize: '16px', color: '#888' }}>
+           <div style={{ fontSize: '16px', color: '#888', marginBottom: '20px' }}>
               Time used: {formatTime(timeLimit - timeRemaining)}
               {timeRemaining === 0 && <span style={{ color: '#e74c3c', marginLeft: '10px' }}>(Time Expired)</span>}
+            </div>
+
+            {/* Timeline Button */}
+            <div style={{ textAlign: 'center', marginTop: '20px' }}>
+              <button
+                onClick={() => setShowTimeline(true)}
+                style={{
+                  backgroundColor: '#3498db',
+                  color: 'white',
+                  border: 'none',
+                  padding: '12px 24px',
+                  borderRadius: '6px',
+                  fontSize: '16px',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                  transition: 'background-color 0.2s ease',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}
+                onMouseOver={(e) => (e.target.style.backgroundColor = '#2980b9')}
+                onMouseOut={(e) => (e.target.style.backgroundColor = '#3498db')}
+              >
+                📅 View GMAT Timeline
+              </button>
             </div>
           </div>
         </div>
@@ -2081,6 +2136,11 @@ const calculateScore = useCallback(() => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Timeline Modal */}
+      {showTimeline && (
+        <GMATTimeline onClose={() => setShowTimeline(false)} />
       )}
     </div>
   );
