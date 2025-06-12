@@ -57,6 +57,8 @@ try {
   warmupData = null;
 }
 
+
+
 const GMATInterface = () => {
   // Core state
   const [hasStarted, setHasStarted] = useState(false);
@@ -408,26 +410,65 @@ const timeLimit = useMemo(() => {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   }, []);
 
-  const formatMath = useCallback((text) => {
-    if (!text) return '';
-    const textStr = typeof text === 'string' ? text : String(text);
+ // Enhanced formatMath function - replace your existing one
+const formatMath = useCallback((text) => {
+  if (!text) return '';
+  const textStr = typeof text === 'string' ? text : String(text);
+  
+  return textStr
+    // Handle fractions like 53/6,000 or 1/x
+    .replace(/(\d+)\/(\d+(?:,\d+)*)/g, '<span style="font-size: 1.1em;"><sup>$1</sup>⁄<sub>$2</sub></span>')
+    .replace(/(\w+)\/(\w+)/g, '<span style="font-size: 1.1em;"><sup>$1</sup>⁄<sub>$2</sub></span>')
     
-    return textStr
-      .replace(/\^(\([^)]+\))/g, '<sup>$1</sup>')
-      .replace(/\^(\d+)/g, '<sup>$1</sup>')
-      .replace(/\^(\w+)/g, '<sup>$1</sup>')
-      .replace(/_(\([^)]+\))/g, '<sub>$1</sub>')
-      .replace(/_(\d+)/g, '<sub>$1</sub>')
-      .replace(/_(\w+)/g, '<sub>$1</sub>')
-      .replace(/sqrt\(([^)]+)\)/g, '√($1)')
-      .replace(/(\d+)\/(\d+)/g, '<sup>$1</sup>⁄<sub>$2</sub>')
-      .replace(/degrees?/g, '°')
-      .replace(/\*\*/g, '×')
-      .replace(/\+\-/g, '±')
-      .replace(/!=/g, '≠')
-      .replace(/<=/g, '≤')
-      .replace(/>=/g, '≥');
-  }, []);
+    // Handle explicit superscripts: x^2, x^{n-1}, etc.
+    .replace(/\^(\{[^}]+\})/g, '<sup>$1</sup>')
+    .replace(/\^(\([^)]+\))/g, '<sup>$1</sup>')
+    .replace(/\^(\d+)/g, '<sup>$1</sup>')
+    .replace(/\^(\w+)/g, '<sup>$1</sup>')
+    
+    // Handle explicit subscripts: t_n, H_2O, etc.
+    .replace(/_(\{[^}]+\})/g, '<sub>$1</sub>')
+    .replace(/_(\([^)]+\))/g, '<sub>$1</sub>')
+    .replace(/_(\d+)/g, '<sub>$1</sub>')
+    .replace(/_(\w+)/g, '<sub>$1</sub>')
+    
+    // Handle Unicode subscripts and superscripts (like from your JSON)
+    .replace(/([ₙₘᵢⱼₖₗ₁₂₃₄₅₆₇₈₉₀]+)/g, '<sub>$1</sub>')
+    .replace(/([ⁿᵐⁱʲᵏˡ¹²³⁴⁵⁶⁷⁸⁹⁰]+)/g, '<sup>$1</sup>')
+    
+    // Handle square roots
+    .replace(/sqrt\(([^)]+)\)/g, '√($1)')
+    .replace(/√\(([^)]+)\)/g, '<span style="font-size: 1.2em;">√</span><span style="text-decoration: overline;">$1</span>')
+    
+    // Handle mathematical operators and symbols
+    .replace(/\*\*/g, '×')
+    .replace(/\+\-/g, '±')
+    .replace(/!=/g, '≠')
+    .replace(/<=/g, '≤')
+    .replace(/>=/g, '≥')
+    .replace(/degrees?/g, '°')
+    .replace(/infinity/g, '∞')
+    .replace(/pi/g, 'π')
+    .replace(/theta/g, 'θ')
+    .replace(/alpha/g, 'α')
+    .replace(/beta/g, 'β')
+    .replace(/gamma/g, 'γ')
+    
+    // Handle function notation like f(x), f(1/x)
+    .replace(/f\(([^)]+)\)/g, '<em>f</em>(<em>$1</em>)')
+    .replace(/g\(([^)]+)\)/g, '<em>g</em>(<em>$1</em>)')
+    .replace(/h\(([^)]+)\)/g, '<em>h</em>(<em>$1</em>)')
+    
+    // Handle absolute value bars
+    .replace(/\|([^|]+)\|/g, '|<em>$1</em>|')
+    
+    // Handle special mathematical expressions
+    .replace(/(\d+),(\d+)/g, '$1,$2') // Keep commas in numbers
+    
+    // Clean up any stray brackets from replacements
+    .replace(/\{([^}]+)\}/g, '$1')
+    .replace(/\\([a-zA-Z]+)/g, '$1'); // Remove LaTeX-style backslashes
+}, []);
 
   // Event handlers
   const startTest = useCallback(() => {
@@ -804,6 +845,218 @@ const timeLimit = useMemo(() => {
         timeSpent: questionTimes[question.id] || 0,
       };
     });
+    // Time Pressure Graph Component - add this above your completion screen return
+const renderTimePressureGraph = useCallback(() => {
+  if (adaptiveQuestions.length === 0) return null;
+
+  const graphWidth = 600;
+  const graphHeight = 250;
+  const padding = 40;
+  const innerWidth = graphWidth - padding * 2;
+  const innerHeight = graphHeight - padding * 2;
+
+  // Calculate time data
+  const timeData = adaptiveQuestions.map((question, index) => ({
+    questionNum: index + 1,
+    timeSpent: questionTimes[question.id] || 0,
+    difficulty: question.difficulty,
+  }));
+
+  const maxTime = Math.max(...timeData.map((d) => d.timeSpent), 180); // At least 3 minutes scale
+  const avgTime = timeData.reduce((sum, d) => sum + d.timeSpent, 0) / timeData.length;
+
+  // Create points for the line
+  const points = timeData.map((data, index) => {
+    const x = padding + (index / (timeData.length - 1)) * innerWidth;
+    const y = padding + (1 - data.timeSpent / maxTime) * innerHeight;
+    return { x, y, ...data };
+  });
+
+  // Create hexadecimal averaging (moving average of 3)
+  const smoothedPoints = points.map((point, index) => {
+    if (index === 0 || index === points.length - 1) return point;
+
+    const prev = points[index - 1];
+    const next = points[index + 1];
+    const avgY = (prev.y + point.y + next.y) / 3;
+
+    return { ...point, y: avgY, smoothed: true };
+  });
+
+  const pathData = smoothedPoints.map((point, index) => `${index === 0 ? 'M' : 'L'} ${point.x} ${point.y}`).join(' ');
+
+  return (
+    <div style={{ marginBottom: '25px', textAlign: 'center' }}>
+      <h4 style={{ color: '#2c3e50', marginBottom: '15px', fontSize: '18px' }}>Time Pressure Analysis</h4>
+
+      <div
+        style={{
+          display: 'inline-block',
+          backgroundColor: '#f8f9fa',
+          padding: '20px',
+          borderRadius: '8px',
+          border: '1px solid #dee2e6',
+        }}
+      >
+        <svg width={graphWidth} height={graphHeight} style={{ backgroundColor: 'white', borderRadius: '4px' }}>
+          {/* Grid lines */}
+          <defs>
+            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#f0f0f0" strokeWidth="1" />
+            </pattern>
+          </defs>
+          <rect width={graphWidth} height={graphHeight} fill="url(#grid)" />
+
+          {/* Axes */}
+          <line x1={padding} y1={padding} x2={padding} y2={graphHeight - padding} stroke="#666" strokeWidth="2" />
+          <line
+            x1={padding}
+            y1={graphHeight - padding}
+            x2={graphWidth - padding}
+            y2={graphHeight - padding}
+            stroke="#666"
+            strokeWidth="2"
+          />
+
+          {/* Y-axis labels (time) */}
+          {[0, 1, 2, 3, 4, 5].map((minutes) => {
+            const y = padding + (1 - (minutes * 60) / maxTime) * innerHeight;
+            if (y >= padding && y <= graphHeight - padding) {
+              return (
+                <g key={minutes}>
+                  <line x1={padding - 5} y1={y} x2={padding} y2={y} stroke="#666" strokeWidth="1" />
+                  <text x={padding - 10} y={y + 4} textAnchor="end" fontSize="12" fill="#666">
+                    {minutes}m
+                  </text>
+                </g>
+              );
+            }
+            return null;
+          })}
+
+          {/* X-axis labels (questions) */}
+          {points
+            .filter((_, i) => i % Math.ceil(points.length / 10) === 0)
+            .map((point) => (
+              <g key={point.questionNum}>
+                <line
+                  x1={point.x}
+                  y1={graphHeight - padding}
+                  x2={point.x}
+                  y2={graphHeight - padding + 5}
+                  stroke="#666"
+                  strokeWidth="1"
+                />
+                <text x={point.x} y={graphHeight - padding + 18} textAnchor="middle" fontSize="12" fill="#666">
+                  Q{point.questionNum}
+                </text>
+              </g>
+            ))}
+
+          {/* Average time line */}
+          <line
+            x1={padding}
+            y1={padding + (1 - avgTime / maxTime) * innerHeight}
+            x2={graphWidth - padding}
+            y2={padding + (1 - avgTime / maxTime) * innerHeight}
+            stroke="#f39c12"
+            strokeWidth="2"
+            strokeDasharray="5,5"
+          />
+          <text
+            x={graphWidth - padding - 5}
+            y={padding + (1 - avgTime / maxTime) * innerHeight - 5}
+            textAnchor="end"
+            fontSize="12"
+            fill="#f39c12"
+            fontWeight="bold"
+          >
+            Avg: {formatTime(Math.round(avgTime))}
+          </text>
+
+          {/* Time pressure zones */}
+          <rect
+            x={padding}
+            y={padding}
+            width={innerWidth}
+            height={(1 - 150 / maxTime) * innerHeight}
+            fill="rgba(231, 76, 60, 0.1)"
+          />
+          <text x={padding + 10} y={padding + 15} fontSize="12" fill="#e74c3c" fontWeight="bold">
+            High Pressure Zone (2.5+ min)
+          </text>
+
+          {/* Main time line (smoothed) */}
+          <path d={pathData} fill="none" stroke="#3498db" strokeWidth="3" strokeLinecap="round" />
+
+          {/* Data points */}
+          {points.map((point, index) => (
+            <g key={index}>
+              <circle
+                cx={point.x}
+                cy={point.y}
+                r="4"
+                fill={point.timeSpent > 150 ? '#e74c3c' : point.timeSpent < 60 ? '#27ae60' : '#f39c12'}
+                stroke="white"
+                strokeWidth="2"
+              />
+
+              {/* Tooltip on hover */}
+              <circle cx={point.x} cy={point.y} r="8" fill="transparent" style={{ cursor: 'pointer' }}>
+                <title>
+                  Q{point.questionNum}: {formatTime(point.timeSpent)} ({point.difficulty})
+                </title>
+              </circle>
+            </g>
+          ))}
+        </svg>
+
+        {/* Legend */}
+        <div style={{ marginTop: '15px', fontSize: '12px', color: '#666' }}>
+          <span style={{ marginRight: '20px' }}>
+            <span
+              style={{
+                display: 'inline-block',
+                width: '12px',
+                height: '12px',
+                backgroundColor: '#27ae60',
+                borderRadius: '50%',
+                marginRight: '5px',
+              }}
+            ></span>
+            Fast (&lt;1min)
+          </span>
+          <span style={{ marginRight: '20px' }}>
+            <span
+              style={{
+                display: 'inline-block',
+                width: '12px',
+                height: '12px',
+                backgroundColor: '#f39c12',
+                borderRadius: '50%',
+                marginRight: '5px',
+              }}
+            ></span>
+            Normal (1-2.5min)
+          </span>
+          <span>
+            <span
+              style={{
+                display: 'inline-block',
+                width: '12px',
+                height: '12px',
+                backgroundColor: '#e74c3c',
+                borderRadius: '50%',
+                marginRight: '5px',
+              }}
+            ></span>
+            Slow (&gt;2.5min)
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}, [adaptiveQuestions, questionTimes, formatTime]);
 
     return (
       <div style={{ fontFamily: 'Arial, sans-serif', height: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -1092,20 +1345,121 @@ const timeLimit = useMemo(() => {
       </div>
 
       {/* Modals */}
-      {isPaused && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 999 }}>
-          <div style={{ backgroundColor: 'white', padding: '40px', borderRadius: '8px', textAlign: 'center', boxShadow: '0 4px 20px rgba(0,0,0,0.2)' }}>
-            <h3 style={{ color: '#2c3e50', marginBottom: '20px', fontSize: '20px' }}>Test Paused</h3>
-            <p style={{ marginBottom: '25px', color: '#666', fontSize: '16px' }}>Click Resume to continue your test.</p>
-            <button
-              onClick={() => setIsPaused(false)}
-              style={{ backgroundColor: '#27ae60', color: 'white', border: 'none', padding: '12px 25px', borderRadius: '4px', cursor: 'pointer', fontSize: '16px', fontWeight: '500' }}
-            >
-              ▶ Resume Test
-            </button>
-          </div>
+     // Enhanced pause modal with blur effect - replace your existing pause modal
+{isPaused && (
+  <div style={{ 
+    position: 'fixed', 
+    top: 0, 
+    left: 0, 
+    right: 0, 
+    bottom: 0, 
+    backgroundColor: 'rgba(0,0,0,0.4)', 
+    backdropFilter: 'blur(8px)',
+    WebkitBackdropFilter: 'blur(8px)', // Safari support
+    display: 'flex', 
+    alignItems: 'center', 
+    justifyContent: 'center', 
+    zIndex: 999,
+    animation: 'fadeIn 0.3s ease-in-out'
+  }}>
+    <style>
+      {`
+        @keyframes fadeIn {
+          from { opacity: 0; backdrop-filter: blur(0px); }
+          to { opacity: 1; backdrop-filter: blur(8px); }
+        }
+        
+        .pause-content {
+          transform: scale(0.9);
+          animation: scaleIn 0.3s ease-out forwards;
+        }
+        
+        @keyframes scaleIn {
+          to { transform: scale(1); }
+        }
+      `}
+    </style>
+    <div 
+      className="pause-content"
+      style={{ 
+        backgroundColor: 'white', 
+        padding: '40px', 
+        borderRadius: '12px', 
+        textAlign: 'center', 
+        boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
+        border: '1px solid #e0e0e0',
+        maxWidth: '400px',
+        width: '90%'
+      }}
+    >
+      <div style={{ 
+        fontSize: '48px', 
+        marginBottom: '20px',
+        color: '#3498db'
+      }}>
+        ⏸️
+      </div>
+      <h3 style={{ 
+        color: '#2c3e50', 
+        marginBottom: '15px', 
+        fontSize: '24px',
+        fontWeight: '600'
+      }}>
+        Test Paused
+      </h3>
+      <p style={{ 
+        marginBottom: '25px', 
+        color: '#666', 
+        fontSize: '16px',
+        lineHeight: '1.5'
+      }}>
+        Your test is paused. The timer is stopped.<br />
+        Click Resume when you're ready to continue.
+      </p>
+      <div style={{
+        backgroundColor: '#f8f9fa',
+        padding: '15px',
+        borderRadius: '8px',
+        marginBottom: '25px',
+        border: '1px solid #e9ecef'
+      }}>
+        <div style={{ fontSize: '14px', color: '#6c757d', marginBottom: '5px' }}>
+          Time Remaining
         </div>
-      )}
+        <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#495057' }}>
+          {formatTime(timeRemaining)}
+        </div>
+      </div>
+      <button
+        onClick={() => setIsPaused(false)}
+        style={{ 
+          backgroundColor: '#27ae60', 
+          color: 'white', 
+          border: 'none', 
+          padding: '14px 28px', 
+          borderRadius: '8px', 
+          cursor: 'pointer', 
+          fontSize: '16px', 
+          fontWeight: '500',
+          transition: 'all 0.2s ease',
+          boxShadow: '0 2px 4px rgba(39, 174, 96, 0.3)'
+        }}
+        onMouseOver={(e) => {
+          e.target.style.backgroundColor = '#229954';
+          e.target.style.transform = 'translateY(-1px)';
+          e.target.style.boxShadow = '0 4px 8px rgba(39, 174, 96, 0.4)';
+        }}
+        onMouseOut={(e) => {
+          e.target.style.backgroundColor = '#27ae60';
+          e.target.style.transform = 'translateY(0)';
+          e.target.style.boxShadow = '0 2px 4px rgba(39, 174, 96, 0.3)';
+        }}
+      >
+        ▶ Resume Test
+      </button>
+    </div>
+  </div>
+)}
 
       {showTimeWarning && timeRemaining > 0 && (
         <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
