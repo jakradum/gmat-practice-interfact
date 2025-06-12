@@ -20,6 +20,7 @@ This project demonstrates collaborative human-AI development - the vision, requi
 
 ### Advanced Features
 - **Adaptive Testing**: Dynamic difficulty adjustment based on performance
+- **Warmup Mode**: Customizable practice sessions with 1-50 randomly selected questions
 - **Custom Timing**: Set your own time limits or use section defaults
 - **Bookmark System**: Mark questions for review with visual indicators
 - **Edit Previous**: Limited ability to revise previous answers (1/7th ratio)
@@ -44,9 +45,35 @@ The application will run on `http://localhost:3000`
 
 ### Setting Up Questions
 
-Create a `questionData.json` file in the `src` directory with your test content. See examples below for each section type.
+Create a `questionData.json` file in the `src` directory with your test content. Optionally create `warmupData.json` for practice questions. See examples below for each section type.
 
 ## JSON Configuration Examples
+
+### Warmup Mode Setup (Optional)
+Create a separate `warmupData.json` file for practice questions:
+
+```json
+{
+  "sectionName": "GMAT Warmup - Quantitative Practice",
+  "sectionType": "quantitative",
+  "testDescription": "Practice session with randomly selected questions.",
+  "questions": [
+    {
+      "id": 1,
+      "questionText": "If 3x + 7 = 22, what is the value of x?",
+      "difficulty": "easy",
+      "options": {"A": "3", "B": "5", "C": "7", "D": "9", "E": "11"},
+      "correctAnswer": "B"
+    }
+    // ... 50-100+ practice questions
+  ]
+}
+```
+
+**Warmup Features:**
+- **Random Selection**: Each session picks different questions from your pool
+- **Customizable Count**: Choose 1-50 questions per session
+- **Proportional Timing**: Automatic time calculation based on question count
 
 ### Quantitative Reasoning
 ```json
@@ -283,6 +310,7 @@ Tabbed interface combining multiple data types
 - Custom time limits with user input
 - Time pressure visualization and analysis
 - Warning alerts at 1/9th time remaining
+- **Warmup Proportional Timing**: Automatically scales time based on question count
 
 ### Analytics & Reporting
 - **Performance by Difficulty**: Accuracy breakdown by question difficulty
@@ -322,12 +350,13 @@ Tabbed interface combining multiple data types
 ```
 src/
 ├── questionData.json      # Your test content
+├── warmupData.json       # Warmup questions (optional)
 ├── GMATInterface.js       # Main component  
 └── index.js              # App entry point
 ```
 
 ### Key Functions
-- **initializeAdaptiveQuestions**: Handles question selection and ordering
+- **initializeAdaptiveQuestions**: Handles question selection and ordering with randomization
 - **renderDataSource**: Renders data visualizations for DI section
 - **renderPassage**: Renders reading passages with line numbers
 - **calculateScore**: Implements adaptive scoring algorithm

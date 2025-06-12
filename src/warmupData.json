@@ -1,0 +1,1317 @@
+{
+  "sectionName": "GMAT Quantitative Warmup - Complete Collection",
+  "sectionType": "quantitative",
+  "testDescription": "Complete collection of 100 warmup problems covering coordinate geometry, work rates, distances, percentages, and number properties.",
+  "skillsAssessed": [
+    "Coordinate geometry and linear equations",
+    "Work rates and combined productivity", 
+    "Distance, speed, and time calculations",
+    "Percentage and proportion applications",
+    "Number properties and algebraic reasoning"
+  ],
+  "adaptiveMode": false,
+  "targetQuestions": 100,
+  "timeLimit": 15000,
+  "questions": [
+    {
+      "id": 1,
+      "questionText": "What is the distance between points (3, 7) and (9, 15)?",
+      "difficulty": "easy",
+      "options": {
+        "A": "8",
+        "B": "10",
+        "C": "12",
+        "D": "14",
+        "E": "16"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 2,
+      "questionText": "Worker A can paint a fence in 6 hours, and worker B can paint the same fence in 4 hours. How long will it take them to paint the fence working together?",
+      "difficulty": "easy",
+      "options": {
+        "A": "2.0 hours",
+        "B": "2.4 hours",
+        "C": "2.8 hours",
+        "D": "3.0 hours",
+        "E": "3.5 hours"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 3,
+      "questionText": "A train travels 300 miles at 60 mph. How long does the journey take?",
+      "difficulty": "easy",
+      "options": {
+        "A": "4 hours",
+        "B": "5 hours",
+        "C": "6 hours",
+        "D": "7 hours",
+        "E": "8 hours"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 4,
+      "questionText": "A shirt originally costs $80. After a 25% discount, what is the sale price?",
+      "difficulty": "easy",
+      "options": {
+        "A": "$55",
+        "B": "$60",
+        "C": "$65",
+        "D": "$70",
+        "E": "$75"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 5,
+      "questionText": "If x² = 49, what are the possible values of x?",
+      "difficulty": "easy",
+      "options": {
+        "A": "7 only",
+        "B": "-7 only",
+        "C": "7 and -7",
+        "D": "49 only",
+        "E": "0 and 7"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 6,
+      "questionText": "What is the slope of the line passing through points (2, 3) and (8, 15)?",
+      "difficulty": "easy",
+      "options": {
+        "A": "1/2",
+        "B": "2",
+        "C": "3/2",
+        "D": "5/2",
+        "E": "3"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 7,
+      "questionText": "Pipe A fills a tank in 8 hours, pipe B fills it in 12 hours. If both pipes work together, how long to fill the tank?",
+      "difficulty": "medium",
+      "options": {
+        "A": "4.0 hours",
+        "B": "4.8 hours",
+        "C": "5.2 hours",
+        "D": "6.0 hours",
+        "E": "6.5 hours"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 8,
+      "questionText": "Two cars start from the same point traveling in opposite directions at 45 mph and 55 mph. After 2 hours, how far apart are they?",
+      "difficulty": "easy",
+      "options": {
+        "A": "100 miles",
+        "B": "150 miles",
+        "C": "200 miles",
+        "D": "250 miles",
+        "E": "300 miles"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 9,
+      "questionText": "If 30% of a number is 75, what is the number?",
+      "difficulty": "easy",
+      "options": {
+        "A": "200",
+        "B": "225",
+        "C": "250",
+        "D": "275",
+        "E": "300"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 10,
+      "questionText": "What is the value of 3² × 2³?",
+      "difficulty": "easy",
+      "options": {
+        "A": "48",
+        "B": "54",
+        "C": "62",
+        "D": "68",
+        "E": "72"
+      },
+      "correctAnswer": "E"
+    },
+    {
+      "id": 11,
+      "questionText": "Line L has equation y = 2x + 5. What is the y-coordinate when x = 4?",
+      "difficulty": "easy",
+      "options": {
+        "A": "11",
+        "B": "12",
+        "C": "13",
+        "D": "14",
+        "E": "15"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 12,
+      "questionText": "Machine X produces 120 widgets in 3 hours. Machine Y produces 200 widgets in 4 hours. Working together for 2 hours, how many widgets do they produce?",
+      "difficulty": "medium",
+      "options": {
+        "A": "180",
+        "B": "200",
+        "C": "220",
+        "D": "240",
+        "E": "260"
+      },
+      "correctAnswer": "A"
+    },
+    {
+      "id": 13,
+      "questionText": "A cyclist travels 24 miles in 2 hours, then 36 miles in 3 hours. What is the average speed for the entire trip?",
+      "difficulty": "medium",
+      "options": {
+        "A": "10 mph",
+        "B": "11 mph",
+        "C": "12 mph",
+        "D": "13 mph",
+        "E": "14 mph"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 14,
+      "questionText": "The price of a stock increased by 20%, then decreased by 10%. If the final price is $108, what was the original price?",
+      "difficulty": "medium",
+      "options": {
+        "A": "$90",
+        "B": "$95",
+        "C": "$100",
+        "D": "$105",
+        "E": "$110"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 15,
+      "questionText": "If 2x + 3 = 15, what is the value of 4x + 1?",
+      "difficulty": "easy",
+      "options": {
+        "A": "23",
+        "B": "24",
+        "C": "25",
+        "D": "26",
+        "E": "27"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 16,
+      "questionText": "What is the x-intercept of the line y = 3x - 12?",
+      "difficulty": "easy",
+      "options": {
+        "A": "3",
+        "B": "4",
+        "C": "5",
+        "D": "6",
+        "E": "12"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 17,
+      "questionText": "Printer A prints 15 pages per minute, printer B prints 25 pages per minute. How long to print 200 pages together?",
+      "difficulty": "easy",
+      "options": {
+        "A": "4 minutes",
+        "B": "5 minutes",
+        "C": "6 minutes",
+        "D": "7 minutes",
+        "E": "8 minutes"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 18,
+      "questionText": "A car travels at 60 mph for 3 hours, then 80 mph for 2 hours. What is the total distance traveled?",
+      "difficulty": "easy",
+      "options": {
+        "A": "300 miles",
+        "B": "320 miles",
+        "C": "340 miles",
+        "D": "360 miles",
+        "E": "380 miles"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 19,
+      "questionText": "In a class of 200 students, 65% are girls. How many boys are in the class?",
+      "difficulty": "easy",
+      "options": {
+        "A": "60",
+        "B": "65",
+        "C": "70",
+        "D": "75",
+        "E": "80"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 20,
+      "questionText": "If n³ = 125, what is the value of n?",
+      "difficulty": "easy",
+      "options": {
+        "A": "3",
+        "B": "4",
+        "C": "5",
+        "D": "6",
+        "E": "7"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 21,
+      "questionText": "What is the midpoint of the line segment connecting (4, 6) and (10, 14)?",
+      "difficulty": "easy",
+      "options": {
+        "A": "(6, 9)",
+        "B": "(7, 10)",
+        "C": "(8, 11)",
+        "D": "(9, 12)",
+        "E": "(14, 20)"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 22,
+      "questionText": "Tom can mow a lawn in 2 hours. Jerry can mow the same lawn in 3 hours. How long will it take them working together?",
+      "difficulty": "easy",
+      "options": {
+        "A": "1.0 hour",
+        "B": "1.2 hours",
+        "C": "1.5 hours",
+        "D": "2.0 hours",
+        "E": "2.5 hours"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 23,
+      "questionText": "A runner completes a 10-mile race in 80 minutes. What is the runner's speed in miles per hour?",
+      "difficulty": "easy",
+      "options": {
+        "A": "6.5 mph",
+        "B": "7.0 mph",
+        "C": "7.5 mph",
+        "D": "8.0 mph",
+        "E": "8.5 mph"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 24,
+      "questionText": "A jacket costs $120 after a 20% discount. What was the original price?",
+      "difficulty": "medium",
+      "options": {
+        "A": "$140",
+        "B": "$144",
+        "C": "$150",
+        "D": "$160",
+        "E": "$180"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 25,
+      "questionText": "If 3x - 7 = 14, what is the value of x?",
+      "difficulty": "easy",
+      "options": {
+        "A": "5",
+        "B": "6",
+        "C": "7",
+        "D": "8",
+        "E": "9"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 26,
+      "questionText": "What is the equation of the line passing through (0, 4) with slope 3?",
+      "difficulty": "easy",
+      "options": {
+        "A": "y = 3x + 4",
+        "B": "y = 4x + 3",
+        "C": "y = 3x - 4",
+        "D": "y = -3x + 4",
+        "E": "y = x + 7"
+      },
+      "correctAnswer": "A"
+    },
+    {
+      "id": 27,
+      "questionText": "Machine P produces 40 items per hour, machine Q produces 60 items per hour. Working together for 5 hours, how many items do they produce?",
+      "difficulty": "easy",
+      "options": {
+        "A": "400",
+        "B": "450",
+        "C": "500",
+        "D": "550",
+        "E": "600"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 28,
+      "questionText": "A boat travels downstream at 20 mph for 3 hours, then upstream at 12 mph for 2 hours. What is the total distance traveled?",
+      "difficulty": "medium",
+      "options": {
+        "A": "78 miles",
+        "B": "82 miles",
+        "C": "84 miles",
+        "D": "86 miles",
+        "E": "90 miles"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 29,
+      "questionText": "If 40% of a class of 150 students are boys, how many girls are in the class?",
+      "difficulty": "easy",
+      "options": {
+        "A": "60",
+        "B": "70",
+        "C": "80",
+        "D": "90",
+        "E": "100"
+      },
+      "correctAnswer": "D"
+    },
+    {
+      "id": 30,
+      "questionText": "What is the value of 5² - 3²?",
+      "difficulty": "easy",
+      "options": {
+        "A": "8",
+        "B": "12",
+        "C": "16",
+        "D": "20",
+        "E": "24"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 31,
+      "questionText": "Find the distance between points (-2, 1) and (4, 9).",
+      "difficulty": "medium",
+      "options": {
+        "A": "8",
+        "B": "10",
+        "C": "12",
+        "D": "14",
+        "E": "16"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 32,
+      "questionText": "Pump A can empty a pool in 4 hours, pump B can empty it in 6 hours. Working together, how long to empty the pool?",
+      "difficulty": "medium",
+      "options": {
+        "A": "2.0 hours",
+        "B": "2.4 hours",
+        "C": "2.8 hours",
+        "D": "3.0 hours",
+        "E": "3.5 hours"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 33,
+      "questionText": "Two trains leave the same station at the same time traveling in opposite directions at 75 mph and 85 mph. After 3 hours, how far apart are they?",
+      "difficulty": "easy",
+      "options": {
+        "A": "420 miles",
+        "B": "450 miles",
+        "C": "480 miles",
+        "D": "520 miles",
+        "E": "560 miles"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 34,
+      "questionText": "A population of 8000 increases by 15%. What is the new population?",
+      "difficulty": "easy",
+      "options": {
+        "A": "8800",
+        "B": "9000",
+        "C": "9200",
+        "D": "9400",
+        "E": "9600"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 35,
+      "questionText": "If 2y + 5 = 17, what is the value of 6y?",
+      "difficulty": "easy",
+      "options": {
+        "A": "30",
+        "B": "33",
+        "C": "36",
+        "D": "39",
+        "E": "42"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 36,
+      "questionText": "What is the y-intercept of the line 2x + 3y = 12?",
+      "difficulty": "medium",
+      "options": {
+        "A": "2",
+        "B": "3",
+        "C": "4",
+        "D": "6",
+        "E": "12"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 37,
+      "questionText": "Assembly line A produces 150 units in 5 hours. Assembly line B produces 200 units in 4 hours. What is their combined rate per hour?",
+      "difficulty": "medium",
+      "options": {
+        "A": "60 units/hour",
+        "B": "70 units/hour",
+        "C": "80 units/hour",
+        "D": "90 units/hour",
+        "E": "100 units/hour"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 38,
+      "questionText": "A car averages 45 mph for the first 2 hours of a trip and 60 mph for the next 3 hours. What is the total distance?",
+      "difficulty": "easy",
+      "options": {
+        "A": "240 miles",
+        "B": "260 miles",
+        "C": "270 miles",
+        "D": "280 miles",
+        "E": "300 miles"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 39,
+      "questionText": "In a survey, 120 out of 200 people prefer coffee. What percentage prefers coffee?",
+      "difficulty": "easy",
+      "options": {
+        "A": "55%",
+        "B": "60%",
+        "C": "65%",
+        "D": "70%",
+        "E": "75%"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 40,
+      "questionText": "If x² - 16 = 0, what are the possible values of x?",
+      "difficulty": "easy",
+      "options": {
+        "A": "4 only",
+        "B": "-4 only", 
+        "C": "4 and -4",
+        "D": "16 only",
+        "E": "8 and -8"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 41,
+      "questionText": "What is the slope of a line perpendicular to the line y = 2x + 5?",
+      "difficulty": "medium",
+      "options": {
+        "A": "-2",
+        "B": "-1/2",
+        "C": "1/2",
+        "D": "2",
+        "E": "5"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 42,
+      "questionText": "Painter A can paint a room in 8 hours. Painter B can paint the same room in 12 hours. If A works for 2 hours alone, then both work together, how long total to finish the room?",
+      "difficulty": "medium",
+      "options": {
+        "A": "5.6 hours",
+        "B": "6.0 hours",
+        "C": "6.4 hours",
+        "D": "6.8 hours",
+        "E": "7.2 hours"
+      },
+      "correctAnswer": "A"
+    },
+    {
+      "id": 43,
+      "questionText": "A plane flies 420 miles in 1.5 hours. What is its speed in miles per hour?",
+      "difficulty": "easy",
+      "options": {
+        "A": "260 mph",
+        "B": "270 mph",
+        "C": "280 mph",
+        "D": "290 mph",
+        "E": "300 mph"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 44,
+      "questionText": "A store marks up an item 60% above cost. If the selling price is $96, what was the cost?",
+      "difficulty": "medium",
+      "options": {
+        "A": "$50",
+        "B": "$55",
+        "C": "$60",
+        "D": "$65",
+        "E": "$70"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 45,
+      "questionText": "If 4x + 9 = 33, what is the value of 2x - 3?",
+      "difficulty": "easy",
+      "options": {
+        "A": "6",
+        "B": "8",
+        "C": "9",
+        "D": "12",
+        "E": "15"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 46,
+      "questionText": "Which point lies on the line 3x + 2y = 12?",
+      "difficulty": "easy",
+      "options": {
+        "A": "(2, 2)",
+        "B": "(2, 3)",
+        "C": "(3, 2)",
+        "D": "(4, 0)",
+        "E": "(0, 5)"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 47,
+      "questionText": "Conveyor belt A moves 180 boxes per hour, conveyor belt B moves 120 boxes per hour. Working together for 4 hours, how many boxes do they move?",
+      "difficulty": "easy",
+      "options": {
+        "A": "1000",
+        "B": "1100",
+        "C": "1200",
+        "D": "1300",
+        "E": "1400"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 48,
+      "questionText": "A cyclist travels 45 miles in 3 hours against the wind, then 75 miles in 3 hours with the wind. What is the cyclist's speed in still air?",
+      "difficulty": "medium",
+      "options": {
+        "A": "18 mph",
+        "B": "20 mph",
+        "C": "22 mph",
+        "D": "24 mph",
+        "E": "25 mph"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 49,
+      "questionText": "In a company of 500 employees, 35% work in sales. How many employees work in sales?",
+      "difficulty": "easy",
+      "options": {
+        "A": "165",
+        "B": "170",
+        "C": "175",
+        "D": "180",
+        "E": "185"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 50,
+      "questionText": "What is the value of 6² ÷ 3²?",
+      "difficulty": "easy",
+      "options": {
+        "A": "2",
+        "B": "3",
+        "C": "4",
+        "D": "6",
+        "E": "9"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 51,
+      "questionText": "Find the x-coordinate of the point where the lines y = 2x + 1 and y = -x + 7 intersect.",
+      "difficulty": "medium",
+      "options": {
+        "A": "1",
+        "B": "2",
+        "C": "3",
+        "D": "4",
+        "E": "5"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 52,
+      "questionText": "Tank A can be filled by pipe X in 6 hours or emptied by pipe Y in 9 hours. If both pipes operate simultaneously, how long to fill the empty tank?",
+      "difficulty": "medium",
+      "options": {
+        "A": "15 hours",
+        "B": "16 hours",
+        "C": "17 hours",
+        "D": "18 hours",
+        "E": "20 hours"
+      },
+      "correctAnswer": "D"
+    },
+    {
+      "id": 53,
+      "questionText": "Two joggers start from the same point. One runs north at 6 mph, the other runs east at 8 mph. After 1.5 hours, how far apart are they?",
+      "difficulty": "medium",
+      "options": {
+        "A": "12 miles",
+        "B": "15 miles",
+        "C": "18 miles",
+        "D": "21 miles",
+        "E": "24 miles"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 54,
+      "questionText": "A laptop's price decreased from $800 to $640. What was the percentage decrease?",
+      "difficulty": "easy",
+      "options": {
+        "A": "15%",
+        "B": "20%",
+        "C": "25%",
+        "D": "30%",
+        "E": "35%"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 55,
+      "questionText": "If 3(x - 4) = 21, what is the value of x + 2?",
+      "difficulty": "easy",
+      "options": {
+        "A": "9",
+        "B": "11",
+        "C": "13",
+        "D": "15",
+        "E": "17"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 56,
+      "questionText": "What is the distance from point (5, 12) to the origin?",
+      "difficulty": "easy",
+      "options": {
+        "A": "11",
+        "B": "12",
+        "C": "13",
+        "D": "14",
+        "E": "17"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 57,
+      "questionText": "Factory A produces 240 widgets in 8 hours. Factory B produces 300 widgets in 10 hours. What is their combined production rate per hour?",
+      "difficulty": "easy",
+      "options": {
+        "A": "50 widgets/hour",
+        "B": "55 widgets/hour",
+        "C": "60 widgets/hour",
+        "D": "65 widgets/hour",
+        "E": "70 widgets/hour"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 58,
+      "questionText": "A bus travels 150 miles at 50 mph, then 200 miles at 40 mph. What is the average speed for the entire trip?",
+      "difficulty": "medium",
+      "options": {
+        "A": "42 mph",
+        "B": "43.75 mph",
+        "C": "45 mph",
+        "D": "46.25 mph",
+        "E": "48 mph"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 59,
+      "questionText": "Of 240 students surveyed, 45% said they prefer online classes. How many students prefer online classes?",
+      "difficulty": "easy",
+      "options": {
+        "A": "98",
+        "B": "102",
+        "C": "108",
+        "D": "112",
+        "E": "118"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 60,
+      "questionText": "If x² + 6x + 9 = 0, what is the value of x?",
+      "difficulty": "easy",
+      "options": {
+        "A": "-6",
+        "B": "-3",
+        "C": "0",
+        "D": "3",
+        "E": "6"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 61,
+      "questionText": "What is the area of a triangle with vertices at (0, 0), (4, 0), and (0, 6)?",
+      "difficulty": "easy",
+      "options": {
+        "A": "10",
+        "B": "12",
+        "C": "14",
+        "D": "16",
+        "E": "24"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 62,
+      "questionText": "John can type a report in 4 hours. Mary can type the same report in 6 hours. If John works for 1 hour alone, then both work together, what is the total time to complete the report?",
+      "difficulty": "medium",
+      "options": {
+        "A": "2.6 hours",
+        "B": "2.8 hours",
+        "C": "3.0 hours",
+        "D": "3.2 hours",
+        "E": "3.4 hours"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 63,
+      "questionText": "A motorcycle travels 180 miles in 3.6 hours. What is its average speed?",
+      "difficulty": "easy",
+      "options": {
+        "A": "45 mph",
+        "B": "48 mph",
+        "C": "50 mph",
+        "D": "52 mph",
+        "E": "55 mph"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 64,
+      "questionText": "A restaurant bill totals $72 after an 8% tax. What was the bill before tax?",
+      "difficulty": "medium",
+      "options": {
+        "A": "$64.80",
+        "B": "$66.00",
+        "C": "$66.67",
+        "D": "$68.00",
+        "E": "$70.00"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 65,
+      "questionText": "If 5x - 12 = 23, what is the value of x + 4?",
+      "difficulty": "easy",
+      "options": {
+        "A": "8",
+        "B": "9",
+        "C": "10",
+        "D": "11",
+        "E": "12"
+      },
+      "correctAnswer": "D"
+    },
+    {
+      "id": 66,
+      "questionText": "What is the slope of the line passing through (-3, 2) and (5, 10)?",
+      "difficulty": "easy",
+      "options": {
+        "A": "1/2",
+        "B": "1",
+        "C": "3/2",
+        "D": "2",
+        "E": "5/2"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 67,
+      "questionText": "Press A prints 80 pages per minute, press B prints 120 pages per minute. Working together, how long to print 1000 pages?",
+      "difficulty": "easy",
+      "options": {
+        "A": "4 minutes",
+        "B": "5 minutes",
+        "C": "6 minutes",
+        "D": "7 minutes",
+        "E": "8 minutes"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 68,
+      "questionText": "A car leaves city A at 60 mph. Two hours later, another car leaves the same city traveling the same route at 80 mph. How long after the second car starts will it catch up?",
+      "difficulty": "medium",
+      "options": {
+        "A": "4 hours",
+        "B": "5 hours", 
+        "C": "6 hours",
+        "D": "7 hours",
+        "E": "8 hours"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 69,
+      "questionText": "A product's price increases from $50 to $65. What is the percentage increase?",
+      "difficulty": "easy",
+      "options": {
+        "A": "25%",
+        "B": "30%",
+        "C": "35%",
+        "D": "40%",
+        "E": "45%"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 70,
+      "questionText": "What is the value of 4³ - 2⁴?",
+      "difficulty": "easy",
+      "options": {
+        "A": "32",
+        "B": "40",
+        "C": "48",
+        "D": "56",
+        "E": "64"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 71,
+      "questionText": "Find the equation of the line with slope -2 passing through point (3, 8).",
+      "difficulty": "medium",
+      "options": {
+        "A": "y = -2x + 2",
+        "B": "y = -2x + 14",
+        "C": "y = -2x + 8",
+        "D": "y = 2x + 2",
+        "E": "y = -2x - 2"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 72,
+      "questionText": "Pool pump A can fill a pool in 8 hours, pump B can fill it in 12 hours. If pump A runs for 3 hours alone, then both pumps work together, how long total to fill the pool?",
+      "difficulty": "medium",
+      "options": {
+        "A": "6.0 hours",
+        "B": "6.1 hours",
+        "C": "6.2 hours",
+        "D": "6.3 hours",
+        "E": "6.4 hours"
+      },
+      "correctAnswer": "A"
+    },
+    {
+      "id": 73,
+      "questionText": "Two ships leave port simultaneously. Ship A travels north at 15 knots, ship B travels east at 20 knots. After 4 hours, how far apart are they?",
+      "difficulty": "medium",
+      "options": {
+        "A": "80 nautical miles",
+        "B": "90 nautical miles",
+        "C": "100 nautical miles",
+        "D": "110 nautical miles",
+        "E": "120 nautical miles"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 74,
+      "questionText": "In a group of 400 people, 72% are adults. How many children are in the group?",
+      "difficulty": "easy",
+      "options": {
+        "A": "108",
+        "B": "112",
+        "C": "116",
+        "D": "120",
+        "E": "124"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 75,
+      "questionText": "If 2(x + 3) - 4 = 10, what is the value of x?",
+      "difficulty": "easy",
+      "options": {
+        "A": "2",
+        "B": "3",
+        "C": "4",
+        "D": "5",
+        "E": "6"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 76,
+      "questionText": "What is the x-intercept of the line 4x - 3y = 12?",
+      "difficulty": "easy",
+      "options": {
+        "A": "2",
+        "B": "3",
+        "C": "4",
+        "D": "6",
+        "E": "12"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 77,
+      "questionText": "Machine M produces 90 units in 6 hours. Machine N produces 140 units in 7 hours. What is their combined hourly production rate?",
+      "difficulty": "easy",
+      "options": {
+        "A": "30 units/hour",
+        "B": "32 units/hour",
+        "C": "34 units/hour",
+        "D": "35 units/hour",
+        "E": "36 units/hour"
+      },
+      "correctAnswer": "D"
+    },
+    {
+      "id": 78,
+      "questionText": "A delivery truck travels 120 miles at 40 mph, then 160 miles at 50 mph. What is the average speed for the entire trip?",
+      "difficulty": "medium",
+      "options": {
+        "A": "44 mph",
+        "B": "45 mph",
+        "C": "46 mph",
+        "D": "47 mph",
+        "E": "48 mph"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 79,
+      "questionText": "A store offers a 15% discount on all items. If a customer saves $18, what was the original price?",
+      "difficulty": "medium",
+      "options": {
+        "A": "$110",
+        "B": "$115",
+        "C": "$120",
+        "D": "$125",
+        "E": "$130"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 80,
+      "questionText": "If x² - 10x + 25 = 0, what is the value of x?",
+      "difficulty": "easy",
+      "options": {
+        "A": "2",
+        "B": "3",
+        "C": "4",
+        "D": "5",
+        "E": "10"
+      },
+      "correctAnswer": "D"
+    },
+    {
+      "id": 81,
+      "questionText": "What is the perimeter of a rectangle with vertices at (1, 2), (5, 2), (5, 7), and (1, 7)?",
+      "difficulty": "easy",
+      "options": {
+        "A": "16",
+        "B": "18",
+        "C": "20",
+        "D": "22",
+        "E": "24"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 82,
+      "questionText": "Worker A can complete a task in 9 hours, worker B in 12 hours, and worker C in 18 hours. How long to complete the task if all three work together?",
+      "difficulty": "medium",
+      "options": {
+        "A": "3.6 hours",
+        "B": "4.0 hours",
+        "C": "4.2 hours",
+        "D": "4.5 hours",
+        "E": "5.0 hours"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 83,
+      "questionText": "A runner completes the first half of a race at 8 mph and the second half at 12 mph. What is the average speed for the entire race?",
+      "difficulty": "medium",
+      "options": {
+        "A": "9.2 mph",
+        "B": "9.6 mph",
+        "C": "10.0 mph",
+        "D": "10.4 mph",
+        "E": "10.8 mph"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 84,
+      "questionText": "A store marks down an item 30% for a sale. If the sale price is $84, what was the original price?",
+      "difficulty": "medium",
+      "options": {
+        "A": "$110",
+        "B": "$115",
+        "C": "$120",
+        "D": "$125",
+        "E": "$130"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 85,
+      "questionText": "If 3(2x - 5) = 21, what is the value of 4x + 1?",
+      "difficulty": "easy",
+      "options": {
+        "A": "17",
+        "B": "19",
+        "C": "21",
+        "D": "23",
+        "E": "25"
+      },
+      "correctAnswer": "E"
+    },
+    {
+      "id": 86,
+      "questionText": "Find the coordinates of the point where the line y = 3x - 2 crosses the y-axis.",
+      "difficulty": "easy",
+      "options": {
+        "A": "(0, -2)",
+        "B": "(0, 2)",
+        "C": "(-2, 0)",
+        "D": "(2, 0)",
+        "E": "(3, -2)"
+      },
+      "correctAnswer": "A"
+    },
+    {
+      "id": 87,
+      "questionText": "Copier A makes 45 copies per minute, copier B makes 60 copies per minute. Working together for 8 minutes, how many copies do they make?",
+      "difficulty": "easy",
+      "options": {
+        "A": "720",
+        "B": "780",
+        "C": "840",
+        "D": "900",
+        "E": "960"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 88,
+      "questionText": "Two hikers start from the same trailhead. One hikes east at 3 mph, the other hikes north at 4 mph. After 2.5 hours, how far apart are they?",
+      "difficulty": "medium",
+      "options": {
+        "A": "12.5 miles",
+        "B": "15.0 miles",
+        "C": "17.5 miles",
+        "D": "20.0 miles",
+        "E": "22.5 miles"
+      },
+      "correctAnswer": "A"
+    },
+    {
+      "id": 89,
+      "questionText": "A town's population decreased from 12,000 to 10,200. What was the percentage decrease?",
+      "difficulty": "easy",
+      "options": {
+        "A": "12%",
+        "B": "15%",
+        "C": "18%",
+        "D": "20%",
+        "E": "22%"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 90,
+      "questionText": "What is the value of (2³)(3²) - (2²)(3¹)?",
+      "difficulty": "easy",
+      "options": {
+        "A": "60",
+        "B": "66",
+        "C": "72",
+        "D": "78",
+        "E": "84"
+      },
+      "correctAnswer": "A"
+    },
+    {
+      "id": 91,
+      "questionText": "What is the distance between the points (-1, 3) and (5, 11)?",
+      "difficulty": "easy",
+      "options": {
+        "A": "8",
+        "B": "9",
+        "C": "10",
+        "D": "11",
+        "E": "12"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 92,
+      "questionText": "Drain A empties a tank in 10 hours, drain B empties it in 15 hours. If the tank is full and both drains operate, how long to empty the tank?",
+      "difficulty": "easy",
+      "options": {
+        "A": "5 hours",
+        "B": "6 hours",
+        "C": "7 hours",
+        "D": "8 hours",
+        "E": "9 hours"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 93,
+      "questionText": "A plane flies 480 miles with a tailwind in 3 hours, then 320 miles against the wind in 4 hours. What is the plane's speed in still air?",
+      "difficulty": "medium",
+      "options": {
+        "A": "120 mph",
+        "B": "125 mph",
+        "C": "130 mph",
+        "D": "135 mph",
+        "E": "140 mph"
+      },
+      "correctAnswer": "A"
+    },
+    {
+      "id": 94,
+      "questionText": "In a class, 60% of students passed the first test and 75% passed the second test. If 45% passed both tests, what percentage passed at least one test?",
+      "difficulty": "medium",
+      "options": {
+        "A": "85%",
+        "B": "87%",
+        "C": "90%",
+        "D": "92%",
+        "E": "95%"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 95,
+      "questionText": "If 4x - 7 = 2x + 13, what is the value of x + 5?",
+      "difficulty": "easy",
+      "options": {
+        "A": "12",
+        "B": "13",
+        "C": "15",
+        "D": "17",
+        "E": "20"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 96,
+      "questionText": "What is the slope of a line parallel to 2x + 5y = 10?",
+      "difficulty": "medium",
+      "options": {
+        "A": "-2/5",
+        "B": "-5/2",
+        "C": "2/5",
+        "D": "5/2",
+        "E": "2"
+      },
+      "correctAnswer": "A"
+    },
+    {
+      "id": 97,
+      "questionText": "Printing press A produces 150 books per hour, press B produces 200 books per hour. If A runs for 3 hours and B runs for 2 hours, how many books total?",
+      "difficulty": "easy",
+      "options": {
+        "A": "750",
+        "B": "800",
+        "C": "850",
+        "D": "900",
+        "E": "950"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 98,
+      "questionText": "A train travels 240 miles at 60 mph, then stops for 1 hour, then travels 180 miles at 45 mph. What is the average speed for the entire trip including the stop?",
+      "difficulty": "medium",
+      "options": {
+        "A": "42 mph",
+        "B": "45 mph",
+        "C": "48 mph",
+        "D": "50 mph",
+        "E": "52 mph"
+      },
+      "correctAnswer": "A"
+    },
+    {
+      "id": 99,
+      "questionText": "A company's revenue increased by 40% in year 1, then decreased by 25% in year 2. If the final revenue is $420,000, what was the initial revenue?",
+      "difficulty": "medium",
+      "options": {
+        "A": "$350,000",
+        "B": "$375,000",
+        "C": "$400,000",
+        "D": "$425,000",
+        "E": "$450,000"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 100,
+      "questionText": "If x² + 8x + 16 = 0, what is the value of x?",
+      "difficulty": "easy",
+      "options": {
+        "A": "-8",
+        "B": "-4",
+        "C": "0",
+        "D": "4",
+        "E": "8"
+      },
+      "correctAnswer": "B"
+    }
+  ]
+}
