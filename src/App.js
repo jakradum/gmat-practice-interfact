@@ -470,6 +470,69 @@ const formatMath = useCallback((text) => {
     .replace(/\\([a-zA-Z]+)/g, '$1'); // Remove LaTeX-style backslashes
 }, []);
 
+// Render reading passages with line numbering
+const renderPassage = useCallback((passage) => {
+  if (!passage) return null;
+
+  const lines = passage.content.split('\n').filter(line => line.trim() !== '');
+  
+  return (
+    <div style={{ 
+      backgroundColor: 'white', 
+      padding: '20px', 
+      borderRadius: '6px',
+      border: '1px solid #dee2e6',
+      height: 'fit-content',
+      maxHeight: 'calc(100vh - 200px)',
+      overflow: 'auto'
+    }}>
+      {passage.title && (
+        <h3 style={{ 
+          color: '#2c3e50', 
+          marginBottom: '20px', 
+          fontSize: '18px', 
+          fontWeight: '600',
+          textAlign: 'center',
+          borderBottom: '2px solid #e9ecef',
+          paddingBottom: '10px'
+        }}>
+          {passage.title}
+        </h3>
+      )}
+      <div style={{ 
+        lineHeight: '1.8', 
+        fontSize: '16px', 
+        color: '#2c3e50',
+        fontFamily: 'Georgia, serif'
+      }}>
+        {lines.map((line, index) => (
+          <div key={index} style={{ 
+            marginBottom: '12px',
+            display: 'flex',
+            alignItems: 'flex-start'
+          }}>
+            <span style={{ 
+              color: '#6c757d', 
+              fontSize: '14px', 
+              fontWeight: '500',
+              minWidth: '25px',
+              marginRight: '12px',
+              marginTop: '2px',
+              userSelect: 'none'
+            }}>
+              {index + 1}
+            </span>
+            <span style={{ flex: 1 }}>
+              {line.trim()}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}, []);
+
+
 // Format Roman numeral questions to display on separate lines
 const formatRomanNumerals = useCallback((text) => {
   if (!text) return '';
@@ -1482,13 +1545,29 @@ const calculateScore = useCallback(() => {
   return (
     <div style={{ fontFamily: 'Arial, sans-serif', height: '100vh', display: 'flex', flexDirection: 'column' }}>
       {/* Header */}
-      <div style={{ backgroundColor: '#2c3e50', color: 'white', padding: '14px 22px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div
+        style={{
+          backgroundColor: '#2c3e50',
+          color: 'white',
+          padding: '14px 22px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
         <span style={{ fontSize: '16px', fontWeight: '500' }}>
-          GMAT™ Practice Test - {isDataInsights ? 'Data Insights' : isVerbal ? 'Verbal Reasoning' : 'Quantitative Reasoning'}
+          GMAT™ Practice Test -{' '}
+          {isDataInsights ? 'Data Insights' : isVerbal ? 'Verbal Reasoning' : 'Quantitative Reasoning'}
           {isWarmupMode && <span style={{ color: '#f39c12', marginLeft: '8px' }}>(WARMUP)</span>}
         </span>
         <div style={{ display: 'flex', gap: '20px', alignItems: 'center' }}>
-          <span style={{ fontSize: '16px', color: isTimeWarning ? '#e74c3c' : 'white', fontWeight: isTimeWarning ? 'bold' : 'normal' }}>
+          <span
+            style={{
+              fontSize: '16px',
+              color: isTimeWarning ? '#e74c3c' : 'white',
+              fontWeight: isTimeWarning ? 'bold' : 'normal',
+            }}
+          >
             {formatTime(timeRemaining)}
           </span>
           <span style={{ fontSize: '16px' }}>
@@ -1498,88 +1577,187 @@ const calculateScore = useCallback(() => {
       </div>
 
       {/* Section Header */}
-      <div style={{ backgroundColor: '#3498db', color: 'white', padding: '10px 22px', fontSize: '16px', fontWeight: '500' }}>
+      <div
+        style={{
+          backgroundColor: '#3498db',
+          color: 'white',
+          padding: '10px 22px',
+          fontSize: '16px',
+          fontWeight: '500',
+        }}
+      >
         {currentData.sectionName}
       </div>
 
-      {/* Main Content Area - Simplified single column layout */}
-      <div style={{ flex: 1, padding: '35px 45px', overflow: 'auto' }}>
-        {/* Question Text */}
-        {currentQuestion && (
-          <div style={{ fontSize: '18px', lineHeight: '1.6', marginBottom: '35px', color: '#2c3e50' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '10px' }}>
-              <span style={{ color: '#2c3e50', fontSize: '18px', marginRight: '8px' }}>
-                {currentQuestionIndex + 1}.
-              </span>
-              <button
-                onClick={() => toggleBookmark(currentQuestion.id)}
-                style={{
-                  backgroundColor: 'transparent',
-                  border: bookmarkedQuestions.has(currentQuestion.id) ? '2px solid #f39c12' : '2px solid #ddd',
-                  color: bookmarkedQuestions.has(currentQuestion.id) ? '#f39c12' : '#666',
-                  padding: '4px 8px',
-                  borderRadius: '4px',
-                  cursor: 'pointer',
-                  fontSize: '14px',
-                  fontWeight: '500',
-                }}
-              >
-                📑 {bookmarkedQuestions.has(currentQuestion.id) ? 'Bookmarked' : 'Bookmark'}
-              </button>
-            </div>
-<div dangerouslySetInnerHTML={{ __html: formatMath(formatRomanNumerals(currentQuestion.questionText)) }}></div>
+  {/* Main Content Area - Split layout for Verbal RC, single column for others */}
+      {isVerbal && currentPassage ? (
+        // Split layout for Reading Comprehension
+        <div style={{ flex: 1, display: 'flex', gap: '30px', padding: '25px' }}>
+          {/* Left side - Passage */}
+          <div style={{ flex: '0 0 45%', minWidth: '400px' }}>
+            {renderPassage(currentPassage)}
           </div>
-        )}
-
-        {/* Visual Elements */}
-        {currentQuestion && currentQuestion.visual && (
-          <div style={{ marginBottom: '20px' }}>
-            {renderQuestionVisual(currentQuestion.visual)}
-          </div>
-        )}
-
-        {/* Answer Options */}
-        {currentQuestion && (
-          <div style={{ maxWidth: '650px' }}>
-            {currentQuestion.options && Object.entries(currentQuestion.options).map(([letter, text]) => (
-              <div
-                key={letter}
-                style={{
-                  marginBottom: '15px',
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  cursor: 'pointer',
-                  padding: '10px 15px',
-                  borderRadius: '4px',
-                  backgroundColor: selectedAnswers[currentQuestion.id] === letter ? '#fff3cd' : 'transparent',
-                  border: selectedAnswers[currentQuestion.id] === letter ? '2px solid #ffc107' : '2px solid transparent',
-                  transition: 'all 0.2s ease',
-                }}
-                onClick={() => handleAnswerSelect(currentQuestion.id, letter)}
-              >
-                <input
-                  type="radio"
-                  name={`question-${currentQuestion.id}`}
-                  value={letter}
-                  checked={selectedAnswers[currentQuestion.id] === letter}
-                  onChange={() => handleAnswerSelect(currentQuestion.id, letter)}
-                  style={{ marginRight: '15px', marginTop: '2px', transform: 'scale(1.3)' }}
-                />
-                <div>
-                  <span style={{ fontSize: '18px', lineHeight: '1.4' }} dangerouslySetInnerHTML={{ __html: formatMath(text) }}></span>
+          
+          {/* Right side - Question */}
+          <div style={{ flex: 1, paddingLeft: '10px' }}>
+            {currentQuestion && (
+              <div style={{ fontSize: '18px', lineHeight: '1.6', marginBottom: '35px', color: '#2c3e50' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '15px' }}>
+                  <span style={{ color: '#2c3e50', fontSize: '18px', marginRight: '8px' }}>
+                    {currentQuestionIndex + 1}.
+                  </span>
+                  <button
+                    onClick={() => toggleBookmark(currentQuestion.id)}
+                    style={{
+                      backgroundColor: 'transparent',
+                      border: bookmarkedQuestions.has(currentQuestion.id) ? '2px solid #f39c12' : '2px solid #ddd',
+                      color: bookmarkedQuestions.has(currentQuestion.id) ? '#f39c12' : '#666',
+                      padding: '4px 8px',
+                      borderRadius: '4px',
+                      cursor: 'pointer',
+                      fontSize: '14px',
+                      fontWeight: '500',
+                    }}
+                  >
+                    📑 {bookmarkedQuestions.has(currentQuestion.id) ? 'Bookmarked' : 'Bookmark'}
+                  </button>
                 </div>
+                <div dangerouslySetInnerHTML={{ __html: formatMath(formatRomanNumerals(currentQuestion.questionText)) }}></div>
               </div>
-            ))}
+            )}
+
+            {/* Answer Options for RC */}
+            {currentQuestion && (
+              <div style={{ maxWidth: '100%' }}>
+                {currentQuestion.options && Object.entries(currentQuestion.options).map(([letter, text]) => (
+                  <div
+                    key={letter}
+                    style={{
+                      marginBottom: '15px',
+                      display: 'flex',
+                      alignItems: 'flex-start',
+                      cursor: 'pointer',
+                      padding: '10px 15px',
+                      borderRadius: '4px',
+                      backgroundColor: selectedAnswers[currentQuestion.id] === letter ? '#fff3cd' : 'transparent',
+                      border: selectedAnswers[currentQuestion.id] === letter ? '2px solid #ffc107' : '2px solid transparent',
+                      transition: 'all 0.2s ease',
+                    }}
+                    onClick={() => handleAnswerSelect(currentQuestion.id, letter)}
+                  >
+                    <input
+                      type="radio"
+                      name={`question-${currentQuestion.id}`}
+                      value={letter}
+                      checked={selectedAnswers[currentQuestion.id] === letter}
+                      onChange={() => handleAnswerSelect(currentQuestion.id, letter)}
+                      style={{ marginRight: '15px', marginTop: '2px', transform: 'scale(1.3)' }}
+                    />
+                    <div style={{ flex: 1 }}>
+                      <span style={{ fontSize: '18px', lineHeight: '1.4' }} dangerouslySetInnerHTML={{ __html: formatMath(text) }}></span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        </div>
+      ) : (
+        // Single column layout for Quantitative, Data Insights, and Critical Reasoning
+        <div style={{ flex: 1, padding: '35px 45px', overflow: 'auto' }}>
+          {/* Question Text */}
+          {currentQuestion && (
+            <div style={{ fontSize: '18px', lineHeight: '1.6', marginBottom: '35px', color: '#2c3e50' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '10px' }}>
+                <span style={{ color: '#2c3e50', fontSize: '18px', marginRight: '8px' }}>
+                  {currentQuestionIndex + 1}.
+                </span>
+                <button
+                  onClick={() => toggleBookmark(currentQuestion.id)}
+                  style={{
+                    backgroundColor: 'transparent',
+                    border: bookmarkedQuestions.has(currentQuestion.id) ? '2px solid #f39c12' : '2px solid #ddd',
+                    color: bookmarkedQuestions.has(currentQuestion.id) ? '#f39c12' : '#666',
+                    padding: '4px 8px',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    fontSize: '14px',
+                    fontWeight: '500',
+                  }}
+                >
+                  📑 {bookmarkedQuestions.has(currentQuestion.id) ? 'Bookmarked' : 'Bookmark'}
+                </button>
+              </div>
+              <div dangerouslySetInnerHTML={{ __html: formatMath(formatRomanNumerals(currentQuestion.questionText)) }}></div>
+            </div>
+          )}
+
+          {/* Visual Elements */}
+          {currentQuestion && currentQuestion.visual && (
+            <div style={{ marginBottom: '20px' }}>
+              {renderQuestionVisual(currentQuestion.visual)}
+            </div>
+          )}
+
+          {/* Answer Options */}
+          {currentQuestion && (
+            <div style={{ maxWidth: '650px' }}>
+              {currentQuestion.options && Object.entries(currentQuestion.options).map(([letter, text]) => (
+                <div
+                  key={letter}
+                  style={{
+                    marginBottom: '15px',
+                    display: 'flex',
+                    alignItems: 'flex-start',
+                    cursor: 'pointer',
+                    padding: '10px 15px',
+                    borderRadius: '4px',
+                    backgroundColor: selectedAnswers[currentQuestion.id] === letter ? '#fff3cd' : 'transparent',
+                    border: selectedAnswers[currentQuestion.id] === letter ? '2px solid #ffc107' : '2px solid transparent',
+                    transition: 'all 0.2s ease',
+                  }}
+                  onClick={() => handleAnswerSelect(currentQuestion.id, letter)}
+                >
+                  <input
+                    type="radio"
+                    name={`question-${currentQuestion.id}`}
+                    value={letter}
+                    checked={selectedAnswers[currentQuestion.id] === letter}
+                    onChange={() => handleAnswerSelect(currentQuestion.id, letter)}
+                    style={{ marginRight: '15px', marginTop: '2px', transform: 'scale(1.3)' }}
+                  />
+                  <div>
+                    <span style={{ fontSize: '18px', lineHeight: '1.4' }} dangerouslySetInnerHTML={{ __html: formatMath(text) }}></span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Bottom Navigation */}
-      <div style={{ backgroundColor: '#3498db', padding: '14px 22px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div
+        style={{
+          backgroundColor: '#3498db',
+          padding: '14px 22px',
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
+      >
         <div style={{ display: 'flex', gap: '10px' }}>
           <button
             onClick={() => setIsPaused(!isPaused)}
-            style={{ backgroundColor: 'transparent', border: '1px solid white', color: 'white', padding: '8px 15px', borderRadius: '4px', cursor: 'pointer', fontSize: '16px' }}
+            style={{
+              backgroundColor: 'transparent',
+              border: '1px solid white',
+              color: 'white',
+              padding: '8px 15px',
+              borderRadius: '4px',
+              cursor: 'pointer',
+              fontSize: '16px',
+            }}
           >
             {isPaused ? '▶ Resume' : '⏸ Pause'}
           </button>
@@ -1607,24 +1785,26 @@ const calculateScore = useCallback(() => {
 
       {/* Modals */}
 
-{isPaused && (
-  <div style={{ 
-    position: 'fixed', 
-    top: 0, 
-    left: 0, 
-    right: 0, 
-    bottom: 0, 
-    backgroundColor: 'rgba(0,0,0,0.4)', 
-    backdropFilter: 'blur(8px)',
-    WebkitBackdropFilter: 'blur(8px)', // Safari support
-    display: 'flex', 
-    alignItems: 'center', 
-    justifyContent: 'center', 
-    zIndex: 999,
-    animation: 'fadeIn 0.3s ease-in-out'
-  }}>
-    <style>
-      {`
+      {isPaused && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0,0,0,0.4)',
+            backdropFilter: 'blur(8px)',
+            WebkitBackdropFilter: 'blur(8px)', // Safari support
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 999,
+            animation: 'fadeIn 0.3s ease-in-out',
+          }}
+        >
+          <style>
+            {`
         @keyframes fadeIn {
           from { opacity: 0; backdrop-filter: blur(0px); }
           to { opacity: 1; backdrop-filter: blur(8px); }
@@ -1639,99 +1819,133 @@ const calculateScore = useCallback(() => {
           to { transform: scale(1); }
         }
       `}
-    </style>
-    <div 
-      className="pause-content"
-      style={{ 
-        backgroundColor: 'white', 
-        padding: '40px', 
-        borderRadius: '12px', 
-        textAlign: 'center', 
-        boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
-        border: '1px solid #e0e0e0',
-        maxWidth: '400px',
-        width: '90%'
-      }}
-    >
-      <div style={{ 
-        fontSize: '48px', 
-        marginBottom: '20px',
-        color: '#3498db'
-      }}>
-        ⏸️
-      </div>
-      <h3 style={{ 
-        color: '#2c3e50', 
-        marginBottom: '15px', 
-        fontSize: '24px',
-        fontWeight: '600'
-      }}>
-        Test Paused
-      </h3>
-      <p style={{ 
-        marginBottom: '25px', 
-        color: '#666', 
-        fontSize: '16px',
-        lineHeight: '1.5'
-      }}>
-        Your test is paused. The timer is stopped.<br />
-        Click Resume when you're ready to continue.
-      </p>
-      <div style={{
-        backgroundColor: '#f8f9fa',
-        padding: '15px',
-        borderRadius: '8px',
-        marginBottom: '25px',
-        border: '1px solid #e9ecef'
-      }}>
-        <div style={{ fontSize: '14px', color: '#6c757d', marginBottom: '5px' }}>
-          Time Remaining
+          </style>
+          <div
+            className="pause-content"
+            style={{
+              backgroundColor: 'white',
+              padding: '40px',
+              borderRadius: '12px',
+              textAlign: 'center',
+              boxShadow: '0 20px 40px rgba(0,0,0,0.3)',
+              border: '1px solid #e0e0e0',
+              maxWidth: '400px',
+              width: '90%',
+            }}
+          >
+            <div
+              style={{
+                fontSize: '48px',
+                marginBottom: '20px',
+                color: '#3498db',
+              }}
+            >
+              ⏸️
+            </div>
+            <h3
+              style={{
+                color: '#2c3e50',
+                marginBottom: '15px',
+                fontSize: '24px',
+                fontWeight: '600',
+              }}
+            >
+              Test Paused
+            </h3>
+            <p
+              style={{
+                marginBottom: '25px',
+                color: '#666',
+                fontSize: '16px',
+                lineHeight: '1.5',
+              }}
+            >
+              Your test is paused. The timer is stopped.
+              <br />
+              Click Resume when you're ready to continue.
+            </p>
+            <div
+              style={{
+                backgroundColor: '#f8f9fa',
+                padding: '15px',
+                borderRadius: '8px',
+                marginBottom: '25px',
+                border: '1px solid #e9ecef',
+              }}
+            >
+              <div style={{ fontSize: '14px', color: '#6c757d', marginBottom: '5px' }}>Time Remaining</div>
+              <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#495057' }}>{formatTime(timeRemaining)}</div>
+            </div>
+            <button
+              onClick={() => setIsPaused(false)}
+              style={{
+                backgroundColor: '#27ae60',
+                color: 'white',
+                border: 'none',
+                padding: '14px 28px',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                fontSize: '16px',
+                fontWeight: '500',
+                transition: 'all 0.2s ease',
+                boxShadow: '0 2px 4px rgba(39, 174, 96, 0.3)',
+              }}
+              onMouseOver={(e) => {
+                e.target.style.backgroundColor = '#229954';
+                e.target.style.transform = 'translateY(-1px)';
+                e.target.style.boxShadow = '0 4px 8px rgba(39, 174, 96, 0.4)';
+              }}
+              onMouseOut={(e) => {
+                e.target.style.backgroundColor = '#27ae60';
+                e.target.style.transform = 'translateY(0)';
+                e.target.style.boxShadow = '0 2px 4px rgba(39, 174, 96, 0.3)';
+              }}
+            >
+              ▶ Resume Test
+            </button>
+          </div>
         </div>
-        <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#495057' }}>
-          {formatTime(timeRemaining)}
-        </div>
-      </div>
-      <button
-        onClick={() => setIsPaused(false)}
-        style={{ 
-          backgroundColor: '#27ae60', 
-          color: 'white', 
-          border: 'none', 
-          padding: '14px 28px', 
-          borderRadius: '8px', 
-          cursor: 'pointer', 
-          fontSize: '16px', 
-          fontWeight: '500',
-          transition: 'all 0.2s ease',
-          boxShadow: '0 2px 4px rgba(39, 174, 96, 0.3)'
-        }}
-        onMouseOver={(e) => {
-          e.target.style.backgroundColor = '#229954';
-          e.target.style.transform = 'translateY(-1px)';
-          e.target.style.boxShadow = '0 4px 8px rgba(39, 174, 96, 0.4)';
-        }}
-        onMouseOut={(e) => {
-          e.target.style.backgroundColor = '#27ae60';
-          e.target.style.transform = 'translateY(0)';
-          e.target.style.boxShadow = '0 2px 4px rgba(39, 174, 96, 0.3)';
-        }}
-      >
-        ▶ Resume Test
-      </button>
-    </div>
-  </div>
-)}
+      )}
 
       {showTimeWarning && timeRemaining > 0 && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-          <div style={{ backgroundColor: 'white', padding: '35px', borderRadius: '8px', textAlign: 'center', maxWidth: '450px' }}>
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000,
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: 'white',
+              padding: '35px',
+              borderRadius: '8px',
+              textAlign: 'center',
+              maxWidth: '450px',
+            }}
+          >
             <h3 style={{ color: '#e74c3c', marginBottom: '15px', fontSize: '20px' }}>Time Warning</h3>
             <p style={{ marginBottom: '20px', color: '#666', fontSize: '16px' }}>
               You have {Math.ceil(timeRemaining / 60)} minutes remaining.
             </p>
             <button
               onClick={() => setShowTimeWarning(false)}
-              style={{ backgroundColor: '#3498db', color: 'white', border: 'none', padding: '12px 25px', borderRadius: '4px', cursor: 'pointer', fontSize: '16px' }}
+              style={{
+                backgroundColor: '#3498db',
+                color: 'white',
+                border: 'none',
+                padding: '12px 25px',
+                borderRadius: '4px',
+                cursor: 'pointer',
+                fontSize: '16px',
+              }}
             >
               Continue
             </button>
@@ -1740,13 +1954,53 @@ const calculateScore = useCallback(() => {
       )}
 
       {showConfirmModal && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(0,0,0,0.5)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1001 }}>
-          <div style={{ backgroundColor: 'white', borderRadius: '8px', minWidth: '450px', maxWidth: '520px', boxShadow: '0 4px 20px rgba(0,0,0,0.15)', border: '1px solid #dee2e6' }}>
-            <div style={{ backgroundColor: '#3498db', color: 'white', padding: '14px 22px', borderRadius: '8px 8px 0 0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1001,
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: 'white',
+              borderRadius: '8px',
+              minWidth: '450px',
+              maxWidth: '520px',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+              border: '1px solid #dee2e6',
+            }}
+          >
+            <div
+              style={{
+                backgroundColor: '#3498db',
+                color: 'white',
+                padding: '14px 22px',
+                borderRadius: '8px 8px 0 0',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
+            >
               <span style={{ fontSize: '18px', fontWeight: '500' }}>Response Confirmation</span>
               <button
                 onClick={cancelNext}
-                style={{ backgroundColor: 'transparent', border: 'none', color: 'white', fontSize: '20px', cursor: 'pointer', padding: '2px 6px', borderRadius: '3px' }}
+                style={{
+                  backgroundColor: 'transparent',
+                  border: 'none',
+                  color: 'white',
+                  fontSize: '20px',
+                  cursor: 'pointer',
+                  padding: '2px 6px',
+                  borderRadius: '3px',
+                }}
               >
                 ✕
               </button>
@@ -1754,7 +2008,23 @@ const calculateScore = useCallback(() => {
 
             <div style={{ padding: '28px' }}>
               <div style={{ display: 'flex', alignItems: 'flex-start', marginBottom: '25px' }}>
-                <div style={{ backgroundColor: '#3498db', color: 'white', borderRadius: '50%', width: '22px', height: '22px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', fontWeight: 'bold', marginRight: '15px', marginTop: '2px', flexShrink: 0 }}>
+                <div
+                  style={{
+                    backgroundColor: '#3498db',
+                    color: 'white',
+                    borderRadius: '50%',
+                    width: '22px',
+                    height: '22px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '14px',
+                    fontWeight: 'bold',
+                    marginRight: '15px',
+                    marginTop: '2px',
+                    flexShrink: 0,
+                  }}
+                >
                   i
                 </div>
                 <div>
@@ -1762,7 +2032,11 @@ const calculateScore = useCallback(() => {
                     Have you completed your response?
                   </div>
                   <div style={{ fontSize: '16px', color: '#666', lineHeight: '1.4' }}>
-                    Click <strong>Yes</strong> to {currentQuestionIndex === adaptiveQuestions.length - 1 ? 'see your results' : 'move to the next question'}.<br />
+                    Click <strong>Yes</strong> to{' '}
+                    {currentQuestionIndex === adaptiveQuestions.length - 1
+                      ? 'see your results'
+                      : 'move to the next question'}
+                    .<br />
                     Click <strong>No</strong> to continue responding to this question.
                   </div>
                 </div>
@@ -1771,13 +2045,35 @@ const calculateScore = useCallback(() => {
               <div style={{ display: 'flex', gap: '15px', justifyContent: 'center', marginTop: '25px' }}>
                 <button
                   onClick={confirmNext}
-                  style={{ backgroundColor: 'white', color: '#333', border: '1px solid #ddd', padding: '10px 30px', borderRadius: '4px', cursor: 'pointer', fontSize: '16px', fontWeight: '500', minWidth: '90px', transition: 'all 0.2s ease' }}
+                  style={{
+                    backgroundColor: 'white',
+                    color: '#333',
+                    border: '1px solid #ddd',
+                    padding: '10px 30px',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    fontSize: '16px',
+                    fontWeight: '500',
+                    minWidth: '90px',
+                    transition: 'all 0.2s ease',
+                  }}
                 >
                   Yes
                 </button>
                 <button
                   onClick={cancelNext}
-                  style={{ backgroundColor: 'white', color: '#333', border: '1px solid #ddd', padding: '10px 30px', borderRadius: '4px', cursor: 'pointer', fontSize: '16px', fontWeight: '500', minWidth: '90px', transition: 'all 0.2s ease' }}
+                  style={{
+                    backgroundColor: 'white',
+                    color: '#333',
+                    border: '1px solid #ddd',
+                    padding: '10px 30px',
+                    borderRadius: '4px',
+                    cursor: 'pointer',
+                    fontSize: '16px',
+                    fontWeight: '500',
+                    minWidth: '90px',
+                    transition: 'all 0.2s ease',
+                  }}
                 >
                   No
                 </button>
