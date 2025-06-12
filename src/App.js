@@ -20,7 +20,7 @@ try {
     adaptiveMode: true,
     targetQuestions: 4,
     bufferQuestions: 1,
-    timeLimit: 1920, // 32 minutes in seconds - NEW FIELD
+    // timeLimit: 1920, // 32 minutes in seconds - NEW FIELD
     firstSevenStrategy: 'controlled challenge',
     dataSources: [
       {
@@ -184,11 +184,9 @@ const GMATInterface = () => {
     }
   })();
 
-  const timeLimit = questionData.timeLimit || (customTimeLimit ? parseInt(customTimeLimit) * 60 : defaultTimeLimit);
-
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswers, setSelectedAnswers] = useState({});
-  const [timeRemaining, setTimeRemaining] = useState(timeLimit);
+  const [timeRemaining, setTimeRemaining] = useState(defaultTimeLimit);
   const [isPaused, setIsPaused] = useState(false);
   const [isCompleted, setIsCompleted] = useState(false);
   const [hasStarted, setHasStarted] = useState(false);
@@ -201,6 +199,27 @@ const GMATInterface = () => {
   const [testStartTime, setTestStartTime] = useState(null);
   const [currentPassage, setCurrentPassage] = useState(null);
   const [customTimeLimit, setCustomTimeLimit] = useState(null);
+const timeLimit = useMemo(() => {
+  console.log('Calculating timeLimit:');
+  console.log('questionData.timeLimit:', questionData.timeLimit);
+  console.log('customTimeLimit:', customTimeLimit);
+  console.log('defaultTimeLimit:', defaultTimeLimit);
+  
+  // Custom time should override everything when set
+  if (customTimeLimit !== null) {
+    const customTime = customTimeLimit * 60;
+    console.log('Using custom time:', customTime, 'seconds');
+    return customTime;
+  }
+  
+  if (questionData.timeLimit) {
+    console.log('Using questionData.timeLimit:', questionData.timeLimit);
+    return questionData.timeLimit;
+  }
+  
+  console.log('Using default time:', defaultTimeLimit);
+  return defaultTimeLimit;
+}, [customTimeLimit, defaultTimeLimit, questionData.timeLimit]);
 
   // Bookmark functionality
   const [bookmarkedQuestions, setBookmarkedQuestions] = useState(new Set());
@@ -214,6 +233,14 @@ const GMATInterface = () => {
   const [isEditingPrevious, setIsEditingPrevious] = useState(false);
   const [editQuestionIndex, setEditQuestionIndex] = useState(0);
   const [showEditModal, setShowEditModal] = useState(false);
+
+  // Update timeRemaining when timeLimit changes
+  // Update timeRemaining when timeLimit changes
+  useEffect(() => {
+    if (!hasStarted) {
+      setTimeRemaining(timeLimit);
+    }
+  }, [timeLimit, hasStarted, customTimeLimit]);
 
   // Data Insights specific state
   const [activeTab, setActiveTab] = useState(0); // For multi-source reasoning
@@ -547,11 +574,18 @@ const GMATInterface = () => {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   }, []);
 
-  const startTest = useCallback(() => {
-    setHasStarted(true);
-    setTestStartTime(new Date());
-    initializeAdaptiveQuestions();
-  }, [initializeAdaptiveQuestions]);
+const startTest = useCallback(() => {
+  console.log('Starting test with:');
+  console.log('customTimeLimit:', customTimeLimit);
+  console.log('defaultTimeLimit:', defaultTimeLimit);
+  console.log('questionData.timeLimit:', questionData.timeLimit);
+  console.log('calculated timeLimit:', timeLimit);
+  
+  setTimeRemaining(timeLimit);
+  setHasStarted(true);
+  setTestStartTime(new Date());
+  initializeAdaptiveQuestions();
+}, [initializeAdaptiveQuestions, timeLimit, customTimeLimit, defaultTimeLimit]);
 
   // Check if current question is answered based on its format
   const isQuestionAnswered = useCallback(
@@ -1693,7 +1727,7 @@ const GMATInterface = () => {
                   }}
                 >
                   <div style={{ marginBottom: '10px' }}>
-                    <strong>Time Limit:</strong>
+                    <strong>Time Limit:</strong> {Math.floor(timeLimit / 60)} minutes
                     <div
                       style={{
                         marginTop: '8px',
@@ -1723,16 +1757,12 @@ const GMATInterface = () => {
                       </span>
                     </div>
                     <div style={{ fontSize: '14px', color: '#888', marginTop: '5px' }}>
-                      Modify time or leave as default
+                      {customTimeLimit !== null ? `Custom time: ${customTimeLimit} minutes` : 'Using default timing'}
                     </div>
                   </div>
-                  <span style={{ fontSize: '16px', color: '#666' }}>
-                    minutes (default: {Math.floor(defaultTimeLimit / 60)})
-                  </span>
+                  
                 </div>
-                <div style={{ fontSize: '14px', color: '#888', marginTop: '5px' }}>
-                  Leave blank to use default timing
-                </div>
+                
               </div>
               <p>
                 <strong>Questions:</strong> {targetQuestions} {questionData.adaptiveMode ? '(Adaptive)' : ''}

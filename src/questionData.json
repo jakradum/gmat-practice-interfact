@@ -1,111 +1,303 @@
 {
-  "sectionName": "GMAT Verbal Practice - Mixed RC and CR",
-  "sectionType": "verbal", 
-  "testDescription": "This section tests reading comprehension and critical reasoning skills through challenging passages and logical reasoning problems.",
-  "skillsAssessed": [
-    "Reading comprehension and passage analysis",
-    "Critical reasoning and argument evaluation",
-    "Inference and logical thinking"
-  ],
-  "adaptiveMode": true,
-  "targetQuestions": 6,
-  "bufferQuestions": 0,
-  "timeLimit": 1080,
-  "firstSevenStrategy": "controlled challenge",
-  "passages": [
-    {
-      "id": "vietnam_economy",
-      "title": "Vietnam's Economic Transformation",
-      "content": "IT IS A contrarian argument from an improbable contrarian. Vietnam's economy may be the envy of South-East Asia, having averaged 6% annual growth over the past 15 years, but it is in urgent need of radical reform. So, at any rate, asserts To Lam, who spent eight years running Vietnam's ruthless security services before becoming general secretary of the Vietnamese Communist Party last year. He is busy sacking civil servants and amending economic laws in pursuit of a \"revolution\" to \"liberate all productive forces\". \"Time does not wait for us,\" he warned his comrades soon after taking charge.\n\nVietnam's economy has come a long way since the Vietnam war ended 50 years ago, leaving an already poor country in ruins. At first the victorious communist regime tried to \"liquidate\" the private sector. Shortages, rationing and hunger followed. In the 1980s the Soviet Union's economic troubles meant less aid for Vietnam, exacerbating the malaise. Annual inflation reached 454% and half of Vietnamese were living in poverty. The death of one of Mr Lam's predecessors in 1986 paved the way for a new general secretary to legalise private enterprise and embrace market forces.\n\nDoi moi or \"renovation\" has been an astonishing success. Over the past 40 years GDP per person has increased 18-fold and poverty has plummeted. Foreign investors, attracted by Vietnam's cheap labour, political stability (it is a single-party, authoritarian state), proximity to Asian suppliers and generous incentives for manufacturing, have built lots of factories assembling consumer goods for export. A trade deal with America, accession to the World Trade Organisation and, more recently, multinationals' desire to diversify away from China have provided further reasons to invest.\n\nYet the forces that have propelled Vietnam's boom are slowing or reversing. The pool of cheap workers is dwindling and wages are rising. Instead of largely free trade with America, Donald Trump is threatening tariffs of 46%. It is getting harder to maintain good relations with both America and China, Vietnam's second-biggest trading partner. And there has been relatively little spillover from the foreign-owned factories to the rest of the economy. Vietnam risks becoming stuck as an assembly hub, adding little value to components manufactured elsewhere. Shifting onto a more promising developmental path will not be easy—and Mr Lam is staking his tenure on it."
-    }
-  ],
-  "questions": [
-    {
-      "id": 1,
-      "passageId": "vietnam_economy",
-      "questionText": "What is the primary purpose of the passage?",
-      "difficulty": "medium",
-      "options": {
-        "A": "To analyze the historical factors that led to Vietnam's economic transformation since the 1980s",
-        "B": "To explain why Vietnam needs economic reform despite its impressive recent growth performance",
-        "C": "To compare Vietnam's development strategy with other successful Southeast Asian economies",
-        "D": "To describe the dominant role of foreign investment in Vietnam's manufacturing sector",
-        "E": "To evaluate To Lam's leadership credentials and policy proposals for economic reform"
-      },
-      "correctAnswer": "B",
-      "buffer": false
-    },
-    {
-      "id": 2,
-      "passageId": "vietnam_economy",
-      "questionText": "According to the passage, which of the following best describes Vietnam's most pressing economic challenge?",
-      "difficulty": "medium",
-      "options": {
-        "A": "Insufficient foreign direct investment to sustain current levels of economic growth",
-        "B": "Political instability that undermines long-term investor confidence in the country",
-        "C": "The risk of being caught between low-wage assembly work and high-tech innovation",
-        "D": "Declining export volumes due to increasing global trade tensions and protectionism",
-        "E": "A critical shortage of agricultural workers needed to maintain food security"
-      },
-      "correctAnswer": "C",
-      "buffer": false
-    },
-    {
-      "id": 3,
-      "passageId": "vietnam_economy",
-      "questionText": "The author's attitude toward Vietnam's economic transformation can best be described as:",
-      "difficulty": "medium",
-      "options": {
-        "A": "Unqualified admiration for the country's remarkable developmental achievements",
-        "B": "Deep skepticism about the long-term sustainability of foreign investment-driven growth",
-        "C": "Confident optimism about To Lam's ability to successfully implement necessary reforms",
-        "D": "Appreciative of past success while expressing concern about significant future challenges",
-        "E": "Sharply critical of the government's historical failure to develop competitive local industries"
-      },
-      "correctAnswer": "D",
-      "buffer": false
-    },
-    {
-      "id": 4,
-      "questionText": "Company X is considering whether to open a new manufacturing facility in Southeast Asia. The company's executives argue that rising labor costs in their current location make expansion necessary for maintaining profitability. Which of the following, if true, would most weaken this argument?",
-      "difficulty": "medium",
-      "options": {
-        "A": "Labor costs in Southeast Asia are currently 30% lower than in the company's current location",
-        "B": "The company's main competitors have recently opened facilities in Southeast Asia",
-        "C": "Automation technology could reduce labor requirements by 40% at the current facility",
-        "D": "Transportation costs from Southeast Asia would add 15% to total production expenses",
-        "E": "The company's current facility is operating at only 60% capacity"
-      },
-      "correctAnswer": "C",
-      "buffer": false
-    },
-    {
-      "id": 5,
-      "questionText": "Economist: \"Countries that invest heavily in renewable energy infrastructure will have significant economic advantages in the coming decades. Green energy costs are falling rapidly, and carbon pricing mechanisms will make fossil fuels increasingly expensive.\" Which of the following assumptions is necessary for this argument?",
-      "difficulty": "hard",
-      "options": {
-        "A": "Renewable energy technology will continue to improve at its current rate",
-        "B": "All countries will eventually implement carbon pricing mechanisms",
-        "C": "The economic advantages will outweigh the initial infrastructure investment costs",
-        "D": "Fossil fuel prices will remain volatile in the coming decades",
-        "E": "International cooperation on climate policy will increase significantly"
-      },
-      "correctAnswer": "C",
-      "buffer": false
-    },
-    {
-      "id": 6,
-      "questionText": "A recent study found that employees who work remotely are 20% more productive than those who work in traditional offices. However, remote workers also report feeling less connected to their colleagues and company culture. Which of the following best resolves this apparent contradiction?",
-      "difficulty": "medium",
-      "options": {
-        "A": "Productivity and workplace satisfaction are independent factors that don't necessarily correlate",
-        "B": "The study measured short-term productivity but long-term effects may be different",
-        "C": "Remote workers compensate for social isolation by focusing more intensely on their tasks",
-        "D": "Traditional office environments create distractions that reduce individual productivity",
-        "E": "The benefits of remote work vary significantly across different types of job roles"
-      },
-      "correctAnswer": "A",
-      "buffer": false
-    }
-  ]
+ "sectionName": "GMAT Quantitative Practice - Strategic Challenge Set",
+ "sectionType": "quantitative",
+ "testDescription": "Advanced quantitative reasoning practice focusing on breaking through performance ceilings with challenging problems.",
+ "skillsAssessed": [
+   "Sequences and series analysis",
+   "Complex percentage and ratio problems",
+   "Statistics and data interpretation",
+   "Algebraic reasoning and function analysis",
+   "Optimization and constraint problems"
+ ],
+ "adaptiveMode": true,
+ "targetQuestions": 21,
+ "timeLimit": 2700,
+ "questions": [
+   {
+     "id": 153,
+     "questionText": "The infinite sequence a₁, a₂, ..., aₙ, ... is such that a₁ = 2, a₂ = -3, a₃ = 5, a₄ = -1, and aₙ = aₙ₋₄ for n > 4. What is the sum of the first 97 terms of the sequence?",
+     "difficulty": "hard",
+     "options": {
+       "A": "72",
+       "B": "74",
+       "C": "75",
+       "D": "78",
+       "E": "80"
+     },
+     "correctAnswer": "B"
+   },
+   {
+     "id": 150,
+     "questionText": "In a numerical table with 10 rows and 10 columns, each entry is either a 9 or a 10. If the number of 9s in the nth row is n - 1 for each n from 1 to 10, what is the average (arithmetic mean) of all the numbers in the table?",
+     "difficulty": "hard",
+     "options": {
+       "A": "9.45",
+       "B": "9.50",
+       "C": "9.55",
+       "D": "9.65",
+       "E": "9.70"
+     },
+     "correctAnswer": "C"
+   },
+   {
+     "id": 109,
+     "questionText": "Items that are purchased together at a certain discount store are priced at $3 for the first item purchased and $1 for each additional item purchased. What is the maximum number of items that could be purchased together for a total price that is less than $30?",
+     "difficulty": "medium",
+     "options": {
+       "A": "25",
+       "B": "26",
+       "C": "27",
+       "D": "28",
+       "E": "29"
+     },
+     "correctAnswer": "C"
+   },
+   {
+     "id": 156,
+     "questionText": "On a certain transatlantic crossing, 20 percent of a ship's passengers held round-trip tickets and also took their cars aboard the ship. If 60 percent of the passengers with round-trip tickets did not take their cars aboard the ship, what percent of the ship's passengers held round-trip tickets?",
+     "difficulty": "hard",
+     "options": {
+       "A": "33⅓%",
+       "B": "40%",
+       "C": "50%",
+       "D": "60%",
+       "E": "66⅔%"
+     },
+     "correctAnswer": "C"
+   },
+   {
+     "id": 158,
+     "questionText": "If S is the sum of the reciprocals of the 10 consecutive integers from 21 to 30, then S is between which of the following two fractions?",
+     "difficulty": "hard",
+     "options": {
+       "A": "⅓ and ½",
+       "B": "¼ and ⅓",
+       "C": "⅕ and ¼",
+       "D": "⅙ and ⅕",
+       "E": "1/7 and ⅙"
+     },
+     "correctAnswer": "A"
+   },
+   {
+     "id": 160,
+     "questionText": "The arithmetic mean of the list of numbers above is 4. If k and m are integers and k ≠ m, what is the median of the list?",
+     "difficulty": "hard",
+     "options": {
+       "A": "2",
+       "B": "2.5",
+       "C": "3",
+       "D": "3.5",
+       "E": "4"
+     },
+     "correctAnswer": "C",
+     "visual": {
+       "type": "text",
+       "content": "3, k, 2, 8, m, 3"
+     }
+   },
+   {
+     "id": 162,
+     "questionText": "For how many ordered pairs (x, y) that are solutions of the system above are x and y both integers?",
+     "difficulty": "hard",
+     "options": {
+       "A": "7",
+       "B": "10",
+       "C": "12",
+       "D": "13",
+       "E": "14"
+     },
+     "correctAnswer": "D",
+     "visual": {
+       "type": "equation",
+       "content": "2x + y = 12\n|y| ≤ 12"
+     }
+   },
+   {
+     "id": 163,
+     "questionText": "The United States Mint produces coins in 1-cent, 5-cent, 10-cent, 25-cent, and 50-cent denominations. If a jar contains exactly 100 cents worth of these coins, which of the following could be the total number of coins in the jar?\n\nI. 91\nII. 81\nIII. 76",
+     "difficulty": "hard",
+     "options": {
+       "A": "I only",
+       "B": "II only",
+       "C": "III only",
+       "D": "I and III only",
+       "E": "I, II, and III"
+     },
+     "correctAnswer": "D"
+   },
+   {
+     "id": 164,
+     "questionText": "A certain university will select 1 of 7 candidates eligible to fill a position in the mathematics department and 2 of 10 candidates eligible to fill 2 identical positions in the computer science department. If none of the candidates is eligible for a position in both departments, how many different sets of 3 candidates are there to fill the 3 positions?",
+     "difficulty": "hard",
+     "options": {
+       "A": "42",
+       "B": "70",
+       "C": "140",
+       "D": "165",
+       "E": "315"
+     },
+     "correctAnswer": "E"
+   },
+   {
+     "id": 165,
+     "questionText": "A survey of employers found that during 1993 employment costs rose 3.5 percent, where employment costs consist of salary costs and fringe-benefit costs. If salary costs rose 3 percent and fringe-benefit costs rose 5.5 percent during 1993, then fringe-benefit costs represented what percent of employment costs at the beginning of 1993?",
+     "difficulty": "hard",
+     "options": {
+       "A": "16.5%",
+       "B": "20%",
+       "C": "35%",
+       "D": "55%",
+       "E": "65%"
+     },
+     "correctAnswer": "B"
+   },
+   {
+     "id": 114,
+     "questionText": "A certain financial institution reported that its assets totaled $2,377,366.30 on a certain day. Of this amount, $31,724.54 was held in cash. Approximately what percent of the reported assets was held in cash on that day?",
+     "difficulty": "medium",
+     "options": {
+       "A": "0.00013%",
+       "B": "0.0013%",
+       "C": "0.013%",
+       "D": "0.13%",
+       "E": "1.3%"
+     },
+     "correctAnswer": "E"
+   },
+   {
+     "id": 120,
+     "questionText": "On the number line, the shaded interval is the graph of which of the following inequalities?",
+     "difficulty": "medium",
+     "options": {
+       "A": "|x| ≤ 4",
+       "B": "|x| ≤ 8",
+       "C": "|x - 2| ≤ 4",
+       "D": "|x - 2| ≤ 6",
+       "E": "|x + 2| ≤ 6"
+     },
+     "correctAnswer": "E",
+     "visual": {
+       "type": "diagram",
+       "content": "Number line from -9 to 9 with shaded interval from -4 to 8"
+     }
+   },
+   {
+     "id": 136,
+     "questionText": "If water is leaking from a certain tank at a constant rate of 1,200 milliliters per hour, how many seconds does it take for 1 milliliter of water to leak from the tank?",
+     "difficulty": "medium",
+     "options": {
+       "A": "⅓",
+       "B": "½",
+       "C": "2",
+       "D": "3",
+       "E": "20"
+     },
+     "correctAnswer": "D"
+   },
+   {
+     "id": 142,
+     "questionText": "The function f is defined for all nonzero x by the equation f(x) = x - 1/x. If x ≠ 0, which of the following equals f(1/x)?",
+     "difficulty": "medium",
+     "options": {
+       "A": "f(x)",
+       "B": "f(-x)",
+       "C": "f(-1/x)",
+       "D": "1/f(x)",
+       "E": "-1/f(x)"
+     },
+     "correctAnswer": "B"
+   },
+   {
+     "id": 143,
+     "questionText": "In the arithmetic sequence t₁, t₂, t₃, ..., tₙ, ..., t₁ = 23 and tₙ = tₙ₋₁ - 3 for each n > 1. What is the value of n when tₙ = -4?",
+     "difficulty": "medium",
+     "options": {
+       "A": "-1",
+       "B": "7",
+       "C": "10",
+       "D": "14",
+       "E": "20"
+     },
+     "correctAnswer": "C"
+   },
+   {
+     "id": 147,
+     "questionText": "The operation ⊗ is defined for all nonzero numbers a and b by a ⊗ b = a/b - b/a. If x and y are nonzero numbers, which of the following statements must be true?\n\nI. x ⊗ xy = x(1 ⊗ y)\nII. x ⊗ y = -(y ⊗ x)\nIII. 1/x ⊗ 1/y = y ⊗ x",
+     "difficulty": "medium",
+     "options": {
+       "A": "I only",
+       "B": "II only",
+       "C": "III only",
+       "D": "I and II",
+       "E": "II and III"
+     },
+     "correctAnswer": "E"
+   },
+   {
+     "id": 74,
+     "questionText": "What is the thousandths digit in the decimal equivalent of 53/5,000?",
+     "difficulty": "easy",
+     "options": {
+       "A": "0",
+       "B": "1",
+       "C": "3",
+       "D": "5",
+       "E": "6"
+     },
+     "correctAnswer": "A"
+   },
+   {
+     "id": 75,
+     "questionText": "If a equals the sum of the even integers from 2 to 20, inclusive, and b equals the sum of the odd integers from 1 to 19, inclusive, what is the value of a - b?",
+     "difficulty": "easy",
+     "options": {
+       "A": "1",
+       "B": "10",
+       "C": "19",
+       "D": "20",
+       "E": "21"
+     },
+     "correctAnswer": "B"
+   },
+   {
+     "id": 77,
+     "questionText": "A retailer sold an appliance for $80. If the retailer's gross profit on the appliance was 25 percent of the retailer's cost for the appliance, how many dollars was the retailer's gross profit?",
+     "difficulty": "easy",
+     "options": {
+       "A": "$10",
+       "B": "$16",
+       "C": "$20",
+       "D": "$24",
+       "E": "$25"
+     },
+     "correctAnswer": "B"
+   },
+   {
+     "id": 78,
+     "questionText": "Beth has a collection of 8 boxes of clothing for a charity, and the average (arithmetic mean) number of pieces of clothing per box is c. If she replaces a box in the collection that contains 12 pieces of clothing with a box that contains 22 pieces of clothing, what is the average number of pieces of clothing per box for the new collection, in terms of c?",
+     "difficulty": "easy",
+     "options": {
+       "A": "c - 5/4",
+       "B": "c + 5/4",
+       "C": "8 - 10/c",
+       "D": "8 + 10/c",
+       "E": "8c - 10"
+     },
+     "correctAnswer": "B"
+   },
+   {
+     "id": 82,
+     "questionText": "If k is a positive even integer, which of the following must be an odd integer?\n\nI. k² - 3k + 4\nII. k⁵ + 3\nIII. 7k - 7",
+     "difficulty": "easy",
+     "options": {
+       "A": "II only",
+       "B": "III only",
+       "C": "I and III only",
+       "D": "II and III only",
+       "E": "I, II, and III"
+     },
+     "correctAnswer": "D"
+   }
+ ]
 }
+
