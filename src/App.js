@@ -470,6 +470,25 @@ const formatMath = useCallback((text) => {
     .replace(/\\([a-zA-Z]+)/g, '$1'); // Remove LaTeX-style backslashes
 }, []);
 
+// Format Roman numeral questions to display on separate lines
+const formatRomanNumerals = useCallback((text) => {
+  if (!text) return '';
+  
+  // Check if the text contains Roman numerals pattern
+  const romanNumeralPattern = /\b(I\.|II\.|III\.|IV\.|V\.)\s*/g;
+  
+  if (romanNumeralPattern.test(text)) {
+    return text
+      // Add line breaks before Roman numerals (except the first one)
+      .replace(/\s+(I\.|II\.|III\.|IV\.|V\.)/g, '<br><br>$1')
+      // Clean up any double spacing
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+  
+  return text;
+}, []);
+
   // Event handlers
   const startTest = useCallback(() => {
     setTimeRemaining(timeLimit);
@@ -553,8 +572,449 @@ const formatMath = useCallback((text) => {
       return newSet;
     });
   }, []);
+  
+  // Visual Elements Renderer for questions
+const renderQuestionVisual = useCallback((visual) => {
+  if (!visual) return null;
 
-  const calculateScore = useCallback(() => {
+  const { type, content, data, title } = visual;
+
+  switch (type) {
+    case 'table':
+      return (
+        <div style={{ 
+          marginBottom: '20px', 
+          backgroundColor: '#f8f9fa', 
+          padding: '15px', 
+          borderRadius: '6px',
+          border: '1px solid #dee2e6'
+        }}>
+          {title && (
+            <h5 style={{ 
+              color: '#2c3e50', 
+              marginBottom: '10px', 
+              fontSize: '16px', 
+              fontWeight: '600' 
+            }}>
+              {title}
+            </h5>
+          )}
+          <table style={{ 
+            width: '100%', 
+            borderCollapse: 'collapse',
+            backgroundColor: 'white',
+            borderRadius: '4px',
+            overflow: 'hidden',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+          }}>
+            {data.headers && (
+              <thead style={{ backgroundColor: '#e9ecef' }}>
+                <tr>
+                  {data.headers.map((header, index) => (
+                    <th key={index} style={{ 
+                      padding: '12px', 
+                      textAlign: 'center', 
+                      fontWeight: '600',
+                      color: '#495057',
+                      borderBottom: '2px solid #dee2e6'
+                    }}>
+                      {header}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+            )}
+            <tbody>
+              {data.rows && data.rows.map((row, rowIndex) => (
+                <tr key={rowIndex} style={{ 
+                  backgroundColor: rowIndex % 2 === 0 ? 'white' : '#f8f9fa' 
+                }}>
+                  {row.map((cell, cellIndex) => (
+                    <td key={cellIndex} style={{ 
+                      padding: '10px 12px', 
+                      textAlign: 'center',
+                      borderBottom: '1px solid #dee2e6',
+                      color: '#495057'
+                    }}>
+                      <span dangerouslySetInnerHTML={{ __html: formatMath(cell) }} />
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+
+    case 'diagram':
+      return (
+        <div style={{ 
+          marginBottom: '20px', 
+          textAlign: 'center',
+          backgroundColor: '#f8f9fa',
+          padding: '15px',
+          borderRadius: '6px',
+          border: '1px solid #dee2e6'
+        }}>
+          {title && (
+            <h5 style={{ 
+              color: '#2c3e50', 
+              marginBottom: '15px', 
+              fontSize: '16px', 
+              fontWeight: '600' 
+            }}>
+              {title}
+            </h5>
+          )}
+          <div style={{ 
+            backgroundColor: 'white',
+            padding: '20px',
+            borderRadius: '4px',
+            display: 'inline-block',
+            boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+          }}>
+            {content && content.includes('Number line') ? (
+              // Render number line
+              <svg width="400" height="60" style={{ maxWidth: '100%' }}>
+                {/* Number line base */}
+                <line x1="40" y1="30" x2="360" y2="30" stroke="#333" strokeWidth="2"/>
+                
+                {/* Tick marks and numbers */}
+                {[-8, -6, -4, -2, 0, 2, 4, 6, 8].map((num, index) => {
+                  const x = 40 + (index * 40);
+                  return (
+                    <g key={num}>
+                      <line x1={x} y1="25" x2={x} y2="35" stroke="#333" strokeWidth="1"/>
+                      <text x={x} y="50" textAnchor="middle" fontSize="12" fill="#333">
+                        {num}
+                      </text>
+                    </g>
+                  );
+                })}
+                
+                {/* Shaded interval example (from -4 to 8) */}
+                {content.includes('shaded interval from -4 to 8') && (
+                  <line x1="120" y1="30" x2="320" y2="30" stroke="#e74c3c" strokeWidth="6" opacity="0.7"/>
+                )}
+              </svg>
+            ) : (
+              // Generic diagram placeholder
+              <div style={{ 
+                minHeight: '120px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: '#f8f9fa',
+                border: '2px dashed #dee2e6',
+                borderRadius: '4px',
+                color: '#6c757d',
+                fontSize: '14px'
+              }}>
+                📊 {content || 'Diagram'}
+              </div>
+            )}
+          </div>
+        </div>
+      );
+
+ case 'equation':
+  return (
+    <div style={{ 
+      marginBottom: '20px', 
+      textAlign: 'center',
+      backgroundColor: '#f8f9fa',
+      padding: '15px',
+      borderRadius: '6px',
+      border: '1px solid #dee2e6'
+    }}>
+      {title && (
+        <h5 style={{ 
+          color: '#2c3e50', 
+          marginBottom: '10px', 
+          fontSize: '16px', 
+          fontWeight: '600' 
+        }}>
+          {title}
+        </h5>
+      )}
+      <div style={{ 
+        backgroundColor: 'white',
+        padding: '20px',
+        borderRadius: '4px',
+        fontSize: '20px',
+        fontFamily: 'Times New Roman, serif',
+        boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+        lineHeight: '1.8'
+      }}>
+        {content.split('\n').map((equation, index) => (
+          <div key={index} style={{ marginBottom: index < content.split('\n').length - 1 ? '10px' : '0' }}>
+            <span dangerouslySetInnerHTML={{ __html: formatMath(equation.trim()) }} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+
+    default:
+      return (
+        <div style={{ 
+          marginBottom: '20px',
+          padding: '15px',
+          backgroundColor: '#f8f9fa',
+          border: '1px solid #dee2e6',
+          borderRadius: '6px',
+          textAlign: 'center',
+          color: '#6c757d'
+        }}>
+          📊 Visual Element: {type}
+          {content && <div style={{ marginTop: '10px', fontSize: '14px' }}>{content}</div>}
+        </div>
+      );
+  }
+}, [formatMath]);
+
+ // Time Pressure Graph Component
+const renderTimePressureGraph = useCallback(() => {
+  if (adaptiveQuestions.length === 0) return null;
+
+  const graphWidth = 600;
+  const graphHeight = 300;
+  const padding = 60;
+  const innerWidth = graphWidth - (padding * 2);
+  const innerHeight = graphHeight - (padding * 2);
+
+  // Calculate time data with results
+  const timeData = adaptiveQuestions.map((question, index) => ({
+    questionNum: index + 1,
+    timeSpent: (questionTimes[question.id] || 0) / 60, // Convert to minutes
+    isCorrect: selectedAnswers[question.id] === question.correctAnswer,
+    wasAnswered: selectedAnswers[question.id] !== undefined
+  }));
+
+  const maxTime = Math.max(...timeData.map(d => d.timeSpent), 5); // At least 5 minutes scale
+  const avgTime = timeData.reduce((sum, d) => sum + d.timeSpent, 0) / timeData.length;
+
+  // Create points for the scatter plot
+  const points = timeData.map((data, index) => {
+    const x = padding + (index / (timeData.length - 1)) * innerWidth;
+    const y = padding + (1 - (data.timeSpent / maxTime)) * innerHeight;
+    return { x, y, ...data };
+  });
+
+  return (
+    <div style={{ marginBottom: '25px', textAlign: 'center' }}>
+      <h4 style={{ color: '#2c3e50', marginBottom: '15px', fontSize: '18px' }}>
+        Time Pressure Analysis
+      </h4>
+      
+      <div style={{ 
+        display: 'inline-block', 
+        backgroundColor: '#f8f9fa', 
+        padding: '20px', 
+        borderRadius: '8px',
+        border: '1px solid #dee2e6'
+      }}>
+        <svg width={graphWidth} height={graphHeight} style={{ backgroundColor: 'white', borderRadius: '4px' }}>
+          {/* Grid lines */}
+          <defs>
+            <pattern id="grid" width="30" height="30" patternUnits="userSpaceOnUse">
+              <path d="M 30 0 L 0 0 0 30" fill="none" stroke="#f0f0f0" strokeWidth="1"/>
+            </pattern>
+          </defs>
+          <rect width={graphWidth} height={graphHeight} fill="url(#grid)" />
+          
+          {/* Axes */}
+          <line 
+            x1={padding} y1={padding} 
+            x2={padding} y2={graphHeight - padding} 
+            stroke="#666" strokeWidth="2"
+          />
+          <line 
+            x1={padding} y1={graphHeight - padding} 
+            x2={graphWidth - padding} y2={graphHeight - padding} 
+            stroke="#666" strokeWidth="2"
+          />
+          
+          {/* Y-axis labels (time in minutes) */}
+          {[0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5, 4.0, 4.5, 5.0].map(minutes => {
+            const y = padding + (1 - (minutes / maxTime)) * innerHeight;
+            if (y >= padding && y <= graphHeight - padding) {
+              return (
+                <g key={minutes}>
+                  <line x1={padding - 5} y1={y} x2={padding} y2={y} stroke="#666" strokeWidth="1"/>
+                  <text x={padding - 10} y={y + 4} textAnchor="end" fontSize="12" fill="#666">
+                    {minutes.toFixed(1)}
+                  </text>
+                </g>
+              );
+            }
+            return null;
+          })}
+          
+          {/* Y-axis title */}
+          <text 
+            x={20} 
+            y={graphHeight / 2} 
+            textAnchor="middle" 
+            fontSize="14" 
+            fill="#666"
+            transform={`rotate(-90, 20, ${graphHeight / 2})`}
+          >
+            Response Time in Minutes
+          </text>
+          
+          {/* X-axis labels (questions) */}
+          {points.filter((_, i) => i % 2 === 0 || i === points.length - 1).map(point => (
+            <g key={point.questionNum}>
+              <line 
+                x1={point.x} y1={graphHeight - padding} 
+                x2={point.x} y2={graphHeight - padding + 5} 
+                stroke="#666" strokeWidth="1"
+              />
+              <text 
+                x={point.x} y={graphHeight - padding + 18} 
+                textAnchor="middle" fontSize="12" fill="#666"
+              >
+                {point.questionNum}
+              </text>
+            </g>
+          ))}
+          
+          {/* X-axis title */}
+          <text 
+            x={graphWidth / 2} 
+            y={graphHeight - 10} 
+            textAnchor="middle" 
+            fontSize="14" 
+            fill="#666"
+          >
+            Question Number
+          </text>
+          
+          {/* Average time line */}
+          <line 
+            x1={padding} 
+            y1={padding + (1 - (avgTime / maxTime)) * innerHeight}
+            x2={graphWidth - padding} 
+            y2={padding + (1 - (avgTime / maxTime)) * innerHeight}
+            stroke="#888" strokeWidth="2"
+          />
+          <text 
+            x={graphWidth - padding - 5} 
+            y={padding + (1 - (avgTime / maxTime)) * innerHeight - 5}
+            textAnchor="end" fontSize="12" fill="#888" fontWeight="bold"
+          >
+            Your Average
+          </text>
+          
+          {/* Data points with correct/incorrect indicators */}
+          {points.map((point, index) => {
+            if (!point.wasAnswered) {
+              // Gray circle for unanswered
+              return (
+                <circle 
+                  key={index}
+                  cx={point.x} 
+                  cy={point.y} 
+                  r="8" 
+                  fill="#888"
+                  stroke="white" 
+                  strokeWidth="2"
+                />
+              );
+            } else if (point.isCorrect) {
+              // Green checkmark for correct
+              return (
+                <g key={index}>
+                  <circle 
+                    cx={point.x} 
+                    cy={point.y} 
+                    r="12" 
+                    fill="#27ae60"
+                    stroke="white" 
+                    strokeWidth="2"
+                  />
+                  <path 
+                    d={`M ${point.x - 6} ${point.y} L ${point.x - 2} ${point.y + 4} L ${point.x + 6} ${point.y - 4}`}
+                    stroke="white" 
+                    strokeWidth="2" 
+                    fill="none"
+                    strokeLinecap="round"
+                  />
+                </g>
+              );
+            } else {
+              // Red X for incorrect
+              return (
+                <g key={index}>
+                  <circle 
+                    cx={point.x} 
+                    cy={point.y} 
+                    r="12" 
+                    fill="#e74c3c"
+                    stroke="white" 
+                    strokeWidth="2"
+                  />
+                  <path 
+                    d={`M ${point.x - 5} ${point.y - 5} L ${point.x + 5} ${point.y + 5} M ${point.x + 5} ${point.y - 5} L ${point.x - 5} ${point.y + 5}`}
+                    stroke="white" 
+                    strokeWidth="2" 
+                    strokeLinecap="round"
+                  />
+                </g>
+              );
+            }
+          })}
+        </svg>
+        
+        {/* Legend */}
+        <div style={{ marginTop: '15px', fontSize: '14px', color: '#666', display: 'flex', justifyContent: 'center', gap: '30px' }}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div style={{ 
+              width: '20px', 
+              height: '20px', 
+              backgroundColor: '#27ae60', 
+              borderRadius: '50%', 
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'white',
+              fontSize: '12px',
+              fontWeight: 'bold'
+            }}>✓</div>
+            Correctly Answered
+          </span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div style={{ 
+              width: '20px', 
+              height: '20px', 
+              backgroundColor: '#e74c3c', 
+              borderRadius: '50%', 
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'white',
+              fontSize: '12px',
+              fontWeight: 'bold'
+            }}>✗</div>
+            Incorrectly Answered
+          </span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div style={{ 
+              width: '20px', 
+              height: '20px', 
+              backgroundColor: '#888', 
+              borderRadius: '50%'
+            }}></div>
+            Not Answered
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}, [adaptiveQuestions, questionTimes, selectedAnswers, formatTime]);
+
+const calculateScore = useCallback(() => {
     let totalPoints = 0;
     let maxPossiblePoints = 0;
     let correctByDifficulty = { easy: 0, medium: 0, hard: 0 };
@@ -845,218 +1305,7 @@ const formatMath = useCallback((text) => {
         timeSpent: questionTimes[question.id] || 0,
       };
     });
-    // Time Pressure Graph Component - add this above your completion screen return
-const renderTimePressureGraph = useCallback(() => {
-  if (adaptiveQuestions.length === 0) return null;
-
-  const graphWidth = 600;
-  const graphHeight = 250;
-  const padding = 40;
-  const innerWidth = graphWidth - padding * 2;
-  const innerHeight = graphHeight - padding * 2;
-
-  // Calculate time data
-  const timeData = adaptiveQuestions.map((question, index) => ({
-    questionNum: index + 1,
-    timeSpent: questionTimes[question.id] || 0,
-    difficulty: question.difficulty,
-  }));
-
-  const maxTime = Math.max(...timeData.map((d) => d.timeSpent), 180); // At least 3 minutes scale
-  const avgTime = timeData.reduce((sum, d) => sum + d.timeSpent, 0) / timeData.length;
-
-  // Create points for the line
-  const points = timeData.map((data, index) => {
-    const x = padding + (index / (timeData.length - 1)) * innerWidth;
-    const y = padding + (1 - data.timeSpent / maxTime) * innerHeight;
-    return { x, y, ...data };
-  });
-
-  // Create hexadecimal averaging (moving average of 3)
-  const smoothedPoints = points.map((point, index) => {
-    if (index === 0 || index === points.length - 1) return point;
-
-    const prev = points[index - 1];
-    const next = points[index + 1];
-    const avgY = (prev.y + point.y + next.y) / 3;
-
-    return { ...point, y: avgY, smoothed: true };
-  });
-
-  const pathData = smoothedPoints.map((point, index) => `${index === 0 ? 'M' : 'L'} ${point.x} ${point.y}`).join(' ');
-
-  return (
-    <div style={{ marginBottom: '25px', textAlign: 'center' }}>
-      <h4 style={{ color: '#2c3e50', marginBottom: '15px', fontSize: '18px' }}>Time Pressure Analysis</h4>
-
-      <div
-        style={{
-          display: 'inline-block',
-          backgroundColor: '#f8f9fa',
-          padding: '20px',
-          borderRadius: '8px',
-          border: '1px solid #dee2e6',
-        }}
-      >
-        <svg width={graphWidth} height={graphHeight} style={{ backgroundColor: 'white', borderRadius: '4px' }}>
-          {/* Grid lines */}
-          <defs>
-            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#f0f0f0" strokeWidth="1" />
-            </pattern>
-          </defs>
-          <rect width={graphWidth} height={graphHeight} fill="url(#grid)" />
-
-          {/* Axes */}
-          <line x1={padding} y1={padding} x2={padding} y2={graphHeight - padding} stroke="#666" strokeWidth="2" />
-          <line
-            x1={padding}
-            y1={graphHeight - padding}
-            x2={graphWidth - padding}
-            y2={graphHeight - padding}
-            stroke="#666"
-            strokeWidth="2"
-          />
-
-          {/* Y-axis labels (time) */}
-          {[0, 1, 2, 3, 4, 5].map((minutes) => {
-            const y = padding + (1 - (minutes * 60) / maxTime) * innerHeight;
-            if (y >= padding && y <= graphHeight - padding) {
-              return (
-                <g key={minutes}>
-                  <line x1={padding - 5} y1={y} x2={padding} y2={y} stroke="#666" strokeWidth="1" />
-                  <text x={padding - 10} y={y + 4} textAnchor="end" fontSize="12" fill="#666">
-                    {minutes}m
-                  </text>
-                </g>
-              );
-            }
-            return null;
-          })}
-
-          {/* X-axis labels (questions) */}
-          {points
-            .filter((_, i) => i % Math.ceil(points.length / 10) === 0)
-            .map((point) => (
-              <g key={point.questionNum}>
-                <line
-                  x1={point.x}
-                  y1={graphHeight - padding}
-                  x2={point.x}
-                  y2={graphHeight - padding + 5}
-                  stroke="#666"
-                  strokeWidth="1"
-                />
-                <text x={point.x} y={graphHeight - padding + 18} textAnchor="middle" fontSize="12" fill="#666">
-                  Q{point.questionNum}
-                </text>
-              </g>
-            ))}
-
-          {/* Average time line */}
-          <line
-            x1={padding}
-            y1={padding + (1 - avgTime / maxTime) * innerHeight}
-            x2={graphWidth - padding}
-            y2={padding + (1 - avgTime / maxTime) * innerHeight}
-            stroke="#f39c12"
-            strokeWidth="2"
-            strokeDasharray="5,5"
-          />
-          <text
-            x={graphWidth - padding - 5}
-            y={padding + (1 - avgTime / maxTime) * innerHeight - 5}
-            textAnchor="end"
-            fontSize="12"
-            fill="#f39c12"
-            fontWeight="bold"
-          >
-            Avg: {formatTime(Math.round(avgTime))}
-          </text>
-
-          {/* Time pressure zones */}
-          <rect
-            x={padding}
-            y={padding}
-            width={innerWidth}
-            height={(1 - 150 / maxTime) * innerHeight}
-            fill="rgba(231, 76, 60, 0.1)"
-          />
-          <text x={padding + 10} y={padding + 15} fontSize="12" fill="#e74c3c" fontWeight="bold">
-            High Pressure Zone (2.5+ min)
-          </text>
-
-          {/* Main time line (smoothed) */}
-          <path d={pathData} fill="none" stroke="#3498db" strokeWidth="3" strokeLinecap="round" />
-
-          {/* Data points */}
-          {points.map((point, index) => (
-            <g key={index}>
-              <circle
-                cx={point.x}
-                cy={point.y}
-                r="4"
-                fill={point.timeSpent > 150 ? '#e74c3c' : point.timeSpent < 60 ? '#27ae60' : '#f39c12'}
-                stroke="white"
-                strokeWidth="2"
-              />
-
-              {/* Tooltip on hover */}
-              <circle cx={point.x} cy={point.y} r="8" fill="transparent" style={{ cursor: 'pointer' }}>
-                <title>
-                  Q{point.questionNum}: {formatTime(point.timeSpent)} ({point.difficulty})
-                </title>
-              </circle>
-            </g>
-          ))}
-        </svg>
-
-        {/* Legend */}
-        <div style={{ marginTop: '15px', fontSize: '12px', color: '#666' }}>
-          <span style={{ marginRight: '20px' }}>
-            <span
-              style={{
-                display: 'inline-block',
-                width: '12px',
-                height: '12px',
-                backgroundColor: '#27ae60',
-                borderRadius: '50%',
-                marginRight: '5px',
-              }}
-            ></span>
-            Fast (&lt;1min)
-          </span>
-          <span style={{ marginRight: '20px' }}>
-            <span
-              style={{
-                display: 'inline-block',
-                width: '12px',
-                height: '12px',
-                backgroundColor: '#f39c12',
-                borderRadius: '50%',
-                marginRight: '5px',
-              }}
-            ></span>
-            Normal (1-2.5min)
-          </span>
-          <span>
-            <span
-              style={{
-                display: 'inline-block',
-                width: '12px',
-                height: '12px',
-                backgroundColor: '#e74c3c',
-                borderRadius: '50%',
-                marginRight: '5px',
-              }}
-            ></span>
-            Slow (&gt;2.5min)
-          </span>
-        </div>
-      </div>
-    </div>
-  );
-}, [adaptiveQuestions, questionTimes, formatTime]);
+    
 
     return (
       <div style={{ fontFamily: 'Arial, sans-serif', height: '100vh', display: 'flex', flexDirection: 'column' }}>
@@ -1140,6 +1389,11 @@ const renderTimePressureGraph = useCallback(() => {
                 </span>
               </div>
             </div>
+            {/* Time Pressure Analysis */}
+            {!isWarmupMode && renderTimePressureGraph()}
+
+            {/* Detailed Results Table */}
+            <div style={{ marginBottom: '25px' }}></div>
 
             {/* Detailed Results Table */}
             <div style={{ marginBottom: '25px' }}>
@@ -1273,7 +1527,14 @@ const renderTimePressureGraph = useCallback(() => {
                 📑 {bookmarkedQuestions.has(currentQuestion.id) ? 'Bookmarked' : 'Bookmark'}
               </button>
             </div>
-            <span dangerouslySetInnerHTML={{ __html: formatMath(currentQuestion.questionText) }}></span>
+<div dangerouslySetInnerHTML={{ __html: formatMath(formatRomanNumerals(currentQuestion.questionText)) }}></div>
+          </div>
+        )}
+
+        {/* Visual Elements */}
+        {currentQuestion && currentQuestion.visual && (
+          <div style={{ marginBottom: '20px' }}>
+            {renderQuestionVisual(currentQuestion.visual)}
           </div>
         )}
 
@@ -1345,7 +1606,7 @@ const renderTimePressureGraph = useCallback(() => {
       </div>
 
       {/* Modals */}
-     // Enhanced pause modal with blur effect - replace your existing pause modal
+
 {isPaused && (
   <div style={{ 
     position: 'fixed', 
