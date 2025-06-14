@@ -1052,22 +1052,14 @@ Anniversary Holiday (W1: June 16-22)
     }
   }, [isDataInsights, isVerbal, targetQuestions]);
 
-  const timeLimit = useMemo(() => {
+const timeLimit = useMemo(() => {
     if (customTimeLimit !== null) {
       return customTimeLimit * 60;
     }
 
-    // For warmup mode, always use calculated time based on question count, ignore JSON timeLimit
-    if (isWarmupMode) {
-      return defaultTimeLimit;
-    }
-
-    // For regular tests, use JSON timeLimit if available, otherwise use calculated default
-    if (currentData.timeLimit) {
-      return currentData.timeLimit;
-    }
+    // Always use calculated time based on actual question count
     return defaultTimeLimit;
-  }, [customTimeLimit, currentData.timeLimit, defaultTimeLimit, isWarmupMode]);
+  }, [customTimeLimit, defaultTimeLimit]);
 
   // Current question logic
   const getCurrentQuestion = useCallback(() => {
@@ -1380,7 +1372,7 @@ Anniversary Holiday (W1: June 16-22)
         .replace(/>=/g, '≥')
         .replace(/degrees?/g, '°')
         .replace(/infinity/g, '∞')
-        .replace(/pi/g, 'π')
+        .replace(/\bpi\b/g, 'π')
         .replace(/theta/g, 'θ')
         .replace(/alpha/g, 'α')
         .replace(/beta/g, 'β')
@@ -2402,7 +2394,7 @@ Anniversary Holiday (W1: June 16-22)
                     type="number"
                     min="1"
                     max="120"
-                    value={customTimeLimit !== null ? customTimeLimit : Math.floor(defaultTimeLimit / 60)}
+                    value={customTimeLimit !== null ? customTimeLimit : Math.floor(timeLimit / 60)}
                     onChange={(e) => setCustomTimeLimit(e.target.value ? parseInt(e.target.value) : null)}
                     style={{
                       padding: '8px 12px',
@@ -2414,7 +2406,7 @@ Anniversary Holiday (W1: June 16-22)
                     }}
                   />
                   <span style={{ fontSize: '16px', color: '#666' }}>
-                    minutes (default: {Math.floor(defaultTimeLimit / 60)})
+                    minutes (default: {Math.floor(timeLimit / 60)})
                   </span>
                 </div>
                 <div style={{ fontSize: '14px', color: '#888', marginTop: '5px' }}>
@@ -2453,10 +2445,10 @@ Anniversary Holiday (W1: June 16-22)
               }}
               onMouseOver={(e) => (e.target.style.backgroundColor = '#229954')}
               onMouseOut={(e) => (e.target.style.backgroundColor = '#27ae60')}
-      >
+            >
               Start {isWarmupMode ? 'Warmup' : 'Test'}
             </button>
-            
+
             {!isWarmupMode && (
               <div style={{ marginTop: '15px' }}>
                 <TimelineButton onClick={() => setShowTimeline(true)} />
@@ -2464,8 +2456,8 @@ Anniversary Holiday (W1: June 16-22)
             )}
           </div>
         </div>
-        
-       {showTimeline && renderTimeline()}
+
+        {showTimeline && renderTimeline()}
       </div>
     );
   }

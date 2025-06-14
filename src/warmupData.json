@@ -1312,6 +1312,400 @@
         "E": "8"
       },
       "correctAnswer": "B"
-    }
+    },
+    [
+      {
+        "id": 101,
+        "questionText": "A bag contains 5 red marbles, 3 blue marbles, and 2 green marbles. If one marble is drawn at random, what is the probability that it is NOT red?",
+        "difficulty": "easy",
+        "options": {
+          "A": "1/2",
+          "B": "1/3",
+          "C": "2/5",
+          "D": "3/5",
+          "E": "3/10"
+        },
+        "correctAnswer": "A"
+      },
+      {
+        "id": 102,
+        "questionText": "Two fair six-sided dice are rolled. What is the probability that the sum of the numbers shown is 7?",
+        "difficulty": "easy",
+        "options": {
+          "A": "1/12",
+          "B": "1/9",
+          "C": "1/6",
+          "D": "1/4",
+          "E": "1/3"
+        },
+        "correctAnswer": "C"
+      },
+      {
+        "id": 103,
+        "questionText": "A standard deck of 52 cards contains 4 aces. If 2 cards are drawn without replacement, what is the probability that both cards are aces?",
+        "difficulty": "medium",
+        "options": {
+          "A": "1/169",
+          "B": "1/221",
+          "C": "2/221",
+          "D": "4/169",
+          "E": "1/52"
+        },
+        "correctAnswer": "B"
+      },
+      {
+        "id": 104,
+        "questionText": "In a class of 30 students, 18 study French and 12 study Spanish. If 8 students study both languages, what is the probability that a randomly selected student studies neither language?",
+        "difficulty": "medium",
+        "options": {
+          "A": "4/15",
+          "B": "1/5",
+          "C": "7/30",
+          "D": "11/30",
+          "E": "2/15"
+        },
+        "correctAnswer": "A"
+      },
+      {
+        "id": 105,
+        "questionText": "A coin is flipped 3 times. What is the probability of getting exactly 2 heads?",
+        "difficulty": "easy",
+        "options": {
+          "A": "1/8",
+          "B": "1/4",
+          "C": "3/8",
+          "D": "1/2",
+          "E": "5/8"
+        },
+        "correctAnswer": "C"
+      },
+      {
+        "id": 106,
+        "questionText": "Box A contains 3 red balls and 7 white balls. Box B contains 6 red balls and 4 white balls. If a box is chosen at random and then a ball is drawn from that box, what is the probability that the ball is red?",
+        "difficulty": "medium",
+        "options": {
+          "A": "9/20",
+          "B": "1/2",
+          "C": "11/20",
+          "D": "3/5",
+          "E": "13/20"
+        },
+        "correctAnswer": "A"
+      },
+      {
+        "id": 107,
+        "questionText": "How many ways can the letters in the word TEXAS be arranged?",
+        "difficulty": "easy",
+        "options": {
+          "A": "60",
+          "B": "100",
+          "C": "120",
+          "D": "240",
+          "E": "360"
+        },
+        "correctAnswer": "C"
+      },
+      {
+        "id": 108,
+        "questionText": "A committee of 4 people is to be selected from a group of 8 men and 6 women. What is the probability that the committee contains exactly 2 men and 2 women?",
+        "difficulty": "hard",
+        "options": {
+          "A": "12/35",
+          "B": "240/1001",
+          "C": "420/1001",
+          "D": "8/35",
+          "E": "15/35"
+        },
+        "correctAnswer": "C"
+      },
+      {
+        "id": 109,
+        "questionText": "A jar contains 10 jellybeans: 4 red, 3 green, and 3 blue. If 3 jellybeans are selected at random without replacement, what is the probability that all 3 are the same color?",
+        "difficulty": "hard",
+        "options": {
+          "A": "1/20",
+          "B": "3/40",
+          "C": "1/12",
+          "D": "1/10",
+          "E": "3/20"
+        },
+        "correctAnswer": "A"
+      },
+      {
+        "id": 110,
+        "questionText": "In a certain game, the probability of winning on any single play is 1/4. If the game is played 4 times independently, what is the probability of winning at least once?",
+        "difficulty": "medium",
+        "options": {
+          "A": "175/256",
+          "B": "81/256",
+          "C": "3/4",
+          "D": "255/256",
+          "E": "1/4"
+        },
+        "correctAnswer": "A"
+      },
+      {
+        "id": 111,
+        "questionText": "In how many ways can 5 people be arranged in a row?",
+        "difficulty": "easy",
+        "options": {
+          "A": "25",
+          "B": "60",
+          "C": "100",
+          "D": "120",
+          "E": "720"
+        },
+        "correctAnswer": "D"
+      },
+      {
+        "id": 112,
+        "questionText": "How many ways can you select 3 books from a shelf of 8 books?",
+        "difficulty": "easy",
+        "options": {
+          "A": "24",
+          "B": "56",
+          "C": "64",
+          "D": "168",
+          "E": "336"
+        },
+        "correctAnswer": "B"
+      },
+      {
+        "id": 113,
+        "questionText": "How many 3-digit numbers can be formed using the digits 1, 2, 3, 4, 5 without repetition?",
+        "difficulty": "easy",
+        "options": {
+          "A": "60",
+          "B": "125",
+          "C": "243",
+          "D": "150",
+          "E": "120"
+        },
+        "correctAnswer": "A"
+      },
+      {
+        "id": 114,
+        "questionText": "A pizza can be topped with any combination of 6 available toppings. How many different pizzas are possible?",
+        "difficulty": "medium",
+        "options": {
+          "A": "36",
+          "B": "64",
+          "C": "720",
+          "D": "46656",
+          "E": "6"
+        },
+        "correctAnswer": "B"
+      },
+      {
+        "id": 115,
+        "questionText": "In how many ways can the word BANANA be arranged?",
+        "difficulty": "medium",
+        "options": {
+          "A": "30",
+          "B": "60",
+          "C": "120",
+          "D": "360",
+          "E": "720"
+        },
+        "correctAnswer": "B"
+      },
+      {
+        "id": 116,
+        "questionText": "How many ways can 6 people sit around a circular table?",
+        "difficulty": "medium",
+        "options": {
+          "A": "120",
+          "B": "360",
+          "C": "720",
+          "D": "5040",
+          "E": "30240"
+        },
+        "correctAnswer": "A"
+      },
+      {
+        "id": 117,
+        "questionText": "A committee of 5 is to be chosen from 7 men and 4 women. How many ways can this be done if the committee must include at least 2 women?",
+        "difficulty": "hard",
+        "options": {
+          "A": "287",
+          "B": "301",
+          "C": "371",
+          "D": "441",
+          "E": "462"
+        },
+        "correctAnswer": "B"
+      },
+      {
+        "id": 118,
+        "questionText": "How many ways can you arrange the letters of MATHEMATICS?",
+        "difficulty": "hard",
+        "options": {
+          "A": "1,663,200",
+          "B": "4,989,600",
+          "C": "39,916,800",
+          "D": "1,108,800",
+          "E": "9,979,200"
+        },
+        "correctAnswer": "B"
+      },
+      {
+        "id": 119,
+        "questionText": "In how many ways can you select 4 cards from a standard deck such that you get exactly one card from each suit?",
+        "difficulty": "medium",
+        "options": {
+          "A": "13",
+          "B": "169",
+          "C": "2197",
+          "D": "28561",
+          "E": "371293"
+        },
+        "correctAnswer": "D"
+      },
+      {
+        "id": 120,
+        "questionText": "How many different 4-letter codes can be formed using the letters A, B, C, D, E if repetition is allowed?",
+        "difficulty": "easy",
+        "options": {
+          "A": "120",
+          "B": "256",
+          "C": "625",
+          "D": "1024",
+          "E": "3125"
+        },
+        "correctAnswer": "C"
+      },
+      [
+        {
+          "id": 121,
+          "questionText": "Machine A has a 60% success rate and Machine B has a 40% success rate. If both machines operate independently, what is the probability that at least one machine succeeds?",
+          "difficulty": "medium",
+          "options": {
+            "A": "0.76",
+            "B": "0.80",
+            "C": "0.84",
+            "D": "0.88",
+            "E": "0.92"
+          },
+          "correctAnswer": "A"
+        },
+        {
+          "id": 122,
+          "questionText": "A point is randomly chosen from the coordinate plane region where 0 ≤ x ≤ 3 and 0 ≤ y ≤ 3. What is the probability that the point lies above the line y = x?",
+          "difficulty": "medium",
+          "options": {
+            "A": "1/4",
+            "B": "1/3",
+            "C": "3/8",
+            "D": "1/2",
+            "E": "5/8"
+          },
+          "correctAnswer": "D"
+        },
+        {
+          "id": 123,
+          "questionText": "A train travels at either 60 mph (with probability 0.7) or 80 mph (with probability 0.3). For a 240-mile journey, what is the probability the trip takes exactly 3 hours?",
+          "difficulty": "easy",
+          "options": {
+            "A": "0.3",
+            "B": "0.4",
+            "C": "0.6",
+            "D": "0.7",
+            "E": "1.0"
+          },
+          "correctAnswer": "A"
+        },
+        {
+          "id": 124,
+          "questionText": "A stock either increases by 20% (probability 0.6) or decreases by 10% (probability 0.4). If the stock starts at $100, what is the probability it will be worth more than $110 after one day?",
+          "difficulty": "easy",
+          "options": {
+            "A": "0.4",
+            "B": "0.5",
+            "C": "0.6",
+            "D": "0.7",
+            "E": "0.8"
+          },
+          "correctAnswer": "C"
+        },
+        {
+          "id": 125,
+          "questionText": "A number is randomly selected from {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}. What is the probability that the number is prime AND odd?",
+          "difficulty": "easy",
+          "options": {
+            "A": "1/5",
+            "B": "3/10",
+            "C": "2/5",
+            "D": "1/2",
+            "E": "3/5"
+          },
+          "correctAnswer": "B"
+        },
+        {
+          "id": 126,
+          "questionText": "Points are randomly placed on a coordinate grid. If a point (x, y) satisfies x + y = 4, and both x and y are integers from 0 to 4, what is the probability that x > y?",
+          "difficulty": "medium",
+          "options": {
+            "A": "1/5",
+            "B": "2/5",
+            "C": "1/2",
+            "D": "3/5",
+            "E": "4/5"
+          },
+          "correctAnswer": "B"
+        },
+        {
+          "id": 127,
+          "questionText": "A circular dartboard has radius 10. A smaller circle of radius 3 is drawn at the center. If a dart hits the board randomly, what is the probability it lands in the smaller circle?",
+          "difficulty": "easy",
+          "options": {
+            "A": "9/100",
+            "B": "3/10",
+            "C": "9/50",
+            "D": "1/5",
+            "E": "3/50"
+          },
+          "correctAnswer": "A"
+        },
+        {
+          "id": 128,
+          "questionText": "A bus arrives every 20 minutes starting at 8:00 AM. If you arrive at a random time between 8:00 AM and 9:00 AM, what is the probability you wait more than 10 minutes?",
+          "difficulty": "medium",
+          "options": {
+            "A": "1/4",
+            "B": "1/3",
+            "C": "1/2",
+            "D": "2/3",
+            "E": "3/4"
+          },
+          "correctAnswer": "C"
+        },
+        {
+          "id": 129,
+          "questionText": "The equation x² - 4x + c = 0 has integer solutions. If c is randomly chosen from {1, 2, 3, 4}, what is the probability that both solutions are positive?",
+          "difficulty": "hard",
+          "options": {
+            "A": "1/4",
+            "B": "1/2",
+            "C": "3/4",
+            "D": "1",
+            "E": "0"
+          },
+          "correctAnswer": "C"
+        },
+        {
+          "id": 130,
+          "questionText": "A factory produces items with weights that average 50 grams. Quality control randomly selects 3 items. If each item has equal probability of being above or below average, what is the probability that exactly 2 items are above average?",
+          "difficulty": "easy",
+          "options": {
+            "A": "1/8",
+            "B": "1/4",
+            "C": "3/8",
+            "D": "1/2",
+            "E": "5/8"
+          },
+          "correctAnswer": "C"
+        }
+      ]
+    ]
   ]
 }
