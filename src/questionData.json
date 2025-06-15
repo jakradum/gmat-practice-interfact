@@ -1,164 +1,177 @@
 {
-  "sectionName": "GMAT Quantitative Practice - Advanced Challenge Set",
-  "sectionType": "quantitative", 
-  "testDescription": "Strategic practice targeting skill ceiling breakthrough with challenging problems.",
+  "sectionName": "Content Gap Drill Collection 1",
+  "sectionType": "quantitative",
+  "testDescription": "Targeted practice for identified content gaps: Integer Systems, Factorial Divisibility, and Inequality Logic.",
   "skillsAssessed": [
-    "Advanced probability and combinatorics",
-    "Complex algebraic manipulation", 
-    "Multi-step word problems",
-    "Number theory and divisibility",
-    "Statistical reasoning"
+    "Integer solutions to systems of linear equations",
+    "Factorial divisibility with hidden prime factors",
+    "Inequality constraint logic with necessity reasoning",
+    "Multi-variable constraint optimization",
+    "Advanced number theory and prime factorization"
   ],
   "adaptiveMode": true,
-  "targetQuestions": 15,
-  "timeLimit": 2700,
+  "targetQuestions": 21,
+  "timeLimit": 3150,
   "questions": [
     {
-      "id": 24,
-      "questionText": "If x - y = R and xy = S, then (x - 2)(y + 2) =",
+      "id": 1,
+      "questionText": "A jar contains only nickels (5¢) and dimes (10¢). If there are exactly 50 cents worth of coins and exactly 8 coins total, how many nickels are in the jar?",
       "difficulty": "easy",
       "options": {
-        "A": "R + S - 4",
-        "B": "R + 2S - 4",
-        "C": "2R - S - 4",
-        "D": "2R + S - 4",
-        "E": "2R + S"
-      },
-      "correctAnswer": "D"
-    },
-    {
-      "id": 32,
-      "questionText": "|-4|(|-20|-|5|) =",
-      "difficulty": "easy",
-      "options": {
-        "A": "-100",
-        "B": "-60",
-        "C": "60",
-        "D": "75",
-        "E": "100"
+        "A": "2",
+        "B": "4",
+        "C": "6",
+        "D": "8",
+        "E": "10"
       },
       "correctAnswer": "C"
     },
     {
-      "id": 39,
-      "questionText": "Last week Jack worked 70 hours and earned $1,260. If he earned his regular hourly wage for the first 40 hours worked, 1½ times his regular hourly wage for the next 20 hours worked, and 2 times his regular hourly wage for the remaining 10 hours worked, what was his regular hourly wage?",
+      "id": 2,
+      "questionText": "A store sells notebooks for $3 each and pens for $2 each. If Maria buys exactly 12 items and spends exactly $31, how many notebooks did she buy?",
       "difficulty": "easy",
       "options": {
-        "A": "$7.00",
-        "B": "$14.00",
-        "C": "$18.00",
-        "D": "$22.00",
-        "E": "$31.50"
+        "A": "5",
+        "B": "6",
+        "C": "7",
+        "D": "8",
+        "E": "9"
       },
-      "correctAnswer": "B"
+      "correctAnswer": "C"
     },
     {
-      "id": 116,
-      "questionText": "The hard drive, monitor, and printer for a certain desktop computer system cost a total of $2,500. The cost of the printer and monitor together is equal to ⅔ of the cost of the hard drive. If the cost of the printer is $100 more than the cost of the monitor, what is the cost of the printer?",
+      "id": 3,
+      "questionText": "A piggy bank contains quarters (25¢), dimes (10¢), and nickels (5¢). There are 20 coins total worth exactly $3.00. If there are twice as many dimes as nickels, how many quarters are there?",
       "difficulty": "medium",
       "options": {
-        "A": "$800",
-        "B": "$600",
-        "C": "$550",
-        "D": "$500",
-        "E": "$350"
-      },
-      "correctAnswer": "C"
-    },
-    {
-      "id": 127,
-      "questionText": "If 3/10⁴ = x%, then x =",
-      "difficulty": "medium",
-      "options": {
-        "A": "0.3",
-        "B": "0.03",
-        "C": "0.003",
-        "D": "0.0003",
-        "E": "0.00003"
-      },
-      "correctAnswer": "B"
-    },
-    {
-      "id": 169,
-      "questionText": "If x is to be chosen at random from the set {1, 2, 3, 4} and y is to be chosen at random from the set {5, 6, 7}, what is the probability that xy will be even?",
-      "difficulty": "hard",
-      "options": {
-        "A": "⅙",
-        "B": "⅓",
-        "C": "½",
-        "D": "⅔",
-        "E": "⅚"
-      },
-      "correctAnswer": "D"
-    },
-    {
-      "id": 171,
-      "questionText": "If 10⁵⁰ - 74 is written as an integer in base 10 notation, what is the sum of the digits in that integer?",
-      "difficulty": "hard",
-      "options": {
-        "A": "424",
-        "B": "433",
-        "C": "440",
-        "D": "449",
-        "E": "467"
-      },
-      "correctAnswer": "C"
-    },
-    {
-      "id": 172,
-      "questionText": "A certain company that sells only cars and trucks reported that revenues from car sales in 1997 were down 11 percent from 1996 and revenues from truck sales in 1997 were up 7 percent from 1996. If total revenues from car sales and truck sales in 1997 were up 1 percent from 1996, what is the ratio of revenue from car sales in 1996 to revenue from truck sales in 1996?",
-      "difficulty": "hard",
-      "options": {
-        "A": "1:2",
-        "B": "4:5",
-        "C": "1:1",
-        "D": "3:2",
-        "E": "5:3"
+        "A": "8",
+        "B": "10",
+        "C": "12",
+        "D": "14",
+        "E": "16"
       },
       "correctAnswer": "A"
     },
     {
-      "id": 174,
-      "questionText": "If 4 < (7-x)/3, which of the following must be true?\n\nI. 5 < x\nII. |x + 3| > 2\nIII. -(x + 5) is positive.",
-      "difficulty": "hard",
+      "id": 4,
+      "questionText": "A factory produces widgets in three sizes: small ($5), medium ($8), and large ($12). Yesterday they produced 6 widgets and generated $46 in revenue. If they produced 1 more small widget than large widgets, how many medium widgets did they produce?",
+      "difficulty": "medium",
       "options": {
-        "A": "II only",
-        "B": "III only",
-        "C": "I and II only",
-        "D": "II and III only",
-        "E": "I, II, and III"
+        "A": "1",
+        "B": "2",
+        "C": "3",
+        "D": "4",
+        "E": "5"
       },
-      "correctAnswer": "D"
+      "correctAnswer": "C"
     },
     {
-      "id": 176,
-      "questionText": "A set of numbers has the property that for any number t in the set, t + 2 is in the set. If -1 is in the set, which of the following must also be in the set?\n\nI. -3\nII. 1\nIII. 5",
-      "difficulty": "hard",
+      "id": 5,
+      "questionText": "A vending machine accepts only quarters (25¢), dimes (10¢), and nickels (5¢). For a purchase totaling 95 cents using exactly 11 coins, which of the following represents a possible number of quarters used?\n\nI. 0\nII. 1\nIII. 2",
+      "difficulty": "medium",
       "options": {
         "A": "I only",
         "B": "II only",
-        "C": "I and II only",
+        "C": "I and III only",
         "D": "II and III only",
         "E": "I, II, and III"
       },
-      "correctAnswer": "D"
+      "correctAnswer": "E"
     },
     {
-      "id": 180,
-      "questionText": "If n is a positive integer and n² is divisible by 72, then the largest positive integer that must divide n is",
+      "id": 6,
+      "questionText": "A coin collection contains half dollars (50¢), quarters (25¢), dimes (10¢), and pennies (1¢). The total value is 172 cents using exactly 8 coins. If there are equal numbers of half dollars and quarters, and equal numbers of dimes and pennies, how many pennies are in the collection?",
       "difficulty": "hard",
       "options": {
-        "A": "6",
-        "B": "12",
-        "C": "24",
-        "D": "36",
-        "E": "48"
+        "A": "1",
+        "B": "2",
+        "C": "3",
+        "D": "4",
+        "E": "5"
       },
       "correctAnswer": "B"
     },
     {
-      "id": 184,
-      "questionText": "What is the greatest positive integer n such that 5ⁿ divides 10! - (2)(5!)³?",
+      "id": 7,
+      "questionText": "A bakery sells items at $15, $12, $8, and $5. They sold 12 items for $124 total. Items sold at $15 equal items sold at $5. Items at $12 outnumber items at $8 by 2. How many $8 items were sold?",
+      "difficulty": "hard",
+      "options": {
+        "A": "1",
+        "B": "2",
+        "C": "3",
+        "D": "4",
+        "E": "5"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 8,
+      "questionText": "What is the greatest positive integer n such that 2^n divides 8!?",
+      "difficulty": "easy",
+      "options": {
+        "A": "5",
+        "B": "6",
+        "C": "7",
+        "D": "8",
+        "E": "9"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 9,
+      "questionText": "What is the greatest positive integer n such that 5^n divides 10!?",
+      "difficulty": "easy",
+      "options": {
+        "A": "1",
+        "B": "2",
+        "C": "3",
+        "D": "4",
+        "E": "5"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 10,
+      "questionText": "What is the greatest positive integer n such that 3^n divides (7! + 6!)?",
+      "difficulty": "medium",
+      "options": {
+        "A": "1",
+        "B": "2",
+        "C": "3",
+        "D": "4",
+        "E": "5"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 11,
+      "questionText": "What is the greatest positive integer n such that 2^n divides (9! - 8!)?",
+      "difficulty": "medium",
+      "options": {
+        "A": "8",
+        "B": "9",
+        "C": "10",
+        "D": "11",
+        "E": "12"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 12,
+      "questionText": "What is the greatest positive integer n such that 7^n divides (14!/2!)?",
+      "difficulty": "medium",
+      "options": {
+        "A": "1",
+        "B": "2",
+        "C": "3",
+        "D": "4",
+        "E": "5"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 13,
+      "questionText": "What is the greatest positive integer n such that 6^n divides (12! - 11!×5)?",
       "difficulty": "hard",
       "options": {
         "A": "2",
@@ -167,44 +180,109 @@
         "D": "5",
         "E": "6"
       },
-      "correctAnswer": "D"
+      "correctAnswer": "C"
     },
     {
-      "id": 10,
-      "questionText": "The value of Maureen's investment portfolio has decreased by 5.8 percent since her initial investment in the portfolio. If her initial investment was $16,800, what is the current value of the portfolio?",
-      "difficulty": "easy",
+      "id": 14,
+      "questionText": "What is the greatest positive integer n such that 10^n divides (15! - 3×14! + 2×13!)?",
+      "difficulty": "hard",
       "options": {
-        "A": "$7,056.00",
-        "B": "$14,280.00",
-        "C": "$15,825.60",
-        "D": "$16,702.56",
-        "E": "$17,774.40"
+        "A": "1",
+        "B": "2",
+        "C": "3",
+        "D": "4",
+        "E": "5"
       },
       "correctAnswer": "C"
     },
     {
-      "id": 199,
-      "questionText": "Last month, 15 homes were sold in Town X. The average (arithmetic mean) sale price of the homes was $150,000 and the median sale price was $130,000. Which of the following statements must be true?\n\nI. At least one of the homes was sold for more than $165,000.\nII. At least one of the homes was sold for more than $130,000 and less than $150,000.\nIII. At least one of the homes was sold for less than $130,000.",
+      "id": 15,
+      "questionText": "If x > 5, which of the following must be true?\n\nI. x > 3\nII. x² > 25\nIII. |x| > 5",
+      "difficulty": "easy",
+      "options": {
+        "A": "I only",
+        "B": "II only",
+        "C": "I and II only",
+        "D": "II and III only",
+        "E": "I, II, and III"
+      },
+      "correctAnswer": "E"
+    },
+    {
+      "id": 16,
+      "questionText": "If 2x + 3 > 11, which of the following must be true?\n\nI. x > 4\nII. x² > 16\nIII. x + 1 > 5",
+      "difficulty": "easy",
+      "options": {
+        "A": "I only",
+        "B": "II only",
+        "C": "I and III only",
+        "D": "II and III only",
+        "E": "I, II, and III"
+      },
+      "correctAnswer": "E"
+    },
+    {
+      "id": 17,
+      "questionText": "If -3 < x < 1, which of the following must be true?\n\nI. x² < 9\nII. |x| < 3\nIII. x + 5 > 0",
+      "difficulty": "medium",
+      "options": {
+        "A": "I only",
+        "B": "II only",
+        "C": "I and II only",
+        "D": "I and III only",
+        "E": "I, II, and III"
+      },
+      "correctAnswer": "E"
+    },
+    {
+      "id": 18,
+      "questionText": "If |x - 2| < 3, which of the following must be true?\n\nI. x > -1\nII. x < 5\nIII. |x| < 6",
+      "difficulty": "medium",
+      "options": {
+        "A": "I only",
+        "B": "II only",
+        "C": "I and II only",
+        "D": "II and III only",
+        "E": "I, II, and III"
+      },
+      "correctAnswer": "E"
+    },
+    {
+      "id": 19,
+      "questionText": "If 3 < (x + 1)/2, which of the following must be true?\n\nI. x > 5\nII. |x - 3| > 2\nIII. -(x - 7) < 0",
+      "difficulty": "medium",
+      "options": {
+        "A": "I only",
+        "B": "II only",
+        "C": "I and II only",
+        "D": "I and III only",
+        "E": "I, II, and III"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 20,
+      "questionText": "If x² - 4x + 3 < 0, which of the following must be true?\n\nI. x > 0\nII. x < 4\nIII. |x - 2| < 1",
       "difficulty": "hard",
       "options": {
         "A": "I only",
         "B": "II only",
         "C": "III only",
-        "D": "I and II",
-        "E": "I and III"
+        "D": "I and II only",
+        "E": "I, II, and III"
       },
-      "correctAnswer": "A"
+      "correctAnswer": "E"
     },
     {
-      "id": 177,
-      "questionText": "A couple decides to have 4 children. If they succeed in having 4 children and each child is equally likely to be a boy or a girl, what is the probability that they will have exactly 2 girls and 2 boys?",
+      "id": 21,
+      "questionText": "If 2 < (5 - x)/3, which of the following must be true?\n\nI. x < -1\nII. |x + 2| > 1\nIII. -(x + 3) > 0\nIV. x² - 4 < 0",
       "difficulty": "hard",
       "options": {
-        "A": "⅜",
-        "B": "¼",
-        "C": "3/16",
-        "D": "⅛",
-        "E": "1/16"
+        "A": "I only",
+        "B": "I and III only",
+        "C": "I, II, and III only",
+        "D": "I, III, and IV only",
+        "E": "I, II, III, and IV"
       },
       "correctAnswer": "A"
     }

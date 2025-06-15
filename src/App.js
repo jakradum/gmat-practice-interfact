@@ -1062,15 +1062,28 @@ const timeLimit = useMemo(() => {
   }, [customTimeLimit, defaultTimeLimit]);
 
   // Current question logic
-  const getCurrentQuestion = useCallback(() => {
+ const getCurrentQuestion = useCallback(() => {
+    console.log('getCurrentQuestion called', {
+      isEditingPrevious,
+      isReviewingBookmarks,
+      currentQuestionIndex,
+      adaptiveQuestionsLength: adaptiveQuestions.length
+    });
+    
     if (isEditingPrevious) {
-      return adaptiveQuestions[editQuestionIndex];
+      const result = adaptiveQuestions[editQuestionIndex];
+      console.log('Editing previous, returning:', result);
+      return result;
     }
     if (isReviewingBookmarks) {
       const bookmarkArray = Array.from(bookmarkedQuestions).map((id) => adaptiveQuestions.find((q) => q.id === id));
-      return bookmarkArray[bookmarkReviewIndex];
+      const result = bookmarkArray[bookmarkReviewIndex];
+      console.log('Reviewing bookmarks, returning:', result);
+      return result;
     }
-    return adaptiveQuestions[currentQuestionIndex];
+    const result = adaptiveQuestions[currentQuestionIndex];
+    console.log('Normal flow, returning:', result);
+    return result;
   }, [
     isEditingPrevious,
     editQuestionIndex,
@@ -1149,20 +1162,43 @@ const timeLimit = useMemo(() => {
     editQuestionIndex,
   ]);
 
+  const flattenQuestions = (questions) => {
+  const flattened = [];
+  
+  const flatten = (arr) => {
+    arr.forEach(item => {
+      if (Array.isArray(item)) {
+        flatten(item);
+      } else if (item && typeof item === 'object' && item.id) {
+        flattened.push(item);
+      }
+    });
+  };
+  
+  flatten(questions);
+  return flattened;
+};
+
   // Question initialization
-  const initializeAdaptiveQuestions = useCallback(() => {
-    const questionsPool = currentData.questions || [];
+const initializeAdaptiveQuestions = useCallback(() => {
+  // Flatten the questions array to handle nested arrays
+  const flatQuestions = flattenQuestions(currentData.questions || []);
+  const questionsPool = flatQuestions;
+  
+  console.log('Flattened questions pool length:', questionsPool.length);
+  console.log('Questions pool IDs:', questionsPool.map(q => q.id));
+  
+  if (isWarmupMode) {
+    const shuffledQuestions = shuffleArray([...questionsPool]);
+    const selectedQuestions = shuffledQuestions.slice(0, warmupQuestionCount);
+    setAdaptiveQuestions(selectedQuestions);
+    return;
+  }
 
-    if (isWarmupMode) {
-      // For warmup mode, shuffle questions and take the requested count
-      const shuffledQuestions = shuffleArray([...questionsPool]); // Create copy and shuffle
-      const selectedQuestions = shuffledQuestions.slice(0, warmupQuestionCount);
-      setAdaptiveQuestions(selectedQuestions);
-      return;
-    }
-
-    if (currentData.adaptiveMode) {
+  if (currentData.adaptiveMode) {
+      console.log('ENTERING ADAPTIVE MODE');
       const allQuestions = questionsPool.filter((q) => !q.buffer);
+      console.log('All questions IDs:', allQuestions.map(q => q.id));
       const bufferQuestions = questionsPool.filter((q) => q.buffer);
 
       // Group questions by passage for verbal sections
@@ -1213,9 +1249,13 @@ const timeLimit = useMemo(() => {
           }
         });
 
-        Object.keys(questionsByDifficulty).forEach((difficulty) => {
+      Object.keys(questionsByDifficulty).forEach((difficulty) => {
           questionsByDifficulty[difficulty] = shuffleArray(questionsByDifficulty[difficulty]);
         });
+
+        // Additional shuffle for topic mixing
+        const allAvailableQuestions = [...allQuestions, ...bufferQuestions];
+        const topicShuffledPool = shuffleArray(allAvailableQuestions);
 
         const difficultyPattern = createAdaptiveDifficultyPattern(targetQuestions);
         const questionsToUse = [];
@@ -1225,9 +1265,17 @@ const timeLimit = useMemo(() => {
           const targetDifficulty = difficultyPattern[i];
           let selectedQuestion = null;
 
+         // First try from difficulty pool
           const pool = questionsByDifficulty[targetDifficulty];
           if (pool && pool.length > 0) {
             selectedQuestion = pool.find((q) => !usedQuestionIds.has(q.id));
+          }
+          
+          // If no variety, try from topic-shuffled pool of same difficulty
+          if (!selectedQuestion) {
+            selectedQuestion = topicShuffledPool.find(
+              (q) => q.difficulty === targetDifficulty && !usedQuestionIds.has(q.id)
+            );
           }
 
           if (!selectedQuestion) {
@@ -1289,12 +1337,14 @@ const timeLimit = useMemo(() => {
     return pattern;
   }, []);
 
-  const shuffleArray = useCallback((array) => {
+ const shuffleArray = useCallback((array) => {
     const shuffled = [...array];
+    console.log('Before shuffle:', shuffled.map(q => q.id).slice(0, 5));
     for (let i = shuffled.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
+    console.log('After shuffle:', shuffled.map(q => q.id).slice(0, 5));
     return shuffled;
   }, []);
 
@@ -2162,6 +2212,13 @@ const timeLimit = useMemo(() => {
     );
   }
 
+ console.log('Current question check:', { 
+    currentQuestion, 
+    currentQuestionIndex, 
+    adaptiveQuestionsLength: adaptiveQuestions.length,
+    questionId: currentQuestion?.id 
+  });
+  
   if (hasStarted && (!currentQuestion || (!isReviewingBookmarks && currentQuestionIndex >= adaptiveQuestions.length))) {
     return (
       <div
