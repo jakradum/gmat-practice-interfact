@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 
-
 // Try to import actual data, fallback to mock data
 let questionData;
 let warmupData;
@@ -65,46 +64,52 @@ const TimelineModal = ({ isVisible, onClose, questionTimes, adaptiveQuestions, t
   };
 
   return (
-    <div style={{ 
-      position: 'fixed', 
-      top: 0, 
-      left: 0, 
-      right: 0, 
-      bottom: 0, 
-      backgroundColor: 'rgba(0,0,0,0.5)', 
-      display: 'flex', 
-      alignItems: 'center', 
-      justifyContent: 'center', 
-      zIndex: 1002 
-    }}>
-      <div style={{ 
-        backgroundColor: 'white', 
-        borderRadius: '8px', 
-        maxWidth: '80%', 
-        maxHeight: '80%', 
-        overflow: 'auto',
-        boxShadow: '0 4px 20px rgba(0,0,0,0.15)' 
-      }}>
-        <div style={{ 
-          backgroundColor: '#3498db', 
-          color: 'white', 
-          padding: '14px 22px', 
-          borderRadius: '8px 8px 0 0', 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center' 
-        }}>
+    <div
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 1002,
+      }}
+    >
+      <div
+        style={{
+          backgroundColor: 'white',
+          borderRadius: '8px',
+          maxWidth: '80%',
+          maxHeight: '80%',
+          overflow: 'auto',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.15)',
+        }}
+      >
+        <div
+          style={{
+            backgroundColor: '#3498db',
+            color: 'white',
+            padding: '14px 22px',
+            borderRadius: '8px 8px 0 0',
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
           <span style={{ fontSize: '18px', fontWeight: '500' }}>Test Timeline</span>
           <button
             onClick={onClose}
-            style={{ 
-              backgroundColor: 'transparent', 
-              border: 'none', 
-              color: 'white', 
-              fontSize: '20px', 
-              cursor: 'pointer', 
-              padding: '2px 6px', 
-              borderRadius: '3px' 
+            style={{
+              backgroundColor: 'transparent',
+              border: 'none',
+              color: 'white',
+              fontSize: '20px',
+              cursor: 'pointer',
+              padding: '2px 6px',
+              borderRadius: '3px',
             }}
           >
             ✕
@@ -114,62 +119,72 @@ const TimelineModal = ({ isVisible, onClose, questionTimes, adaptiveQuestions, t
           <div style={{ marginBottom: '20px' }}>
             <h3 style={{ color: '#2c3e50', marginBottom: '10px' }}>Progress Timeline</h3>
             {testStartTime && (
-              <p style={{ color: '#666', fontSize: '14px' }}>
-                Test started: {testStartTime.toLocaleTimeString()}
-              </p>
+              <p style={{ color: '#666', fontSize: '14px' }}>Test started: {testStartTime.toLocaleTimeString()}</p>
             )}
           </div>
-          
+
           {adaptiveQuestions.length > 0 && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {adaptiveQuestions.map((question, index) => (
-                <div 
+                <div
                   key={question.id}
-                  style={{ 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    padding: '8px 12px', 
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    padding: '8px 12px',
                     backgroundColor: questionTimes[question.id] ? '#f8f9fa' : '#fff',
                     border: questionTimes[question.id] ? '1px solid #e9ecef' : '1px solid #ddd',
-                    borderRadius: '4px' 
+                    borderRadius: '4px',
                   }}
                 >
-                  <span style={{ 
-                    minWidth: '40px', 
-                    fontWeight: 'bold', 
-                    color: '#2c3e50' 
-                  }}>
+                  <span
+                    style={{
+                      minWidth: '40px',
+                      fontWeight: 'bold',
+                      color: '#2c3e50',
+                    }}
+                  >
                     Q{index + 1}
                   </span>
-                  <span style={{ 
-                    flex: 1, 
-                    marginLeft: '12px', 
-                    color: '#666' 
-                  }}>
-                    {questionTimes[question.id] 
-                      ? `Completed in ${formatTime(questionTimes[question.id])}` 
-                      : 'Not started'
-                    }
+                  <span
+                    style={{
+                      flex: 1,
+                      marginLeft: '12px',
+                      color: '#666',
+                    }}
+                  >
+                    {questionTimes[question.id]
+                      ? `Completed in ${formatTime(questionTimes[question.id])}`
+                      : 'Not started'}
                   </span>
                   {questionTimes[question.id] && (
-                    <span style={{
-                      padding: '2px 8px',
-                      borderRadius: '12px',
-                      fontSize: '12px',
-                      backgroundColor: questionTimes[question.id] > 150 ? '#f8d7da' : 
-                                     questionTimes[question.id] < 60 ? '#d4edda' : '#fff3cd',
-                      color: questionTimes[question.id] > 150 ? '#721c24' : 
-                             questionTimes[question.id] < 60 ? '#155724' : '#856404'
-                    }}>
-                      {questionTimes[question.id] > 150 ? 'Slow' : 
-                       questionTimes[question.id] < 60 ? 'Fast' : 'Normal'}
+                    <span
+                      style={{
+                        padding: '2px 8px',
+                        borderRadius: '12px',
+                        fontSize: '12px',
+                        backgroundColor:
+                          questionTimes[question.id] > 150
+                            ? '#f8d7da'
+                            : questionTimes[question.id] < 60
+                            ? '#d4edda'
+                            : '#fff3cd',
+                        color:
+                          questionTimes[question.id] > 150
+                            ? '#721c24'
+                            : questionTimes[question.id] < 60
+                            ? '#155724'
+                            : '#856404',
+                      }}
+                    >
+                      {questionTimes[question.id] > 150 ? 'Slow' : questionTimes[question.id] < 60 ? 'Fast' : 'Normal'}
                     </span>
                   )}
                 </div>
               ))}
             </div>
           )}
-          
+
           {adaptiveQuestions.length === 0 && (
             <p style={{ color: '#666', textAlign: 'center', padding: '20px' }}>
               No timeline data available yet. Start the test to see your progress.
@@ -195,7 +210,7 @@ const TimelineButton = ({ onClick, style = {} }) => (
       fontSize: '16px',
       fontWeight: '500',
       transition: 'background-color 0.2s ease',
-      ...style
+      ...style,
     }}
     onMouseOver={(e) => (e.target.style.backgroundColor = '#5a6268')}
     onMouseOut={(e) => (e.target.style.backgroundColor = '#6c757d')}
@@ -206,523 +221,621 @@ const TimelineButton = ({ onClick, style = {} }) => (
 // Add this Timeline component before your main GMATInterface component
 const GMATPreparationTimeline = () => {
   return (
-    <div style={{
-      maxWidth: '1200px',
-      margin: '0 auto 20px auto',
-      background: 'white',
-      borderRadius: '12px',
-      boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
-      overflow: 'hidden'
-    }}>
-      <div style={{
-        background: 'linear-gradient(135deg, #2c3e50, #3498db)',
-        color: 'white',
-        padding: '25px',
-        textAlign: 'center'
-      }}>
-        <h1 style={{
-          margin: '0 0 10px 0',
-          fontSize: '28px',
-          fontWeight: '600'
-        }}>
+    <div
+      style={{
+        maxWidth: '1200px',
+        margin: '0 auto 20px auto',
+        background: 'white',
+        borderRadius: '12px',
+        boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
+        overflow: 'hidden',
+      }}
+    >
+      <div
+        style={{
+          background: 'linear-gradient(135deg, #2c3e50, #3498db)',
+          color: 'white',
+          padding: '25px',
+          textAlign: 'center',
+        }}
+      >
+        <h1
+          style={{
+            margin: '0 0 10px 0',
+            fontSize: '28px',
+            fontWeight: '600',
+          }}
+        >
           GMAT Preparation Timeline
         </h1>
-        <p style={{
-          margin: '0',
-          fontSize: '16px',
-          opacity: '0.9'
-        }}>
+        <p
+          style={{
+            margin: '0',
+            fontSize: '16px',
+            opacity: '0.9',
+          }}
+        >
           Strategic Planning: W0-W16 | Target: 675+ Focus Edition | Current: Thursday, June 12 (W0)
         </p>
       </div>
-      
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(4, 1fr)',
-        gap: '0'
-      }}>
+
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(4, 1fr)',
+          gap: '0',
+        }}
+      >
         {/* June 2025 */}
-        <div style={{
-          borderRight: '1px solid #e9ecef',
-          minHeight: '400px'
-        }}>
-          <div style={{
-            background: '#34495e',
-            color: 'white',
-            padding: '15px',
-            textAlign: 'center',
-            fontWeight: '600',
-            fontSize: '18px'
-          }}>
+        <div
+          style={{
+            borderRight: '1px solid #e9ecef',
+            minHeight: '400px',
+          }}
+        >
+          <div
+            style={{
+              background: '#34495e',
+              color: 'white',
+              padding: '15px',
+              textAlign: 'center',
+              fontWeight: '600',
+              fontSize: '18px',
+            }}
+          >
             June 2025
           </div>
           <div style={{ padding: '20px 15px' }}>
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '12px',
-              padding: '8px 12px',
-              borderRadius: '6px',
-              background: '#e7f3ff',
-              borderLeft: '4px solid #0066cc',
-              boxShadow: '0 2px 8px rgba(0,102,204,0.2)'
-            }}>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '12px',
+                padding: '8px 12px',
+                borderRadius: '6px',
+                background: '#e7f3ff',
+                borderLeft: '4px solid #0066cc',
+                boxShadow: '0 2px 8px rgba(0,102,204,0.2)',
+              }}
+            >
               <div style={{ fontWeight: '600', color: '#495057', fontSize: '14px' }}>W0</div>
               <div style={{ color: '#6c757d', fontSize: '14px' }}>9-15</div>
-              <span style={{
-                background: '#17a2b8',
-                color: 'white',
-                padding: '2px 8px',
-                borderRadius: '12px',
-                fontSize: '11px',
-                fontWeight: '600',
-                marginLeft: '8px'
-              }}>
+              <span
+                style={{
+                  background: '#17a2b8',
+                  color: 'white',
+                  padding: '2px 8px',
+                  borderRadius: '12px',
+                  fontSize: '11px',
+                  fontWeight: '600',
+                  marginLeft: '8px',
+                }}
+              >
                 Test Taken (Mon 9th)
               </span>
             </div>
-            
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '12px',
-              padding: '8px 12px',
-              borderRadius: '6px',
-              background: '#d1ecf1',
-              borderLeft: '4px solid #17a2b8'
-            }}>
+
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '12px',
+                padding: '8px 12px',
+                borderRadius: '6px',
+                background: '#d1ecf1',
+                borderLeft: '4px solid #17a2b8',
+              }}
+            >
               <div style={{ fontWeight: '600', color: '#495057', fontSize: '14px' }}>W1</div>
               <div style={{ color: '#6c757d', fontSize: '14px' }}>16-22</div>
-              <span style={{
-                background: '#17a2b8',
-                color: 'white',
-                padding: '2px 8px',
-                borderRadius: '12px',
-                fontSize: '11px',
-                fontWeight: '600',
-                marginLeft: '8px'
-              }}>
+              <span
+                style={{
+                  background: '#17a2b8',
+                  color: 'white',
+                  padding: '2px 8px',
+                  borderRadius: '12px',
+                  fontSize: '11px',
+                  fontWeight: '600',
+                  marginLeft: '8px',
+                }}
+              >
                 Decision (Thu 19th)
               </span>
             </div>
-            
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '12px',
-              padding: '8px 12px',
-              borderRadius: '6px',
-              background: '#f8f9fa',
-              borderLeft: '4px solid #dee2e6'
-            }}>
+
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '12px',
+                padding: '8px 12px',
+                borderRadius: '6px',
+                background: '#f8f9fa',
+                borderLeft: '4px solid #dee2e6',
+              }}
+            >
               <div style={{ fontWeight: '600', color: '#495057', fontSize: '14px' }}>W2</div>
               <div style={{ color: '#6c757d', fontSize: '14px' }}>23-29</div>
             </div>
           </div>
         </div>
-        
+
         {/* July 2025 */}
-        <div style={{
-          borderRight: '1px solid #e9ecef',
-          minHeight: '400px'
-        }}>
-          <div style={{
-            background: '#34495e',
-            color: 'white',
-            padding: '15px',
-            textAlign: 'center',
-            fontWeight: '600',
-            fontSize: '18px'
-          }}>
+        <div
+          style={{
+            borderRight: '1px solid #e9ecef',
+            minHeight: '400px',
+          }}
+        >
+          <div
+            style={{
+              background: '#34495e',
+              color: 'white',
+              padding: '15px',
+              textAlign: 'center',
+              fontWeight: '600',
+              fontSize: '18px',
+            }}
+          >
             July 2025
           </div>
           <div style={{ padding: '20px 15px' }}>
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '12px',
-              padding: '8px 12px',
-              borderRadius: '6px',
-              background: '#f8f9fa',
-              borderLeft: '4px solid #dee2e6'
-            }}>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '12px',
+                padding: '8px 12px',
+                borderRadius: '6px',
+                background: '#f8f9fa',
+                borderLeft: '4px solid #dee2e6',
+              }}
+            >
               <div style={{ fontWeight: '600', color: '#495057', fontSize: '14px' }}>W3</div>
               <div style={{ color: '#6c757d', fontSize: '14px' }}>30-6</div>
             </div>
-            
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '12px',
-              padding: '8px 12px',
-              borderRadius: '6px',
-              background: '#fff3cd',
-              borderLeft: '4px solid #ffc107'
-            }}>
+
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '12px',
+                padding: '8px 12px',
+                borderRadius: '6px',
+                background: '#fff3cd',
+                borderLeft: '4px solid #ffc107',
+              }}
+            >
               <div style={{ fontWeight: '600', color: '#495057', fontSize: '14px' }}>W4</div>
               <div style={{ color: '#6c757d', fontSize: '14px' }}>7-13</div>
-              <span style={{
-                background: '#28a745',
-                color: 'white',
-                padding: '2px 8px',
-                borderRadius: '12px',
-                fontSize: '11px',
-                fontWeight: '600',
-                marginLeft: '8px'
-              }}>
+              <span
+                style={{
+                  background: '#28a745',
+                  color: 'white',
+                  padding: '2px 8px',
+                  borderRadius: '12px',
+                  fontSize: '11px',
+                  fontWeight: '600',
+                  marginLeft: '8px',
+                }}
+              >
                 Mock #4 (Sun 13th)
               </span>
             </div>
-            
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '12px',
-              padding: '8px 12px',
-              borderRadius: '6px',
-              background: '#f8f9fa',
-              borderLeft: '4px solid #dee2e6'
-            }}>
+
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '12px',
+                padding: '8px 12px',
+                borderRadius: '6px',
+                background: '#f8f9fa',
+                borderLeft: '4px solid #dee2e6',
+              }}
+            >
               <div style={{ fontWeight: '600', color: '#495057', fontSize: '14px' }}>W5</div>
               <div style={{ color: '#6c757d', fontSize: '14px' }}>14-20</div>
             </div>
-            
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '12px',
-              padding: '8px 12px',
-              borderRadius: '6px',
-              background: '#f8f9fa',
-              borderLeft: '4px solid #dee2e6'
-            }}>
+
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '12px',
+                padding: '8px 12px',
+                borderRadius: '6px',
+                background: '#f8f9fa',
+                borderLeft: '4px solid #dee2e6',
+              }}
+            >
               <div style={{ fontWeight: '600', color: '#495057', fontSize: '14px' }}>W6</div>
               <div style={{ color: '#6c757d', fontSize: '14px' }}>21-27</div>
             </div>
-            
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '12px',
-              padding: '8px 12px',
-              borderRadius: '6px',
-              background: '#f8d7da',
-              borderLeft: '4px solid #dc3545',
-              fontWeight: '600'
-            }}>
+
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '12px',
+                padding: '8px 12px',
+                borderRadius: '6px',
+                background: '#f8d7da',
+                borderLeft: '4px solid #dc3545',
+                fontWeight: '600',
+              }}
+            >
               <div style={{ fontWeight: '600', color: '#495057', fontSize: '14px' }}>W7</div>
               <div style={{ color: '#6c757d', fontSize: '14px' }}>28-3</div>
-              <span style={{
-                background: '#dc3545',
-                color: 'white',
-                padding: '2px 8px',
-                borderRadius: '12px',
-                fontSize: '11px',
-                fontWeight: '600',
-                marginLeft: '8px'
-              }}>
+              <span
+                style={{
+                  background: '#dc3545',
+                  color: 'white',
+                  padding: '2px 8px',
+                  borderRadius: '12px',
+                  fontSize: '11px',
+                  fontWeight: '600',
+                  marginLeft: '8px',
+                }}
+              >
                 Test Option 1
               </span>
             </div>
           </div>
         </div>
-        
+
         {/* August 2025 */}
-        <div style={{
-          borderRight: '1px solid #e9ecef',
-          minHeight: '400px'
-        }}>
-          <div style={{
-            background: '#34495e',
-            color: 'white',
-            padding: '15px',
-            textAlign: 'center',
-            fontWeight: '600',
-            fontSize: '18px'
-          }}>
+        <div
+          style={{
+            borderRight: '1px solid #e9ecef',
+            minHeight: '400px',
+          }}
+        >
+          <div
+            style={{
+              background: '#34495e',
+              color: 'white',
+              padding: '15px',
+              textAlign: 'center',
+              fontWeight: '600',
+              fontSize: '18px',
+            }}
+          >
             August 2025
           </div>
           <div style={{ padding: '20px 15px' }}>
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '12px',
-              padding: '8px 12px',
-              borderRadius: '6px',
-              background: '#fff3cd',
-              borderLeft: '4px solid #ffc107'
-            }}>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '12px',
+                padding: '8px 12px',
+                borderRadius: '6px',
+                background: '#fff3cd',
+                borderLeft: '4px solid #ffc107',
+              }}
+            >
               <div style={{ fontWeight: '600', color: '#495057', fontSize: '14px' }}>W8</div>
               <div style={{ color: '#6c757d', fontSize: '14px' }}>4-10</div>
-              <span style={{
-                background: '#28a745',
-                color: 'white',
-                padding: '2px 8px',
-                borderRadius: '12px',
-                fontSize: '11px',
-                fontWeight: '600',
-                marginLeft: '8px'
-              }}>
+              <span
+                style={{
+                  background: '#28a745',
+                  color: 'white',
+                  padding: '2px 8px',
+                  borderRadius: '12px',
+                  fontSize: '11px',
+                  fontWeight: '600',
+                  marginLeft: '8px',
+                }}
+              >
                 Mock #5 (Sun 10th)
               </span>
             </div>
-            
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '12px',
-              padding: '8px 12px',
-              borderRadius: '6px',
-              background: '#fff3cd',
-              borderLeft: '4px solid #ffc107'
-            }}>
+
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '12px',
+                padding: '8px 12px',
+                borderRadius: '6px',
+                background: '#fff3cd',
+                borderLeft: '4px solid #ffc107',
+              }}
+            >
               <div style={{ fontWeight: '600', color: '#495057', fontSize: '14px' }}>W9</div>
               <div style={{ color: '#6c757d', fontSize: '14px' }}>11-17</div>
-              <span style={{
-                background: '#28a745',
-                color: 'white',
-                padding: '2px 8px',
-                borderRadius: '12px',
-                fontSize: '11px',
-                fontWeight: '600',
-                marginLeft: '8px'
-              }}>
+              <span
+                style={{
+                  background: '#28a745',
+                  color: 'white',
+                  padding: '2px 8px',
+                  borderRadius: '12px',
+                  fontSize: '11px',
+                  fontWeight: '600',
+                  marginLeft: '8px',
+                }}
+              >
                 Mock #6 (Sun 17th)
               </span>
             </div>
-            
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '12px',
-              padding: '8px 12px',
-              borderRadius: '6px',
-              background: '#f8f9fa',
-              borderLeft: '4px solid #dee2e6'
-            }}>
+
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '12px',
+                padding: '8px 12px',
+                borderRadius: '6px',
+                background: '#f8f9fa',
+                borderLeft: '4px solid #dee2e6',
+              }}
+            >
               <div style={{ fontWeight: '600', color: '#495057', fontSize: '14px' }}>W10</div>
               <div style={{ color: '#6c757d', fontSize: '14px' }}>18-24</div>
             </div>
-            
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '12px',
-              padding: '8px 12px',
-              borderRadius: '6px',
-              background: '#f8d7da',
-              borderLeft: '4px solid #dc3545',
-              fontWeight: '600'
-            }}>
+
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '12px',
+                padding: '8px 12px',
+                borderRadius: '6px',
+                background: '#f8d7da',
+                borderLeft: '4px solid #dc3545',
+                fontWeight: '600',
+              }}
+            >
               <div style={{ fontWeight: '600', color: '#495057', fontSize: '14px' }}>W11</div>
               <div style={{ color: '#6c757d', fontSize: '14px' }}>25-31</div>
-              <span style={{
-                background: '#dc3545',
-                color: 'white',
-                padding: '2px 8px',
-                borderRadius: '12px',
-                fontSize: '11px',
-                fontWeight: '600',
-                marginLeft: '8px'
-              }}>
+              <span
+                style={{
+                  background: '#dc3545',
+                  color: 'white',
+                  padding: '2px 8px',
+                  borderRadius: '12px',
+                  fontSize: '11px',
+                  fontWeight: '600',
+                  marginLeft: '8px',
+                }}
+              >
                 Test Option 2
               </span>
             </div>
           </div>
         </div>
-        
+
         {/* September-October 2025 */}
         <div style={{ minHeight: '400px' }}>
-          <div style={{
-            background: '#34495e',
-            color: 'white',
-            padding: '15px',
-            textAlign: 'center',
-            fontWeight: '600',
-            fontSize: '18px'
-          }}>
+          <div
+            style={{
+              background: '#34495e',
+              color: 'white',
+              padding: '15px',
+              textAlign: 'center',
+              fontWeight: '600',
+              fontSize: '18px',
+            }}
+          >
             Sep-Oct 2025
           </div>
           <div style={{ padding: '20px 15px' }}>
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '12px',
-              padding: '8px 12px',
-              borderRadius: '6px',
-              background: '#fff3cd',
-              borderLeft: '4px solid #ffc107'
-            }}>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '12px',
+                padding: '8px 12px',
+                borderRadius: '6px',
+                background: '#fff3cd',
+                borderLeft: '4px solid #ffc107',
+              }}
+            >
               <div style={{ fontWeight: '600', color: '#495057', fontSize: '14px' }}>W12</div>
               <div style={{ color: '#6c757d', fontSize: '14px' }}>1-7</div>
-              <span style={{
-                background: '#28a745',
-                color: 'white',
-                padding: '2px 8px',
-                borderRadius: '12px',
-                fontSize: '11px',
-                fontWeight: '600',
-                marginLeft: '8px'
-              }}>
+              <span
+                style={{
+                  background: '#28a745',
+                  color: 'white',
+                  padding: '2px 8px',
+                  borderRadius: '12px',
+                  fontSize: '11px',
+                  fontWeight: '600',
+                  marginLeft: '8px',
+                }}
+              >
                 Apps Open
               </span>
             </div>
-            
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '12px',
-              padding: '8px 12px',
-              borderRadius: '6px',
-              background: '#f8f9fa',
-              borderLeft: '4px solid #dee2e6'
-            }}>
+
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '12px',
+                padding: '8px 12px',
+                borderRadius: '6px',
+                background: '#f8f9fa',
+                borderLeft: '4px solid #dee2e6',
+              }}
+            >
               <div style={{ fontWeight: '600', color: '#495057', fontSize: '14px' }}>W13</div>
               <div style={{ color: '#6c757d', fontSize: '14px' }}>8-14</div>
             </div>
-            
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '12px',
-              padding: '8px 12px',
-              borderRadius: '6px',
-              background: '#f8f9fa',
-              borderLeft: '4px solid #dee2e6'
-            }}>
+
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '12px',
+                padding: '8px 12px',
+                borderRadius: '6px',
+                background: '#f8f9fa',
+                borderLeft: '4px solid #dee2e6',
+              }}
+            >
               <div style={{ fontWeight: '600', color: '#495057', fontSize: '14px' }}>W14</div>
               <div style={{ color: '#6c757d', fontSize: '14px' }}>15-21</div>
             </div>
-            
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '12px',
-              padding: '8px 12px',
-              borderRadius: '6px',
-              background: '#f8f9fa',
-              borderLeft: '4px solid #dee2e6'
-            }}>
+
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '12px',
+                padding: '8px 12px',
+                borderRadius: '6px',
+                background: '#f8f9fa',
+                borderLeft: '4px solid #dee2e6',
+              }}
+            >
               <div style={{ fontWeight: '600', color: '#495057', fontSize: '14px' }}>W15</div>
               <div style={{ color: '#6c757d', fontSize: '14px' }}>22-28</div>
             </div>
-            
-            <div style={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              marginBottom: '12px',
-              padding: '8px 12px',
-              borderRadius: '6px',
-              background: '#f8d7da',
-              borderLeft: '4px solid #dc3545',
-              fontWeight: '600'
-            }}>
+
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '12px',
+                padding: '8px 12px',
+                borderRadius: '6px',
+                background: '#f8d7da',
+                borderLeft: '4px solid #dc3545',
+                fontWeight: '600',
+              }}
+            >
               <div style={{ fontWeight: '600', color: '#495057', fontSize: '14px' }}>W16</div>
               <div style={{ color: '#6c757d', fontSize: '14px' }}>29-5</div>
-              <span style={{
-                background: '#28a745',
-                color: 'white',
-                padding: '2px 8px',
-                borderRadius: '12px',
-                fontSize: '11px',
-                fontWeight: '600',
-                marginLeft: '8px'
-              }}>
+              <span
+                style={{
+                  background: '#28a745',
+                  color: 'white',
+                  padding: '2px 8px',
+                  borderRadius: '12px',
+                  fontSize: '11px',
+                  fontWeight: '600',
+                  marginLeft: '8px',
+                }}
+              >
                 Contract Ends
               </span>
             </div>
           </div>
         </div>
       </div>
-      
-      <div style={{
-        padding: '20px',
-        background: '#f8f9fa',
-        borderTop: '1px solid #e9ecef'
-      }}>
-        <h3 style={{
-          margin: '0 0 15px 0',
-          color: '#495057',
-          fontSize: '16px'
-        }}>
+
+      <div
+        style={{
+          padding: '20px',
+          background: '#f8f9fa',
+          borderTop: '1px solid #e9ecef',
+        }}
+      >
+        <h3
+          style={{
+            margin: '0 0 15px 0',
+            color: '#495057',
+            fontSize: '16px',
+          }}
+        >
           Timeline Key
         </h3>
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-          gap: '10px'
-        }}>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            fontSize: '14px'
-          }}>
-            <div style={{
-              width: '20px',
-              height: '4px',
-              marginRight: '10px',
-              borderRadius: '2px',
-              background: '#0066cc'
-            }}></div>
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+            gap: '10px',
+          }}
+        >
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              fontSize: '14px',
+            }}
+          >
+            <div
+              style={{
+                width: '20px',
+                height: '4px',
+                marginRight: '10px',
+                borderRadius: '2px',
+                background: '#0066cc',
+              }}
+            ></div>
             Current Week (W0: June 9-15)
           </div>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            fontSize: '14px'
-          }}>
-            <div style={{
-              width: '20px',
-              height: '4px',
-              marginRight: '10px',
-              borderRadius: '2px',
-              background: '#17a2b8'
-            }}></div>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              fontSize: '14px',
+            }}
+          >
+            <div
+              style={{
+                width: '20px',
+                height: '4px',
+                marginRight: '10px',
+                borderRadius: '2px',
+                background: '#17a2b8',
+              }}
+            ></div>
             Decision Point (W1: Thu June 19)
           </div>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            fontSize: '14px'
-          }}>
-            <div style={{
-              width: '20px',
-              height: '4px',
-              marginRight: '10px',
-              borderRadius: '2px',
-              background: '#dc3545'
-            }}></div>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              fontSize: '14px',
+            }}
+          >
+            <div
+              style={{
+                width: '20px',
+                height: '4px',
+                marginRight: '10px',
+                borderRadius: '2px',
+                background: '#dc3545',
+              }}
+            ></div>
             Test Options (W7: July 28-Aug 3, W11: Aug 25-31)
           </div>
-          <div style={{
-            display: 'flex',
-            alignItems: 'center',
-            fontSize: '14px'
-          }}>
-            <div style={{
-              width: '20px',
-              height: '4px',
-              marginRight: '10px',
-              borderRadius: '2px',
-              background: '#ffc107'
-            }}></div>
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              fontSize: '14px',
+            }}
+          >
+            <div
+              style={{
+                width: '20px',
+                height: '4px',
+                marginRight: '10px',
+                borderRadius: '2px',
+                background: '#ffc107',
+              }}
+            ></div>
             Official Mocks (#4, #5, #6) & Career Milestones
           </div>
         </div>
@@ -769,262 +882,396 @@ const GMATInterface = () => {
   const [answeredQuestions, setAnsweredQuestions] = useState(new Set());
   const [isEditingPrevious, setIsEditingPrevious] = useState(false);
   const [editQuestionIndex, setEditQuestionIndex] = useState(0);
-const [showEditModal, setShowEditModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [showTimeline, setShowTimeline] = useState(false);
+  const [showQuestionReview, setShowQuestionReview] = useState(null);
 
   // Debug function
- const handleTimelineToggle = () => {
-  console.log('Timeline button clicked, current state:', showTimeline);
-  setShowTimeline(true);
-  console.log('Timeline state should now be true');
-};
+  const handleTimelineToggle = () => {
+    console.log('Timeline button clicked, current state:', showTimeline);
+    setShowTimeline(true);
+    console.log('Timeline state should now be true');
+  };
 
-// Auto-close timeline when test starts
-useEffect(() => {
-  if (hasStarted && !isCompleted && showTimeline) {
-    setShowTimeline(false);
-  }
-}, [hasStarted, isCompleted, showTimeline]);
+  // Auto-close timeline when test starts
+  useEffect(() => {
+    if (hasStarted && !isCompleted && showTimeline) {
+      setShowTimeline(false);
+    }
+  }, [hasStarted, isCompleted, showTimeline]);
   // Inline Timeline Component
-const renderTimeline = () => {
-  // Calculate current week based on timeline start date (June 9, 2025)
-  const startDate = new Date('2025-06-09'); // Monday June 9, 2025 (W0 start)
-  const today = new Date();
-  const diffTime = today.getTime() - startDate.getTime();
-  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-  const currentWeek = Math.floor(diffDays / 7);
-  
-  const weeks = [
-    // June 2025
-    { week: 0, month: 'June 2025', dateRange: '9-15', type: 'current', milestone: 'Test Taken (Mon 9th)', milestoneType: 'decision' },
-{ week: 1, month: 'June 2025', dateRange: '16-22', type: 'decision-point', milestone: 'Anniversary Holiday', milestoneType: 'decision' },
-    { week: 2, month: 'June 2025', dateRange: '23-29', type: 'normal' },
-    
-    // July 2025
-    { week: 3, month: 'July 2025', dateRange: '30-6', type: 'normal' },
-    { week: 4, month: 'July 2025', dateRange: '7-13', type: 'key-date', milestone: 'Mock #4 (Sun 13th)', milestoneType: 'milestone' },
-    { week: 5, month: 'July 2025', dateRange: '14-20', type: 'normal' },
-    { week: 6, month: 'July 2025', dateRange: '21-27', type: 'normal' },
-    { week: 7, month: 'July 2025', dateRange: '28-3', type: 'critical-date', milestone: 'Test Option 1', milestoneType: 'test-date' },
-    
-    // August 2025
-    { week: 8, month: 'August 2025', dateRange: '4-10', type: 'key-date', milestone: 'Mock #5 (Sun 10th)', milestoneType: 'milestone' },
-    { week: 9, month: 'August 2025', dateRange: '11-17', type: 'key-date', milestone: 'Mock #6 (Sun 17th)', milestoneType: 'milestone' },
-    { week: 10, month: 'August 2025', dateRange: '18-24', type: 'normal' },
-    { week: 11, month: 'August 2025', dateRange: '25-31', type: 'critical-date', milestone: 'Test Option 2', milestoneType: 'test-date' },
-    
-    // September-October 2025
-    { week: 12, month: 'Sep-Oct 2025', dateRange: '1-7', type: 'key-date', milestone: 'Apps Open', milestoneType: 'milestone' },
-    { week: 13, month: 'Sep-Oct 2025', dateRange: '8-14', type: 'normal' },
-    { week: 14, month: 'Sep-Oct 2025', dateRange: '15-21', type: 'normal' },
-    { week: 15, month: 'Sep-Oct 2025', dateRange: '22-28', type: 'normal' },
-    { week: 16, month: 'Sep-Oct 2025', dateRange: '29-5', type: 'critical-date', milestone: 'Contract Ends', milestoneType: 'milestone' }
-  ];
+  const renderTimeline = () => {
+    // Calculate current week based on timeline start date (June 9, 2025)
+    const startDate = new Date('2025-06-09'); // Monday June 9, 2025 (W0 start)
+    const today = new Date();
+    const diffTime = today.getTime() - startDate.getTime();
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    const currentWeek = Math.floor(diffDays / 7);
 
-  const monthGroups = weeks.reduce((acc, week) => {
-    if (!acc[week.month]) {
-      acc[week.month] = [];
-    }
-    acc[week.month].push(week);
-    return acc;
-  }, {});
+    const weeks = [
+      // June 2025
+      {
+        week: 0,
+        month: 'June 2025',
+        dateRange: '9-15',
+        type: 'current',
+        milestone: 'Test Taken (Mon 9th)',
+        milestoneType: 'decision',
+      },
+      {
+        week: 1,
+        month: 'June 2025',
+        dateRange: '16-22',
+        type: 'decision-point',
+        milestone: 'Anniversary Holiday',
+        milestoneType: 'decision',
+      },
+      { week: 2, month: 'June 2025', dateRange: '23-29', type: 'normal' },
 
-  const getWeekClass = (week) => {
-    return week.week === currentWeek ? 'current-week' : week.type;
-  };
+      // July 2025
+      { week: 3, month: 'July 2025', dateRange: '30-6', type: 'normal' },
+      {
+        week: 4,
+        month: 'July 2025',
+        dateRange: '7-13',
+        type: 'key-date',
+        milestone: 'Mock #4 (Sun 13th)',
+        milestoneType: 'milestone',
+      },
+      { week: 5, month: 'July 2025', dateRange: '14-20', type: 'normal' },
+      { week: 6, month: 'July 2025', dateRange: '21-27', type: 'normal' },
+      {
+        week: 7,
+        month: 'July 2025',
+        dateRange: '28-3',
+        type: 'critical-date',
+        milestone: 'Test Option 1',
+        milestoneType: 'test-date',
+      },
 
-  const formatCurrentStatus = () => {
-    if (currentWeek < 0) {
-      return `Timeline starts ${Math.abs(currentWeek)} week(s) from now`;
-    } else if (currentWeek > 16) {
-      return 'Timeline completed';
-    }
-    
-    const currentWeekData = weeks.find(w => w.week === currentWeek);
-    if (currentWeekData) {
-      return `Currently in Week ${currentWeek} (${currentWeekData.dateRange})`;
-    }
-    
-    return `Week ${currentWeek}`;
-  };
+      // August 2025
+      {
+        week: 8,
+        month: 'August 2025',
+        dateRange: '4-10',
+        type: 'key-date',
+        milestone: 'Mock #5 (Sun 10th)',
+        milestoneType: 'milestone',
+      },
+      {
+        week: 9,
+        month: 'August 2025',
+        dateRange: '11-17',
+        type: 'key-date',
+        milestone: 'Mock #6 (Sun 17th)',
+        milestoneType: 'milestone',
+      },
+      { week: 10, month: 'August 2025', dateRange: '18-24', type: 'normal' },
+      {
+        week: 11,
+        month: 'August 2025',
+        dateRange: '25-31',
+        type: 'critical-date',
+        milestone: 'Test Option 2',
+        milestoneType: 'test-date',
+      },
 
-  return (
-    <div style={{
-      position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundColor: 'rgba(0,0,0,0.5)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      zIndex: 1000,
-      padding: '20px'
-    }}>
-      <div style={{
-        maxWidth: '1200px',
-        width: '100%',
-        maxHeight: '90vh',
-        backgroundColor: 'white',
-        borderRadius: '12px',
-        boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
-        overflow: 'hidden',
-        display: 'flex',
-        flexDirection: 'column'
-      }}>
-        {/* Header */}
-        <div style={{
-          background: 'linear-gradient(135deg, #2c3e50, #3498db)',
-          color: 'white',
-          padding: '25px',
-          textAlign: 'center',
-          position: 'relative'
-        }}>
-          <button
-            onClick={() => setShowTimeline(false)}
+      // September-October 2025
+      {
+        week: 12,
+        month: 'Sep-Oct 2025',
+        dateRange: '1-7',
+        type: 'key-date',
+        milestone: 'Apps Open',
+        milestoneType: 'milestone',
+      },
+      { week: 13, month: 'Sep-Oct 2025', dateRange: '8-14', type: 'normal' },
+      { week: 14, month: 'Sep-Oct 2025', dateRange: '15-21', type: 'normal' },
+      { week: 15, month: 'Sep-Oct 2025', dateRange: '22-28', type: 'normal' },
+      {
+        week: 16,
+        month: 'Sep-Oct 2025',
+        dateRange: '29-5',
+        type: 'critical-date',
+        milestone: 'Contract Ends',
+        milestoneType: 'milestone',
+      },
+    ];
+
+    const monthGroups = weeks.reduce((acc, week) => {
+      if (!acc[week.month]) {
+        acc[week.month] = [];
+      }
+      acc[week.month].push(week);
+      return acc;
+    }, {});
+
+    const getWeekClass = (week) => {
+      return week.week === currentWeek ? 'current-week' : week.type;
+    };
+
+    const formatCurrentStatus = () => {
+      if (currentWeek < 0) {
+        return `Timeline starts ${Math.abs(currentWeek)} week(s) from now`;
+      } else if (currentWeek > 16) {
+        return 'Timeline completed';
+      }
+
+      const currentWeekData = weeks.find((w) => w.week === currentWeek);
+      if (currentWeekData) {
+        return `Currently in Week ${currentWeek} (${currentWeekData.dateRange})`;
+      }
+
+      return `Week ${currentWeek}`;
+    };
+
+    return (
+      <div
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000,
+          padding: '20px',
+        }}
+      >
+        <div
+          style={{
+            maxWidth: '1200px',
+            width: '100%',
+            maxHeight: '90vh',
+            backgroundColor: 'white',
+            borderRadius: '12px',
+            boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
+            overflow: 'hidden',
+            display: 'flex',
+            flexDirection: 'column',
+          }}
+        >
+          {/* Header */}
+          <div
             style={{
-              position: 'absolute',
-              right: '20px',
-              top: '20px',
-              background: 'transparent',
-              border: 'none',
+              background: 'linear-gradient(135deg, #2c3e50, #3498db)',
               color: 'white',
-              fontSize: '24px',
-              cursor: 'pointer',
-              padding: '5px'
+              padding: '25px',
+              textAlign: 'center',
+              position: 'relative',
             }}
           >
-            ✕
-          </button>
-          <h1 style={{ margin: '0 0 10px 0', fontSize: '28px', fontWeight: '600' }}>
-            GMAT Preparation Timeline
-          </h1>
-          <p style={{ margin: '0', fontSize: '16px', opacity: 0.9 }}>
-            Strategic Planning: W0-W16 | Target: 675+ Focus Edition | {formatCurrentStatus()}
-          </p>
-        </div>
-
-        {/* Calendar Grid */}
-        <div style={{
-          flex: 1,
-          overflow: 'auto',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(4, 1fr)',
-          gap: 0
-        }}>
-          {Object.entries(monthGroups).map(([month, monthWeeks], monthIndex) => (
-            <div key={month} style={{
-              borderRight: monthIndex < Object.keys(monthGroups).length - 1 ? '1px solid #e9ecef' : 'none',
-              minHeight: '400px'
-            }}>
-              <div style={{
-                background: '#34495e',
+            <button
+              onClick={() => setShowTimeline(false)}
+              style={{
+                position: 'absolute',
+                right: '20px',
+                top: '20px',
+                background: 'transparent',
+                border: 'none',
                 color: 'white',
-                padding: '15px',
-                textAlign: 'center',
-                fontWeight: '600',
-                fontSize: '18px'
-              }}>
-                {month}
-              </div>
-              
-              <div style={{ padding: '20px 15px' }}>
-                {monthWeeks.map((week) => (
-                  <div
-                    key={week.week}
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                      marginBottom: '12px',
-                      padding: '8px 12px',
-                      borderRadius: '6px',
-background: getWeekClass(week) === 'current-week' ? '#fff3cd' :
-                                 getWeekClass(week) === 'decision-point' ? '#d1ecf1' :
-                                 getWeekClass(week) === 'key-date' ? '#fff3cd' :
-                                 getWeekClass(week) === 'critical-date' ? '#f8d7da' : '#f8f9fa',
-                     borderLeft: getWeekClass(week) === 'current-week' ? 'none' : `4px solid ${
-                        getWeekClass(week) === 'decision-point' ? '#17a2b8' :
-                        getWeekClass(week) === 'key-date' ? '#ffc107' :
-                        getWeekClass(week) === 'critical-date' ? '#dc3545' : '#dee2e6'
-                      }`,
-                      border: getWeekClass(week) === 'current-week' ? '3px solid #ff6b35' : 'none',
-                      boxShadow: getWeekClass(week) === 'current-week' ? '0 0 20px rgba(255,107,53,0.6), 0 0 40px rgba(255,107,53,0.3), inset 0 0 10px rgba(255,107,53,0.1)' : 'none',
-                      fontWeight: getWeekClass(week) === 'critical-date' ? '600' : 'normal',
-                      flexDirection: 'column',
-                      alignItems: 'flex-start'
-                    }}
-                  >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'center' }}>
-                      <div>
-                        <div style={{ fontWeight: '600', color: '#495057', fontSize: '14px' }}>
-                          W{week.week}
-                        </div>
-                        <div style={{ color: '#6c757d', fontSize: '14px' }}>
-                          {week.dateRange}
-                        </div>
-                      </div>
-                      
-                      {week.milestone && (
-                        <span style={{
-                          display: 'inline-block',
-                          background: week.milestoneType === 'test-date' ? '#dc3545' :
-                                     week.milestoneType === 'decision' ? '#17a2b8' : '#28a745',
-                          color: 'white',
-                          padding: '2px 8px',
-                          borderRadius: '12px',
-                          fontSize: '11px',
-                          fontWeight: '600',
-                          marginLeft: '8px'
-                        }}>
-                          {week.milestone}
-                        </span>
-                      )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
+                fontSize: '24px',
+                cursor: 'pointer',
+                padding: '5px',
+              }}
+            >
+              ✕
+            </button>
+            <h1 style={{ margin: '0 0 10px 0', fontSize: '28px', fontWeight: '600' }}>GMAT Preparation Timeline</h1>
+            <p style={{ margin: '0', fontSize: '16px', opacity: 0.9 }}>
+              Strategic Planning: W0-W16 | Target: 675+ Focus Edition | {formatCurrentStatus()}
+            </p>
+          </div>
 
-        {/* Legend */}
-        <div style={{
-          padding: '20px',
-          background: '#f8f9fa',
-          borderTop: '1px solid #e9ecef'
-        }}>
-          <h3 style={{ margin: '0 0 15px 0', color: '#495057', fontSize: '16px' }}>
-            Timeline Key
-          </h3>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-            gap: '10px'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', fontSize: '14px' }}>
-              <div style={{ width: '20px', height: '4px', marginRight: '10px', borderRadius: '2px', background: '#ff6b35' }}></div>
-              Current Week (W{currentWeek})
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', fontSize: '14px' }}>
-              <div style={{ width: '20px', height: '4px', marginRight: '10px', borderRadius: '2px', background: '#17a2b8' }}></div>
-Anniversary Holiday (W1: June 16-22)
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', fontSize: '14px' }}>
-              <div style={{ width: '20px', height: '4px', marginRight: '10px', borderRadius: '2px', background: '#dc3545' }}></div>
-              Test Options (W7: July 28-Aug 3, W11: Aug 25-31)
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', fontSize: '14px' }}>
-              <div style={{ width: '20px', height: '4px', marginRight: '10px', borderRadius: '2px', background: '#ffc107' }}></div>
-              Official Mocks (#4, #5, #6) & Career Milestones
+          {/* Calendar Grid */}
+          <div
+            style={{
+              flex: 1,
+              overflow: 'auto',
+              display: 'grid',
+              gridTemplateColumns: 'repeat(4, 1fr)',
+              gap: 0,
+            }}
+          >
+            {Object.entries(monthGroups).map(([month, monthWeeks], monthIndex) => (
+              <div
+                key={month}
+                style={{
+                  borderRight: monthIndex < Object.keys(monthGroups).length - 1 ? '1px solid #e9ecef' : 'none',
+                  minHeight: '400px',
+                }}
+              >
+                <div
+                  style={{
+                    background: '#34495e',
+                    color: 'white',
+                    padding: '15px',
+                    textAlign: 'center',
+                    fontWeight: '600',
+                    fontSize: '18px',
+                  }}
+                >
+                  {month}
+                </div>
+
+                <div style={{ padding: '20px 15px' }}>
+                  {monthWeeks.map((week) => (
+                    <div
+                      key={week.week}
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        marginBottom: '12px',
+                        padding: '8px 12px',
+                        borderRadius: '6px',
+                        background:
+                          getWeekClass(week) === 'current-week'
+                            ? '#fff3cd'
+                            : getWeekClass(week) === 'decision-point'
+                            ? '#d1ecf1'
+                            : getWeekClass(week) === 'key-date'
+                            ? '#fff3cd'
+                            : getWeekClass(week) === 'critical-date'
+                            ? '#f8d7da'
+                            : '#f8f9fa',
+                        borderLeft:
+                          getWeekClass(week) === 'current-week'
+                            ? 'none'
+                            : `4px solid ${
+                                getWeekClass(week) === 'decision-point'
+                                  ? '#17a2b8'
+                                  : getWeekClass(week) === 'key-date'
+                                  ? '#ffc107'
+                                  : getWeekClass(week) === 'critical-date'
+                                  ? '#dc3545'
+                                  : '#dee2e6'
+                              }`,
+                        border: getWeekClass(week) === 'current-week' ? '3px solid #ff6b35' : 'none',
+                        boxShadow:
+                          getWeekClass(week) === 'current-week'
+                            ? '0 0 20px rgba(255,107,53,0.6), 0 0 40px rgba(255,107,53,0.3), inset 0 0 10px rgba(255,107,53,0.1)'
+                            : 'none',
+                        fontWeight: getWeekClass(week) === 'critical-date' ? '600' : 'normal',
+                        flexDirection: 'column',
+                        alignItems: 'flex-start',
+                      }}
+                    >
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          width: '100%',
+                          alignItems: 'center',
+                        }}
+                      >
+                        <div>
+                          <div style={{ fontWeight: '600', color: '#495057', fontSize: '14px' }}>W{week.week}</div>
+                          <div style={{ color: '#6c757d', fontSize: '14px' }}>{week.dateRange}</div>
+                        </div>
+
+                        {week.milestone && (
+                          <span
+                            style={{
+                              display: 'inline-block',
+                              background:
+                                week.milestoneType === 'test-date'
+                                  ? '#dc3545'
+                                  : week.milestoneType === 'decision'
+                                  ? '#17a2b8'
+                                  : '#28a745',
+                              color: 'white',
+                              padding: '2px 8px',
+                              borderRadius: '12px',
+                              fontSize: '11px',
+                              fontWeight: '600',
+                              marginLeft: '8px',
+                            }}
+                          >
+                            {week.milestone}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Legend */}
+          <div
+            style={{
+              padding: '20px',
+              background: '#f8f9fa',
+              borderTop: '1px solid #e9ecef',
+            }}
+          >
+            <h3 style={{ margin: '0 0 15px 0', color: '#495057', fontSize: '16px' }}>Timeline Key</h3>
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+                gap: '10px',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', fontSize: '14px' }}>
+                <div
+                  style={{
+                    width: '20px',
+                    height: '4px',
+                    marginRight: '10px',
+                    borderRadius: '2px',
+                    background: '#ff6b35',
+                  }}
+                ></div>
+                Current Week (W{currentWeek})
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', fontSize: '14px' }}>
+                <div
+                  style={{
+                    width: '20px',
+                    height: '4px',
+                    marginRight: '10px',
+                    borderRadius: '2px',
+                    background: '#17a2b8',
+                  }}
+                ></div>
+                Anniversary Holiday (W1: June 16-22)
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', fontSize: '14px' }}>
+                <div
+                  style={{
+                    width: '20px',
+                    height: '4px',
+                    marginRight: '10px',
+                    borderRadius: '2px',
+                    background: '#dc3545',
+                  }}
+                ></div>
+                Test Options (W7: July 28-Aug 3, W11: Aug 25-31)
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', fontSize: '14px' }}>
+                <div
+                  style={{
+                    width: '20px',
+                    height: '4px',
+                    marginRight: '10px',
+                    borderRadius: '2px',
+                    background: '#ffc107',
+                  }}
+                ></div>
+                Official Mocks (#4, #5, #6) & Career Milestones
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  );
-};
+    );
+  };
 
   // Computed values
   const currentData = useMemo(() => {
@@ -1052,7 +1299,7 @@ Anniversary Holiday (W1: June 16-22)
     }
   }, [isDataInsights, isVerbal, targetQuestions]);
 
-const timeLimit = useMemo(() => {
+  const timeLimit = useMemo(() => {
     if (customTimeLimit !== null) {
       return customTimeLimit * 60;
     }
@@ -1062,14 +1309,14 @@ const timeLimit = useMemo(() => {
   }, [customTimeLimit, defaultTimeLimit]);
 
   // Current question logic
- const getCurrentQuestion = useCallback(() => {
+  const getCurrentQuestion = useCallback(() => {
     console.log('getCurrentQuestion called', {
       isEditingPrevious,
       isReviewingBookmarks,
       currentQuestionIndex,
-      adaptiveQuestionsLength: adaptiveQuestions.length
+      adaptiveQuestionsLength: adaptiveQuestions.length,
     });
-    
+
     if (isEditingPrevious) {
       const result = adaptiveQuestions[editQuestionIndex];
       console.log('Editing previous, returning:', result);
@@ -1145,11 +1392,19 @@ const timeLimit = useMemo(() => {
     }
   }, [currentQuestion, isDataInsights, isVerbal, adaptiveQuestions.length, currentData]);
 
-  // Question timing effect
+  // Question timing effect - only reset timer for new questions, not bookmarked reviews
   useEffect(() => {
     if (hasStarted && !isPaused && !isCompleted && currentQuestion) {
-      setQuestionStartTime(Date.now());
-      return () => setQuestionStartTime(null);
+      // Only reset timer if this question hasn't been timed before or if we're not reviewing bookmarks
+      if (!questionTimes[currentQuestion.id] || (!isReviewingBookmarks && !isEditingPrevious)) {
+        setQuestionStartTime(Date.now());
+      }
+      return () => {
+        // Don't clear start time if we're just switching between questions during review
+        if (!isReviewingBookmarks && !isEditingPrevious) {
+          setQuestionStartTime(null);
+        }
+      };
     }
   }, [
     currentQuestionIndex,
@@ -1160,45 +1415,53 @@ const timeLimit = useMemo(() => {
     isCompleted,
     bookmarkReviewIndex,
     editQuestionIndex,
+    currentQuestion,
+    questionTimes,
   ]);
 
   const flattenQuestions = (questions) => {
-  const flattened = [];
-  
-  const flatten = (arr) => {
-    arr.forEach(item => {
-      if (Array.isArray(item)) {
-        flatten(item);
-      } else if (item && typeof item === 'object' && item.id) {
-        flattened.push(item);
-      }
-    });
+    const flattened = [];
+
+    const flatten = (arr) => {
+      arr.forEach((item) => {
+        if (Array.isArray(item)) {
+          flatten(item);
+        } else if (item && typeof item === 'object' && item.id) {
+          flattened.push(item);
+        }
+      });
+    };
+
+    flatten(questions);
+    return flattened;
   };
-  
-  flatten(questions);
-  return flattened;
-};
 
   // Question initialization
-const initializeAdaptiveQuestions = useCallback(() => {
-  // Flatten the questions array to handle nested arrays
-  const flatQuestions = flattenQuestions(currentData.questions || []);
-  const questionsPool = flatQuestions;
-  
-  console.log('Flattened questions pool length:', questionsPool.length);
-  console.log('Questions pool IDs:', questionsPool.map(q => q.id));
-  
-  if (isWarmupMode) {
-    const shuffledQuestions = shuffleArray([...questionsPool]);
-    const selectedQuestions = shuffledQuestions.slice(0, warmupQuestionCount);
-    setAdaptiveQuestions(selectedQuestions);
-    return;
-  }
+  const initializeAdaptiveQuestions = useCallback(() => {
+    // Flatten the questions array to handle nested arrays
+    const flatQuestions = flattenQuestions(currentData.questions || []);
+    const questionsPool = flatQuestions;
 
-  if (currentData.adaptiveMode) {
+    console.log('Flattened questions pool length:', questionsPool.length);
+    console.log(
+      'Questions pool IDs:',
+      questionsPool.map((q) => q.id)
+    );
+
+    if (isWarmupMode) {
+      const shuffledQuestions = shuffleArray([...questionsPool]);
+      const selectedQuestions = shuffledQuestions.slice(0, warmupQuestionCount);
+      setAdaptiveQuestions(selectedQuestions);
+      return;
+    }
+
+    if (currentData.adaptiveMode) {
       console.log('ENTERING ADAPTIVE MODE');
       const allQuestions = questionsPool.filter((q) => !q.buffer);
-      console.log('All questions IDs:', allQuestions.map(q => q.id));
+      console.log(
+        'All questions IDs:',
+        allQuestions.map((q) => q.id)
+      );
       const bufferQuestions = questionsPool.filter((q) => q.buffer);
 
       // Group questions by passage for verbal sections
@@ -1249,7 +1512,7 @@ const initializeAdaptiveQuestions = useCallback(() => {
           }
         });
 
-      Object.keys(questionsByDifficulty).forEach((difficulty) => {
+        Object.keys(questionsByDifficulty).forEach((difficulty) => {
           questionsByDifficulty[difficulty] = shuffleArray(questionsByDifficulty[difficulty]);
         });
 
@@ -1265,12 +1528,12 @@ const initializeAdaptiveQuestions = useCallback(() => {
           const targetDifficulty = difficultyPattern[i];
           let selectedQuestion = null;
 
-         // First try from difficulty pool
+          // First try from difficulty pool
           const pool = questionsByDifficulty[targetDifficulty];
           if (pool && pool.length > 0) {
             selectedQuestion = pool.find((q) => !usedQuestionIds.has(q.id));
           }
-          
+
           // If no variety, try from topic-shuffled pool of same difficulty
           if (!selectedQuestion) {
             selectedQuestion = topicShuffledPool.find(
@@ -1337,14 +1600,14 @@ const initializeAdaptiveQuestions = useCallback(() => {
     return pattern;
   }, []);
 
- const shuffleArray = useCallback((array) => {
+  const shuffleArray = useCallback((array) => {
     const shuffled = [...array];
-    console.log('Before shuffle:', shuffled.map(q => q.id).slice(0, 5));
+    console.log('Before shuffle:', shuffled.map((q) => q.id).slice(0, 5));
     for (let i = shuffled.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
-    console.log('After shuffle:', shuffled.map(q => q.id).slice(0, 5));
+    console.log('After shuffle:', shuffled.map((q) => q.id).slice(0, 5));
     return shuffled;
   }, []);
 
@@ -1565,8 +1828,12 @@ const initializeAdaptiveQuestions = useCallback(() => {
   const confirmNext = useCallback(() => {
     setShowConfirmModal(false);
 
-    // Record time spent on current question
-    if (questionStartTime && currentQuestion) {
+    // Record time spent on current question - only if this is the first time or not reviewing bookmarks
+    if (
+      questionStartTime &&
+      currentQuestion &&
+      (!questionTimes[currentQuestion.id] || (!isReviewingBookmarks && !isEditingPrevious))
+    ) {
       const timeSpent = Math.round((Date.now() - questionStartTime) / 1000);
       setQuestionTimes((prev) => ({ ...prev, [currentQuestion.id]: timeSpent }));
     }
@@ -1837,6 +2104,200 @@ const initializeAdaptiveQuestions = useCallback(() => {
             </div>
           );
 
+        case 'chart':
+          return (
+            <div
+              style={{
+                marginBottom: '20px',
+                backgroundColor: '#f8f9fa',
+                padding: '15px',
+                borderRadius: '6px',
+                border: '1px solid #dee2e6',
+              }}
+            >
+              {title && (
+                <h5
+                  style={{
+                    color: '#2c3e50',
+                    marginBottom: '15px',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    textAlign: 'center',
+                  }}
+                >
+                  {title}
+                </h5>
+              )}
+              <div
+                style={{
+                  backgroundColor: 'white',
+                  padding: '20px',
+                  borderRadius: '4px',
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                }}
+              >
+                {data.type === 'stackedBar' && (
+                  <div>
+                    <div style={{ textAlign: 'center', marginBottom: '15px', fontSize: '14px', color: '#666' }}>
+                      {data.yAxis}
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'end', justifyContent: 'center', gap: '30px', height: '300px', marginBottom: '15px' }}>
+                      {data.years.map((year, yearIndex) => {
+                        const total = data.totals[yearIndex];
+                        const maxTotal = Math.max(...data.totals);
+                        const barHeight = (total / maxTotal) * 250;
+                        
+                        return (
+                          <div key={year} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                            <div style={{ marginBottom: '5px', fontSize: '12px', fontWeight: '600' }}>
+                              ${total.toLocaleString()}
+                            </div>
+                            <div
+                              style={{
+                                width: '60px',
+                                height: `${barHeight}px`,
+                                display: 'flex',
+                                flexDirection: 'column-reverse',
+                                border: '1px solid #333',
+                              }}
+                            >
+                              {data.categories.map((category, catIndex) => {
+                                const value = category.values[yearIndex];
+                                const segmentHeight = (value / total) * barHeight;
+                                return (
+                                  <div
+                                    key={category.name}
+                                    style={{
+                                      height: `${segmentHeight}px`,
+                                      backgroundColor: category.color,
+                                      ...(category.pattern === 'diagonal' && {
+                                        backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(255,255,255,0.3) 2px, rgba(255,255,255,0.3) 4px)'
+                                      }),
+                                    }}
+                                  />
+                                );
+                              })}
+                            </div>
+                            <div style={{ marginTop: '8px', fontSize: '12px', fontWeight: '500' }}>
+                              {year}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <div style={{ textAlign: 'center', fontSize: '14px', color: '#666', marginBottom: '15px' }}>
+                      {data.xAxis}
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'center', gap: '20px', fontSize: '14px' }}>
+                      {data.categories.map((category) => (
+                        <div key={category.name} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                          <div
+                            style={{
+                              width: '16px',
+                              height: '16px',
+                              backgroundColor: category.color,
+                              border: '1px solid #333',
+                              ...(category.pattern === 'diagonal' && {
+                                backgroundImage: 'repeating-linear-gradient(45deg, transparent, transparent 2px, rgba(255,255,255,0.3) 2px, rgba(255,255,255,0.3) 4px)'
+                              }),
+                            }}
+                          />
+                          <span>{category.name}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          );
+          case 'coordinate':
+          return (
+            <div
+              style={{
+                marginBottom: '20px',
+                backgroundColor: '#f8f9fa',
+                padding: '15px',
+                borderRadius: '6px',
+                border: '1px solid #dee2e6',
+              }}
+            >
+              {title && (
+                <h5
+                  style={{
+                    color: '#2c3e50',
+                    marginBottom: '15px',
+                    fontSize: '16px',
+                    fontWeight: '600',
+                    textAlign: 'center',
+                  }}
+                >
+                  {title}
+                </h5>
+              )}
+              <div
+                style={{
+                  backgroundColor: 'white',
+                  padding: '20px',
+                  borderRadius: '4px',
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                  display: 'flex',
+                  justifyContent: 'center',
+                }}
+              >
+                {data.type === 'circle' && (
+                  <svg width="300" height="300" viewBox="-150 -150 300 300">
+                    {/* Circle */}
+                    <circle
+                      cx={data.center.x}
+                      cy={data.center.y}
+                      r={data.radius}
+                      fill="none"
+                      stroke="#666"
+                      strokeWidth="2"
+                      strokeDasharray="5,5"
+                    />
+                    
+                    {/* Points */}
+                    {data.points.map((point, index) => (
+                      <g key={index}>
+                        <circle
+                          cx={point.x}
+                          cy={-point.y}
+                          r="12"
+                          fill="#3498db"
+                          stroke="#2c3e50"
+                          strokeWidth="2"
+                        />
+                        <text
+                          x={point.x}
+                          y={-point.y + 5}
+                          textAnchor="middle"
+                          fontSize="14"
+                          fontWeight="bold"
+                          fill="white"
+                        >
+                          {point.label}
+                        </text>
+                      </g>
+                    ))}
+                    
+                    {/* Clockwise arrow */}
+                    <g transform="translate(120, -120)">
+                      <path
+                        d="M 0 0 Q 10 0 10 10 L 5 10 L 12 20 L 19 10 L 14 10 Q 14 -5 0 -5 Z"
+                        fill="#e74c3c"
+                      />
+                      <text x="25" y="5" fontSize="12" fill="#e74c3c" fontWeight="bold">
+                        Clockwise
+                      </text>
+                    </g>
+                  </svg>
+                )}
+              </div>
+            </div>
+          );
+
         default:
           return (
             <div
@@ -1851,7 +2312,9 @@ const initializeAdaptiveQuestions = useCallback(() => {
               }}
             >
               📊 Visual Element: {type}
+              {title && <div style={{ marginTop: '10px', fontSize: '16px', fontWeight: '600', color: '#2c3e50' }}>{title}</div>}
               {content && <div style={{ marginTop: '10px', fontSize: '14px' }}>{content}</div>}
+              {data && <div style={{ marginTop: '10px', fontSize: '12px' }}>Chart data available but not rendered</div>}
             </div>
           );
       }
@@ -2212,13 +2675,13 @@ const initializeAdaptiveQuestions = useCallback(() => {
     );
   }
 
- console.log('Current question check:', { 
-    currentQuestion, 
-    currentQuestionIndex, 
+  console.log('Current question check:', {
+    currentQuestion,
+    currentQuestionIndex,
     adaptiveQuestionsLength: adaptiveQuestions.length,
-    questionId: currentQuestion?.id 
+    questionId: currentQuestion?.id,
   });
-  
+
   if (hasStarted && (!currentQuestion || (!isReviewingBookmarks && currentQuestionIndex >= adaptiveQuestions.length))) {
     return (
       <div
@@ -2867,10 +3330,30 @@ const initializeAdaptiveQuestions = useCallback(() => {
                             {result.isCorrect ? '✓' : '✗'}
                           </span>
                         </td>
-                        <td style={{ padding: '10px', textAlign: 'center' }}>
+                       <td style={{ padding: '10px', textAlign: 'center' }}>
                           {result.wasBookmarked && <span style={{ color: '#f39c12' }}>📑</span>}
                           {result.userAnswer === 'No Answer' && (
                             <span style={{ color: '#6c757d', fontSize: '12px' }}>Unanswered</span>
+                          )}
+                          {!result.isCorrect && (
+                            <button
+                              onClick={() => {
+                                const question = adaptiveQuestions.find(q => q.id === result.originalId || q.ogQuestionNumber === result.originalId);
+                                setShowQuestionReview(question);
+                              }}
+                              style={{
+                                background: '#dc3545',
+                                color: 'white',
+                                border: 'none',
+                                padding: '2px 6px',
+                                borderRadius: '3px',
+                                fontSize: '10px',
+                                cursor: 'pointer',
+                                marginLeft: '5px'
+                              }}
+                            >
+                              Review
+                            </button>
                           )}
                         </td>
                       </tr>
@@ -3482,10 +3965,82 @@ const initializeAdaptiveQuestions = useCallback(() => {
           </div>
         </div>
       )}
-
-
-
-
+      {/* Question Review Modal */}
+        {showQuestionReview && (
+          <div style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1001,
+            padding: '20px'
+          }}>
+            <div style={{
+              backgroundColor: 'white',
+              borderRadius: '8px',
+              maxWidth: '600px',
+              width: '100%',
+              maxHeight: '80vh',
+              overflow: 'auto',
+              boxShadow: '0 4px 20px rgba(0,0,0,0.2)'
+            }}>
+              <div style={{
+                backgroundColor: '#dc3545',
+                color: 'white',
+                padding: '15px',
+                borderRadius: '8px 8px 0 0',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center'
+              }}>
+                <span style={{ fontSize: '16px', fontWeight: '500' }}>Question Review</span>
+                <button
+                  onClick={() => setShowQuestionReview(null)}
+                  style={{
+                    background: 'transparent',
+                    border: 'none',
+                    color: 'white',
+                    fontSize: '20px',
+                    cursor: 'pointer',
+                    padding: '2px 6px'
+                  }}
+                >
+                  ✕
+                </button>
+              </div>
+              <div style={{ padding: '20px' }}>
+                <div style={{ fontSize: '16px', marginBottom: '20px', lineHeight: '1.6' }}>
+                  <span dangerouslySetInnerHTML={{ __html: formatMath(showQuestionReview.questionText) }} />
+                </div>
+                {showQuestionReview.visual && renderQuestionVisual(showQuestionReview.visual)}
+                <div style={{ marginTop: '15px' }}>
+                  {Object.entries(showQuestionReview.options).map(([letter, text]) => (
+                    <div
+                      key={letter}
+                      style={{
+                        marginBottom: '10px',
+                        padding: '8px 12px',
+                        borderRadius: '4px',
+                        backgroundColor: letter === showQuestionReview.correctAnswer ? '#d4edda' : '#f8f9fa',
+                        border: letter === showQuestionReview.correctAnswer ? '2px solid #28a745' : '1px solid #dee2e6'
+                      }}
+                    >
+                      <strong>{letter}:</strong> <span dangerouslySetInnerHTML={{ __html: formatMath(text) }} />
+                      {letter === showQuestionReview.correctAnswer && (
+                        <span style={{ color: '#28a745', marginLeft: '10px', fontWeight: 'bold' }}>✓ Correct</span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
     </div>
   );
 };

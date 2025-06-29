@@ -1,290 +1,174 @@
 {
-  "sectionName": "Content Gap Drill Collection 1",
+  "sectionName": "GMAT Quantitative Practice",
   "sectionType": "quantitative",
-  "testDescription": "Targeted practice for identified content gaps: Integer Systems, Factorial Divisibility, and Inequality Logic.",
+  "testDescription": "This section tests mathematical reasoning and problem-solving abilities.",
   "skillsAssessed": [
-    "Integer solutions to systems of linear equations",
-    "Factorial divisibility with hidden prime factors",
-    "Inequality constraint logic with necessity reasoning",
-    "Multi-variable constraint optimization",
-    "Advanced number theory and prime factorization"
+    "Algebra and arithmetic",
+    "Geometry and coordinate geometry",
+    "Data analysis and probability"
   ],
   "adaptiveMode": true,
-  "targetQuestions": 21,
-  "timeLimit": 3150,
+  "targetQuestions": 10,
+  "timeLimit": 1250,
   "questions": [
     {
-      "id": 1,
-      "questionText": "A jar contains only nickels (5¢) and dimes (10¢). If there are exactly 50 cents worth of coins and exactly 8 coins total, how many nickels are in the jar?",
-      "difficulty": "easy",
+      "id": 85,
+      "questionText": "If x, y, and k are positive and x is less than y, then (x + k)/(y + k) is",
+      "difficulty": "medium",
+      "options": {
+        "A": "1",
+        "B": "greater than x/y",
+        "C": "equal to x/y",
+        "D": "less than x/y",
+        "E": "less than x/y or greater than x/y, depending on the value of k"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 90,
+      "questionText": "Eight light bulbs numbered 1 through 8 are arranged in a circle as shown above. The bulbs are wired so that every third bulb, counting in a clockwise direction, flashes until all bulbs have flashed once. If the bulb numbered 1 flashes first, which numbered bulb will flash last?",
+      "difficulty": "medium",
       "options": {
         "A": "2",
-        "B": "4",
-        "C": "6",
-        "D": "8",
+        "B": "3",
+        "C": "4",
+        "D": "6",
+        "E": "7"
+      },
+      "correctAnswer": "D",
+      "visual": {
+        "type": "coordinate",
+        "title": "Light Bulb Arrangement",
+        "data": {
+          "type": "circle",
+          "center": {"x": 0, "y": 0},
+          "radius": 100,
+          "points": [
+            {"x": 0, "y": 100, "label": "1"},
+            {"x": 71, "y": 71, "label": "2"}, 
+            {"x": 100, "y": 0, "label": "3"},
+            {"x": 71, "y": -71, "label": "4"},
+            {"x": 0, "y": -100, "label": "5"},
+            {"x": -71, "y": -71, "label": "6"},
+            {"x": -100, "y": 0, "label": "7"},
+            {"x": -71, "y": 71, "label": "8"}
+          ]
+        }
+      }
+    },
+    {
+      "id": 95,
+      "questionText": "The formula above gives the contribution C, in dollars, to a certain profit-sharing plan for a participant with a salary of s dollars. How many more dollars is the contribution for a participant with a salary of $70,000 than for a participant with a salary of $50,000?",
+      "difficulty": "medium",
+      "options": {
+        "A": "$800",
+        "B": "$1,400",
+        "C": "$2,000",
+        "D": "$2,400",
+        "E": "$2,800"
+      },
+      "correctAnswer": "D",
+      "visual": {
+        "type": "equation",
+        "title": "Profit-Sharing Formula",
+        "content": "C = { 0.10s, if s ≤ 60,000; 0.10s + 0.04(s - 60,000), if s > 60,000 }"
+      }
+    },
+    {
+      "id": 100,
+      "questionText": "If x² + bx + 5 = (x + c)² for all numbers x, where b and c are positive constants, what is the value of b?",
+      "difficulty": "medium",
+      "options": {
+        "A": "√5",
+        "B": "√10",
+        "C": "2√5",
+        "D": "2√10",
         "E": "10"
       },
       "correctAnswer": "C"
     },
     {
-      "id": 2,
-      "questionText": "A store sells notebooks for $3 each and pens for $2 each. If Maria buys exactly 12 items and spends exactly $31, how many notebooks did she buy?",
-      "difficulty": "easy",
+      "id": 155,
+      "questionText": "In 2004, the cost of 1 year-long print subscription to a certain newspaper was $4 per week. In 2005, the newspaper introduced a new rate plan for 1 year-long print subscription: $3 per week for the first 40 weeks of 2005 and $2 per week for the remaining weeks of 2005. How much less did 1 year-long print subscription to this newspaper cost in 2005 than in 2004?",
+      "difficulty": "hard",
       "options": {
-        "A": "5",
-        "B": "6",
-        "C": "7",
-        "D": "8",
-        "E": "9"
-      },
-      "correctAnswer": "C"
-    },
-    {
-      "id": 3,
-      "questionText": "A piggy bank contains quarters (25¢), dimes (10¢), and nickels (5¢). There are 20 coins total worth exactly $3.00. If there are twice as many dimes as nickels, how many quarters are there?",
-      "difficulty": "medium",
-      "options": {
-        "A": "8",
-        "B": "10",
-        "C": "12",
-        "D": "14",
-        "E": "16"
+        "A": "$64",
+        "B": "$78",
+        "C": "$112",
+        "D": "$144",
+        "E": "$304"
       },
       "correctAnswer": "A"
     },
     {
-      "id": 4,
-      "questionText": "A factory produces widgets in three sizes: small ($5), medium ($8), and large ($12). Yesterday they produced 6 widgets and generated $46 in revenue. If they produced 1 more small widget than large widgets, how many medium widgets did they produce?",
-      "difficulty": "medium",
+      "id": 160,
+      "questionText": "On a certain transatlantic crossing, 20 percent of a ship's passengers held round-trip tickets and also took their cars aboard the ship. If 60 percent of the passengers with round-trip tickets did not take their cars aboard the ship, what percent of the ship's passengers held round-trip tickets?",
+      "difficulty": "hard",
       "options": {
-        "A": "1",
-        "B": "2",
-        "C": "3",
-        "D": "4",
-        "E": "5"
+        "A": "33⅓%",
+        "B": "40%",
+        "C": "50%",
+        "D": "60%",
+        "E": "66⅔%"
       },
       "correctAnswer": "C"
     },
     {
-      "id": 5,
-      "questionText": "A vending machine accepts only quarters (25¢), dimes (10¢), and nickels (5¢). For a purchase totaling 95 cents using exactly 11 coins, which of the following represents a possible number of quarters used?\n\nI. 0\nII. 1\nIII. 2",
-      "difficulty": "medium",
-      "options": {
-        "A": "I only",
-        "B": "II only",
-        "C": "I and III only",
-        "D": "II and III only",
-        "E": "I, II, and III"
-      },
-      "correctAnswer": "E"
-    },
-    {
-      "id": 6,
-      "questionText": "A coin collection contains half dollars (50¢), quarters (25¢), dimes (10¢), and pennies (1¢). The total value is 172 cents using exactly 8 coins. If there are equal numbers of half dollars and quarters, and equal numbers of dimes and pennies, how many pennies are in the collection?",
-      "difficulty": "hard",
-      "options": {
-        "A": "1",
-        "B": "2",
-        "C": "3",
-        "D": "4",
-        "E": "5"
-      },
-      "correctAnswer": "B"
-    },
-    {
-      "id": 7,
-      "questionText": "A bakery sells items at $15, $12, $8, and $5. They sold 12 items for $124 total. Items sold at $15 equal items sold at $5. Items at $12 outnumber items at $8 by 2. How many $8 items were sold?",
-      "difficulty": "hard",
-      "options": {
-        "A": "1",
-        "B": "2",
-        "C": "3",
-        "D": "4",
-        "E": "5"
-      },
-      "correctAnswer": "B"
-    },
-    {
-      "id": 8,
-      "questionText": "What is the greatest positive integer n such that 2^n divides 8!?",
-      "difficulty": "easy",
-      "options": {
-        "A": "5",
-        "B": "6",
-        "C": "7",
-        "D": "8",
-        "E": "9"
-      },
-      "correctAnswer": "C"
-    },
-    {
-      "id": 9,
-      "questionText": "What is the greatest positive integer n such that 5^n divides 10!?",
-      "difficulty": "easy",
-      "options": {
-        "A": "1",
-        "B": "2",
-        "C": "3",
-        "D": "4",
-        "E": "5"
-      },
-      "correctAnswer": "B"
-    },
-    {
-      "id": 10,
-      "questionText": "What is the greatest positive integer n such that 3^n divides (7! + 6!)?",
+      "id": 43,
+      "questionText": "How many integers between 1 and 16, inclusive, have exactly 3 different positive integer factors? (Note: 6 is NOT such an integer because 6 has 4 different positive integer factors: 1, 2, 3, and 6.)",
       "difficulty": "medium",
       "options": {
         "A": "1",
         "B": "2",
         "C": "3",
         "D": "4",
-        "E": "5"
+        "E": "6"
       },
       "correctAnswer": "B"
+    },
+    {
+      "id": 54,
+      "questionText": "The expression above is approximately",
+      "difficulty": "medium",
+      "options": {
+        "A": "0.02",
+        "B": "0.2",
+        "C": "2",
+        "D": "20",
+        "E": "200"
+      },
+      "correctAnswer": "C",
+      "visual": {
+        "type": "equation",
+        "title": "Mathematical Expression",
+        "content": "(39,897 × 0.0096) ÷ 198.76"
+      }
     },
     {
       "id": 11,
-      "questionText": "What is the greatest positive integer n such that 2^n divides (9! - 8!)?",
-      "difficulty": "medium",
-      "options": {
-        "A": "8",
-        "B": "9",
-        "C": "10",
-        "D": "11",
-        "E": "12"
-      },
-      "correctAnswer": "C"
-    },
-    {
-      "id": 12,
-      "questionText": "What is the greatest positive integer n such that 7^n divides (14!/2!)?",
-      "difficulty": "medium",
-      "options": {
-        "A": "1",
-        "B": "2",
-        "C": "3",
-        "D": "4",
-        "E": "5"
-      },
-      "correctAnswer": "B"
-    },
-    {
-      "id": 13,
-      "questionText": "What is the greatest positive integer n such that 6^n divides (12! - 11!×5)?",
-      "difficulty": "hard",
-      "options": {
-        "A": "2",
-        "B": "3",
-        "C": "4",
-        "D": "5",
-        "E": "6"
-      },
-      "correctAnswer": "C"
-    },
-    {
-      "id": 14,
-      "questionText": "What is the greatest positive integer n such that 10^n divides (15! - 3×14! + 2×13!)?",
-      "difficulty": "hard",
-      "options": {
-        "A": "1",
-        "B": "2",
-        "C": "3",
-        "D": "4",
-        "E": "5"
-      },
-      "correctAnswer": "C"
-    },
-    {
-      "id": 15,
-      "questionText": "If x > 5, which of the following must be true?\n\nI. x > 3\nII. x² > 25\nIII. |x| > 5",
+      "questionText": "Company C produces toy trucks at a cost of $5.00 each for the first 100 trucks and $3.50 for each additional truck. If 500 toy trucks were produced by Company C and sold for $10.00 each, what was Company C's gross profit?",
       "difficulty": "easy",
       "options": {
-        "A": "I only",
-        "B": "II only",
-        "C": "I and II only",
-        "D": "II and III only",
-        "E": "I, II, and III"
+        "A": "$2,250",
+        "B": "$2,500",
+        "C": "$3,100",
+        "D": "$3,250",
+        "E": "$3,500"
       },
-      "correctAnswer": "E"
+      "correctAnswer": "C"
     },
     {
       "id": 16,
-      "questionText": "If 2x + 3 > 11, which of the following must be true?\n\nI. x > 4\nII. x² > 16\nIII. x + 1 > 5",
+      "questionText": "In a field day at a school, each child who competed in n events and scored a total of p points was given an overall score of p/n + n. Andrew competed in 1 event and scored 9 points. Jason competed in 3 events and scored 5, 6, and 7 points, respectively. What was the ratio of Andrew's overall score to Jason's overall score?",
       "difficulty": "easy",
       "options": {
-        "A": "I only",
-        "B": "II only",
-        "C": "I and III only",
-        "D": "II and III only",
-        "E": "I, II, and III"
+        "A": "10/23",
+        "B": "7/10",
+        "C": "4/5",
+        "D": "10/9",
+        "E": "12/7"
       },
-      "correctAnswer": "E"
-    },
-    {
-      "id": 17,
-      "questionText": "If -3 < x < 1, which of the following must be true?\n\nI. x² < 9\nII. |x| < 3\nIII. x + 5 > 0",
-      "difficulty": "medium",
-      "options": {
-        "A": "I only",
-        "B": "II only",
-        "C": "I and II only",
-        "D": "I and III only",
-        "E": "I, II, and III"
-      },
-      "correctAnswer": "E"
-    },
-    {
-      "id": 18,
-      "questionText": "If |x - 2| < 3, which of the following must be true?\n\nI. x > -1\nII. x < 5\nIII. |x| < 6",
-      "difficulty": "medium",
-      "options": {
-        "A": "I only",
-        "B": "II only",
-        "C": "I and II only",
-        "D": "II and III only",
-        "E": "I, II, and III"
-      },
-      "correctAnswer": "E"
-    },
-    {
-      "id": 19,
-      "questionText": "If 3 < (x + 1)/2, which of the following must be true?\n\nI. x > 5\nII. |x - 3| > 2\nIII. -(x - 7) < 0",
-      "difficulty": "medium",
-      "options": {
-        "A": "I only",
-        "B": "II only",
-        "C": "I and II only",
-        "D": "I and III only",
-        "E": "I, II, and III"
-      },
-      "correctAnswer": "C"
-    },
-    {
-      "id": 20,
-      "questionText": "If x² - 4x + 3 < 0, which of the following must be true?\n\nI. x > 0\nII. x < 4\nIII. |x - 2| < 1",
-      "difficulty": "hard",
-      "options": {
-        "A": "I only",
-        "B": "II only",
-        "C": "III only",
-        "D": "I and II only",
-        "E": "I, II, and III"
-      },
-      "correctAnswer": "E"
-    },
-    {
-      "id": 21,
-      "questionText": "If 2 < (5 - x)/3, which of the following must be true?\n\nI. x < -1\nII. |x + 2| > 1\nIII. -(x + 3) > 0\nIV. x² - 4 < 0",
-      "difficulty": "hard",
-      "options": {
-        "A": "I only",
-        "B": "I and III only",
-        "C": "I, II, and III only",
-        "D": "I, III, and IV only",
-        "E": "I, II, III, and IV"
-      },
-      "correctAnswer": "A"
+      "correctAnswer": "D"
     }
   ]
 }
