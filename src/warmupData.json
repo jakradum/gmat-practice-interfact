@@ -526,7 +526,7 @@
       "difficulty": "easy",
       "options": {
         "A": "4 only",
-        "B": "-4 only", 
+        "B": "-4 only",
         "C": "4 and -4",
         "D": "16 only",
         "E": "8 and -8"
@@ -652,202 +652,46 @@
     },
     {
       "id": 50,
-      "questionText": "What is the value of 6² ÷ 3²?",
+      "questionText": "The mean of 5 numbers is 24. If four of the numbers are 18, 22, 26, and 30, what is the fifth number?",
       "difficulty": "easy",
       "options": {
-        "A": "2",
-        "B": "3",
-        "C": "4",
-        "D": "6",
-        "E": "9"
+        "A": "16",
+        "B": "18",
+        "C": "20",
+        "D": "24",
+        "E": "28"
       },
-      "correctAnswer": "C"
+      "correctAnswer": "B"
     },
     {
       "id": 51,
-      "questionText": "Find the x-coordinate of the point where the lines y = 2x + 1 and y = -x + 7 intersect.",
-      "difficulty": "medium",
+      "questionText": "A data set has 7 values: 12, 15, 18, 18, 22, 25, 30. If the largest value is changed to 35, by how much does the median change?",
+      "difficulty": "easy",
       "options": {
-        "A": "1",
-        "B": "2",
-        "C": "3",
-        "D": "4",
-        "E": "5"
+        "A": "0",
+        "B": "3",
+        "C": "5",
+        "D": "7",
+        "E": "10"
       },
       "correctAnswer": "B"
     },
     {
       "id": 52,
-      "questionText": "Tank A can be filled by pipe X in 6 hours or emptied by pipe Y in 9 hours. If both pipes operate simultaneously, how long to fill the empty tank?",
+      "questionText": "In a class of 20 students, the average score on a test is 78. If the teacher removes the two lowest scores of 65 and 70, what is the new average of the remaining 18 students?",
       "difficulty": "medium",
       "options": {
-        "A": "15 hours",
-        "B": "16 hours",
-        "C": "17 hours",
-        "D": "18 hours",
-        "E": "20 hours"
+        "A": "78.0",
+        "B": "78.9",
+        "C": "79.4",
+        "D": "80.0",
+        "E": "80.5"
       },
-      "correctAnswer": "D"
+      "correctAnswer": "C"
     },
     {
       "id": 53,
-      "questionText": "Two joggers start from the same point. One runs north at 6 mph, the other runs east at 8 mph. After 1.5 hours, how far apart are they?",
-      "difficulty": "medium",
-      "options": {
-        "A": "12 miles",
-        "B": "15 miles",
-        "C": "18 miles",
-        "D": "21 miles",
-        "E": "24 miles"
-      },
-      "correctAnswer": "B"
-    },
-    {
-      "id": 54,
-      "questionText": "A laptop's price decreased from $800 to $640. What was the percentage decrease?",
-      "difficulty": "easy",
-      "options": {
-        "A": "15%",
-        "B": "20%",
-        "C": "25%",
-        "D": "30%",
-        "E": "35%"
-      },
-      "correctAnswer": "B"
-    },
-    {
-      "id": 55,
-      "questionText": "If 3(x - 4) = 21, what is the value of x + 2?",
-      "difficulty": "easy",
-      "options": {
-        "A": "9",
-        "B": "11",
-        "C": "13",
-        "D": "15",
-        "E": "17"
-      },
-      "correctAnswer": "C"
-    },
-    {
-      "id": 56,
-      "questionText": "What is the distance from point (5, 12) to the origin?",
-      "difficulty": "easy",
-      "options": {
-        "A": "11",
-        "B": "12",
-        "C": "13",
-        "D": "14",
-        "E": "17"
-      },
-      "correctAnswer": "C"
-    },
-    {
-      "id": 57,
-      "questionText": "Factory A produces 240 widgets in 8 hours. Factory B produces 300 widgets in 10 hours. What is their combined production rate per hour?",
-      "difficulty": "easy",
-      "options": {
-        "A": "50 widgets/hour",
-        "B": "55 widgets/hour",
-        "C": "60 widgets/hour",
-        "D": "65 widgets/hour",
-        "E": "70 widgets/hour"
-      },
-      "correctAnswer": "C"
-    },
-    {
-      "id": 58,
-      "questionText": "A bus travels 150 miles at 50 mph, then 200 miles at 40 mph. What is the average speed for the entire trip?",
-      "difficulty": "medium",
-      "options": {
-        "A": "42 mph",
-        "B": "43.75 mph",
-        "C": "45 mph",
-        "D": "46.25 mph",
-        "E": "48 mph"
-      },
-      "correctAnswer": "B"
-    },
-    {
-      "id": 59,
-      "questionText": "Of 240 students surveyed, 45% said they prefer online classes. How many students prefer online classes?",
-      "difficulty": "easy",
-      "options": {
-        "A": "98",
-        "B": "102",
-        "C": "108",
-        "D": "112",
-        "E": "118"
-      },
-      "correctAnswer": "C"
-    },
-    {
-      "id": 60,
-      "questionText": "If x² + 6x + 9 = 0, what is the value of x?",
-      "difficulty": "easy",
-      "options": {
-        "A": "-6",
-        "B": "-3",
-        "C": "0",
-        "D": "3",
-        "E": "6"
-      },
-      "correctAnswer": "B"
-    },
-    {
-      "id": 61,
-      "questionText": "What is the area of a triangle with vertices at (0, 0), (4, 0), and (0, 6)?",
-      "difficulty": "easy",
-      "options": {
-        "A": "10",
-        "B": "12",
-        "C": "14",
-        "D": "16",
-        "E": "24"
-      },
-      "correctAnswer": "B"
-    },
-    {
-      "id": 62,
-      "questionText": "John can type a report in 4 hours. Mary can type the same report in 6 hours. If John works for 1 hour alone, then both work together, what is the total time to complete the report?",
-      "difficulty": "medium",
-      "options": {
-        "A": "2.6 hours",
-        "B": "2.8 hours",
-        "C": "3.0 hours",
-        "D": "3.2 hours",
-        "E": "3.4 hours"
-      },
-      "correctAnswer": "B"
-    },
-    {
-      "id": 63,
-      "questionText": "A motorcycle travels 180 miles in 3.6 hours. What is its average speed?",
-      "difficulty": "easy",
-      "options": {
-        "A": "45 mph",
-        "B": "48 mph",
-        "C": "50 mph",
-        "D": "52 mph",
-        "E": "55 mph"
-      },
-      "correctAnswer": "C"
-    },
-    {
-      "id": 64,
-      "questionText": "A restaurant bill totals $72 after an 8% tax. What was the bill before tax?",
-      "difficulty": "medium",
-      "options": {
-        "A": "$64.80",
-        "B": "$66.00",
-        "C": "$66.67",
-        "D": "$68.00",
-        "E": "$70.00"
-      },
-      "correctAnswer": "C"
-    },
-    {
-      "id": 65,
-      "questionText": "If 5x - 12 = 23, what is the value of x + 4?",
+      "questionText": "The median of the data set {3, 7, 9, x, 15, 18} is 10. What is the value of x?",
       "difficulty": "easy",
       "options": {
         "A": "8",
@@ -856,124 +700,280 @@
         "D": "11",
         "E": "12"
       },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 54,
+      "questionText": "A company's quarterly revenues (in millions) for the past year were: 12, 15, 18, 21. What is the percent increase from the mean of the first two quarters to the mean of the last two quarters?",
+      "difficulty": "easy",
+      "options": {
+        "A": "12.5%",
+        "B": "20%",
+        "C": "25%",
+        "D": "30%",
+        "E": "40%"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 55,
+      "questionText": "The mode of a data set is 45, and this value appears exactly 3 times. If the data set has 8 total values and the sum of all values is 300, what is the sum of the 5 non-mode values?",
+      "difficulty": "medium",
+      "options": {
+        "A": "120",
+        "B": "135",
+        "C": "150",
+        "D": "165",
+        "E": "180"
+      },
       "correctAnswer": "D"
     },
     {
-      "id": 66,
-      "questionText": "What is the slope of the line passing through (-3, 2) and (5, 10)?",
+      "id": 56,
+      "questionText": "The average of 6 consecutive odd integers is 12. What is the largest of these integers?",
       "difficulty": "easy",
       "options": {
-        "A": "1/2",
-        "B": "1",
-        "C": "3/2",
-        "D": "2",
-        "E": "5/2"
+        "A": "17",
+        "B": "18",
+        "C": "19",
+        "D": "20",
+        "E": "22"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 57,
+      "questionText": "A data set consists of 10 values with a mean of 50. If 5 new values are added, each equal to 60, what is the new mean of all 15 values?",
+      "difficulty": "easy",
+      "options": {
+        "A": "52",
+        "B": "53",
+        "C": "54",
+        "D": "55",
+        "E": "56"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 58,
+      "questionText": "The median salary of 11 employees is 55,000. If the highest salary increases by 10,000, what happens to the median?",
+      "difficulty": "easy",
+      "options": {
+        "A": "Increases by 10,000",
+        "B": "Stays the same",
+        "C": "Increases by 5,000",
+        "D": "Increases by 2,000",
+        "E": "Decreases by 5,000"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 59,
+      "questionText": "In a frequency distribution, the values 2, 5, 8, 8, 8, 11, 14 appear. If one additional value is added to make the distribution bimodal, what must that value be?",
+      "difficulty": "medium",
+      "options": {
+        "A": "2",
+        "B": "5",
+        "C": "8",
+        "D": "11",
+        "E": "14"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 60,
+      "questionText": "The arithmetic mean of 4 numbers is 15. If three of the numbers are 10, 12, and 18, and the fourth number is doubled, what is the new mean?",
+      "difficulty": "medium",
+      "options": {
+        "A": "16",
+        "B": "17",
+        "C": "18",
+        "D": "19",
+        "E": "20"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 61,
+      "questionText": "A student's test scores are 82, 85, 88, 91, 94. If she needs an average of 88 for six tests to get an A in the class, what must she score on her sixth test?",
+      "difficulty": "easy",
+      "options": {
+        "A": "86",
+        "B": "90",
+        "C": "92",
+        "D": "94",
+        "E": "96"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 62,
+      "questionText": "The range of 5 numbers is 20, and their median is 35. If the smallest number is 25, what is the largest possible value for the mean?",
+      "difficulty": "medium",
+      "options": {
+        "A": "42",
+        "B": "47",
+        "C": "50",
+        "D": "55",
+        "E": "60"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 63,
+      "questionText": "A data set has 9 values with a median of 47. If the 5th value (when arranged in order) is increased by 8, what is the new median?",
+      "difficulty": "easy",
+      "options": {
+        "A": "47",
+        "B": "55",
+        "C": "54",
+        "D": "50",
+        "E": "52"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 64,
+      "questionText": "The mean of 8 positive integers is 12.5. If exactly two of these integers are equal to 15, what is the maximum possible value of the largest integer?",
+      "difficulty": "medium",
+      "options": {
+        "A": "30",
+        "B": "35",
+        "C": "40",
+        "D": "45",
+        "E": "50"
+      },
+      "correctAnswer": "C"
+    },
+    {
+      "id": 65,
+      "questionText": "In a survey, 40% of respondents chose option A, 35% chose option B, and 25% chose option C. If 120 people chose option A, how many people participated in the survey?",
+      "difficulty": "easy",
+      "options": {
+        "A": "240",
+        "B": "300",
+        "C": "320",
+        "D": "360",
+        "E": "400"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 66,
+      "questionText": "The average temperature for the first 10 days of a month is 72°F. The average for the next 5 days is 78°F. What is the average temperature for all 15 days?",
+      "difficulty": "easy",
+      "options": {
+        "A": "74°F",
+        "B": "74.7°F",
+        "C": "75°F",
+        "D": "75.5°F",
+        "E": "76°F"
       },
       "correctAnswer": "B"
     },
     {
       "id": 67,
-      "questionText": "Press A prints 80 pages per minute, press B prints 120 pages per minute. Working together, how long to print 1000 pages?",
+      "questionText": "A data set has values: 6, 9, 12, 15, 18, 21, 24. If each value is increased by 4, how does this affect the mean and median?",
       "difficulty": "easy",
       "options": {
-        "A": "4 minutes",
-        "B": "5 minutes",
-        "C": "6 minutes",
-        "D": "7 minutes",
-        "E": "8 minutes"
+        "A": "Mean +4, Median +4",
+        "B": "Mean +4, Median no change",
+        "C": "Mean no change, Median +4",
+        "D": "Mean +8, Median +8",
+        "E": "Mean +4, Median +2"
       },
-      "correctAnswer": "B"
+      "correctAnswer": "A"
     },
     {
       "id": 68,
-      "questionText": "A car leaves city A at 60 mph. Two hours later, another car leaves the same city traveling the same route at 80 mph. How long after the second car starts will it catch up?",
+      "questionText": "The median of 7 distinct positive integers is 28. If the smallest integer is 20 and the largest is 40, what is the smallest possible value for the mean?",
       "difficulty": "medium",
       "options": {
-        "A": "4 hours",
-        "B": "5 hours", 
-        "C": "6 hours",
-        "D": "7 hours",
-        "E": "8 hours"
+        "A": "28",
+        "B": "29",
+        "C": "30",
+        "D": "32",
+        "E": "35"
       },
       "correctAnswer": "C"
     },
     {
       "id": 69,
-      "questionText": "A product's price increases from $50 to $65. What is the percentage increase?",
+      "questionText": "A basketball player's scoring average over 12 games is 18 points per game. In the 13th game, he scores 30 points. What is his new scoring average?",
       "difficulty": "easy",
       "options": {
-        "A": "25%",
-        "B": "30%",
-        "C": "35%",
-        "D": "40%",
-        "E": "45%"
+        "A": "19",
+        "B": "19.2",
+        "C": "19.5",
+        "D": "20",
+        "E": "20.2"
       },
-      "correctAnswer": "B"
+      "correctAnswer": "C"
     },
     {
       "id": 70,
-      "questionText": "What is the value of 4³ - 2⁴?",
-      "difficulty": "easy",
+      "questionText": "The mode of a data set is 6, appearing 4 times. The set has 10 total values, and the sum of all non-mode values is 42. What is the mean of the entire data set?",
+      "difficulty": "medium",
       "options": {
-        "A": "32",
-        "B": "40",
-        "C": "48",
-        "D": "56",
-        "E": "64"
+        "A": "5.4",
+        "B": "6.0",
+        "C": "6.2",
+        "D": "6.4",
+        "E": "6.6"
       },
       "correctAnswer": "C"
     },
     {
       "id": 71,
-      "questionText": "Find the equation of the line with slope -2 passing through point (3, 8).",
-      "difficulty": "medium",
+      "questionText": "If the mean of 5 numbers is 20 and the mean of another 3 numbers is 35, what is the mean of all 8 numbers combined?",
+      "difficulty": "easy",
       "options": {
-        "A": "y = -2x + 2",
-        "B": "y = -2x + 14",
-        "C": "y = -2x + 8",
-        "D": "y = 2x + 2",
-        "E": "y = -2x - 2"
+        "A": "25",
+        "B": "26.875",
+        "C": "27",
+        "D": "28",
+        "E": "29"
       },
       "correctAnswer": "B"
     },
     {
       "id": 72,
-      "questionText": "Pool pump A can fill a pool in 8 hours, pump B can fill it in 12 hours. If pump A runs for 3 hours alone, then both pumps work together, how long total to fill the pool?",
-      "difficulty": "medium",
+      "questionText": "A company tracks monthly sales. The median for the first 11 months is 85,000. December sales are 120,000. What is the median for all 12 months?",
+      "difficulty": "easy",
       "options": {
-        "A": "6.0 hours",
-        "B": "6.1 hours",
-        "C": "6.2 hours",
-        "D": "6.3 hours",
-        "E": "6.4 hours"
+        "A": "85,000",
+        "B": "87,500",
+        "C": "90,000",
+        "D": "95,000",
+        "E": "100,000"
       },
       "correctAnswer": "A"
     },
     {
       "id": 73,
-      "questionText": "Two ships leave port simultaneously. Ship A travels north at 15 knots, ship B travels east at 20 knots. After 4 hours, how far apart are they?",
-      "difficulty": "medium",
+      "questionText": "The average age of 6 people in a room is 25 years. If the oldest person leaves and is replaced by someone who is 10 years younger, what is the new average age?",
+      "difficulty": "easy",
       "options": {
-        "A": "80 nautical miles",
-        "B": "90 nautical miles",
-        "C": "100 nautical miles",
-        "D": "110 nautical miles",
-        "E": "120 nautical miles"
+        "A": "23.3",
+        "B": "24.0",
+        "C": "24.2",
+        "D": "24.5",
+        "E": "24.8"
       },
       "correctAnswer": "C"
     },
     {
       "id": 74,
-      "questionText": "In a group of 400 people, 72% are adults. How many children are in the group?",
-      "difficulty": "easy",
+      "questionText": "A data set has 15 values with a mean of 40 and a median of 38. If the 5 largest values are each increased by 10, what are the new mean and median?",
+      "difficulty": "medium",
       "options": {
-        "A": "108",
-        "B": "112",
-        "C": "116",
-        "D": "120",
-        "E": "124"
+        "A": "Mean 43.33, Median 38",
+        "B": "Mean 43.33, Median 48",
+        "C": "Mean 46.67, Median 38",
+        "D": "Mean 45.00, Median 40",
+        "E": "Mean 50.00, Median 48"
       },
-      "correctAnswer": "B"
+      "correctAnswer": "A"
     },
     {
       "id": 75,
@@ -1042,198 +1042,198 @@
     },
     {
       "id": 80,
-      "questionText": "If x² - 10x + 25 = 0, what is the value of x?",
+      "questionText": "A bag contains 8 red marbles, 5 blue marbles, and 7 green marbles. If two marbles are drawn without replacement, what is the probability that both marbles are the same color?",
       "difficulty": "easy",
       "options": {
-        "A": "2",
-        "B": "3",
-        "C": "4",
-        "D": "5",
-        "E": "10"
+        "A": "59/190",
+        "B": "49/190",
+        "C": "98/380",
+        "D": "21/95",
+        "E": "31%"
       },
-      "correctAnswer": "D"
+      "correctAnswer": "B"
     },
     {
       "id": 81,
-      "questionText": "What is the perimeter of a rectangle with vertices at (1, 2), (5, 2), (5, 7), and (1, 7)?",
+      "questionText": "How many ways can 6 people be arranged in a row if two specific people must sit next to each other?",
       "difficulty": "easy",
       "options": {
-        "A": "16",
-        "B": "18",
-        "C": "20",
-        "D": "22",
-        "E": "24"
+        "A": "120",
+        "B": "240",
+        "C": "360",
+        "D": "720",
+        "E": "180"
       },
       "correctAnswer": "B"
     },
     {
       "id": 82,
-      "questionText": "Worker A can complete a task in 9 hours, worker B in 12 hours, and worker C in 18 hours. How long to complete the task if all three work together?",
+      "questionText": "A committee of 4 people must be selected from 7 men and 5 women. What is the probability that the committee contains exactly 2 men and 2 women?",
       "difficulty": "medium",
       "options": {
-        "A": "3.6 hours",
-        "B": "4.0 hours",
-        "C": "4.2 hours",
-        "D": "4.5 hours",
-        "E": "5.0 hours"
+        "A": "[C(7,2)·C(5,2)] / C(12,4)",
+        "B": "[C(7,2)·C(5,2)] / C(12,5)",
+        "C": "[C(7,2)·C(5,2)] / C(11,4)",
+        "D": "[C(7,2)·C(5,2)] / C(12,4)·2",
+        "E": "[C(7,2)·C(5,2)] / C(12,3)"
       },
-      "correctAnswer": "B"
+      "correctAnswer": "A"
     },
     {
       "id": 83,
-      "questionText": "A runner completes the first half of a race at 8 mph and the second half at 12 mph. What is the average speed for the entire race?",
+      "questionText": "In how many ways can the letters of the word STATISTICS be arranged?",
       "difficulty": "medium",
       "options": {
-        "A": "9.2 mph",
-        "B": "9.6 mph",
-        "C": "10.0 mph",
-        "D": "10.4 mph",
-        "E": "10.8 mph"
+        "A": "10! / (3!·3!·2!)",
+        "B": "10! / (3!·3!·2!·1!)",
+        "C": "9! / (3!·3!·2!)",
+        "D": "10! / (3!·2!·2!)",
+        "E": "11! / (3!·3!·2!)"
+      },
+      "correctAnswer": "A"
+    },
+    {
+      "id": 84,
+      "questionText": "A fair coin is flipped 5 times. What is the probability of getting exactly 3 heads?",
+      "difficulty": "easy",
+      "options": {
+        "A": "5 · (½)⁵",
+        "B": "10 · (½)⁵",
+        "C": "5/16",
+        "D": "3/8",
+        "E": "15 · (½)⁵"
       },
       "correctAnswer": "B"
     },
     {
-      "id": 84,
-      "questionText": "A store marks down an item 30% for a sale. If the sale price is $84, what was the original price?",
+      "id": 85,
+      "questionText": "From a standard deck of 52 cards, 3 cards are drawn without replacement. What is the probability that all 3 cards are face cards (Jack, Queen, King)?",
       "difficulty": "medium",
       "options": {
-        "A": "$110",
-        "B": "$115",
-        "C": "$120",
-        "D": "$125",
-        "E": "$130"
+        "A": "C(12,3) / C(52,3)",
+        "B": "[12·11·10] / [52·51·50]",
+        "C": "C(4,3) / C(52,3)",
+        "D": "[12·11·10] / [52·51·50]·3",
+        "E": "C(12,3) / 52P3"
+      },
+      "correctAnswer": "A"
+    },
+    {
+      "id": 86,
+      "questionText": "How many 4-digit numbers can be formed using the digits 1, 2, 3, 4, 5, 6 if no digit is repeated and the number must be even?",
+      "difficulty": "medium",
+      "options": {
+        "A": "6 · 5 · 4 · 3",
+        "B": "3 · 5 · 4 · 3",
+        "C": "3 · 5 · 4 · 2",
+        "D": "3 · 5² · 4",
+        "E": "2 · 5 · 4 · 4"
       },
       "correctAnswer": "C"
     },
     {
-      "id": 85,
-      "questionText": "If 3(2x - 5) = 21, what is the value of 4x + 1?",
+      "id": 87,
+      "questionText": "A password must contain exactly 3 letters followed by 2 digits. If letters can be repeated but digits cannot, how many different passwords are possible?",
       "difficulty": "easy",
       "options": {
-        "A": "17",
-        "B": "19",
-        "C": "21",
-        "D": "23",
-        "E": "25"
+        "A": "26³ · P(10,2)",
+        "B": "26³ · 10P2",
+        "C": "26 · 25 · 24 · 10 · 9",
+        "D": "26³ · 10²",
+        "E": "26³ · P(10,2) / 2!"
+      },
+      "correctAnswer": "A"
+    },
+    {
+      "id": 88,
+      "questionText": "Two dice are rolled simultaneously. What is the probability that the product of the numbers shown is greater than 20?",
+      "difficulty": "easy",
+      "options": {
+        "A": "7/36",
+        "B": "8/36",
+        "C": "10/36",
+        "D": "10/36",
+        "E": "11/36"
       },
       "correctAnswer": "E"
     },
     {
-      "id": 86,
-      "questionText": "Find the coordinates of the point where the line y = 3x - 2 crosses the y-axis.",
-      "difficulty": "easy",
-      "options": {
-        "A": "(0, -2)",
-        "B": "(0, 2)",
-        "C": "(-2, 0)",
-        "D": "(2, 0)",
-        "E": "(3, -2)"
-      },
-      "correctAnswer": "A"
-    },
-    {
-      "id": 87,
-      "questionText": "Copier A makes 45 copies per minute, copier B makes 60 copies per minute. Working together for 8 minutes, how many copies do they make?",
-      "difficulty": "easy",
-      "options": {
-        "A": "720",
-        "B": "780",
-        "C": "840",
-        "D": "900",
-        "E": "960"
-      },
-      "correctAnswer": "C"
-    },
-    {
-      "id": 88,
-      "questionText": "Two hikers start from the same trailhead. One hikes east at 3 mph, the other hikes north at 4 mph. After 2.5 hours, how far apart are they?",
+      "id": 89,
+      "questionText": "In how many ways can 5 identical books and 3 identical magazines be arranged on a shelf?",
       "difficulty": "medium",
       "options": {
-        "A": "12.5 miles",
-        "B": "15.0 miles",
-        "C": "17.5 miles",
-        "D": "20.0 miles",
-        "E": "22.5 miles"
+        "A": "C(8,3)",
+        "B": "C(8+2–1,2)",
+        "C": "C(5+3,5)",
+        "D": "C(5+3–1,5)",
+        "E": "8! / (5! · 3!)"
       },
       "correctAnswer": "A"
-    },
-    {
-      "id": 89,
-      "questionText": "A town's population decreased from 12,000 to 10,200. What was the percentage decrease?",
-      "difficulty": "easy",
-      "options": {
-        "A": "12%",
-        "B": "15%",
-        "C": "18%",
-        "D": "20%",
-        "E": "22%"
-      },
-      "correctAnswer": "B"
     },
     {
       "id": 90,
-      "questionText": "What is the value of (2³)(3²) - (2²)(3¹)?",
-      "difficulty": "easy",
+      "questionText": "A box contains 12 light bulbs, 3 of which are defective. If 4 bulbs are selected at random, what is the probability that exactly 1 is defective?",
+      "difficulty": "medium",
       "options": {
-        "A": "60",
-        "B": "66",
-        "C": "72",
-        "D": "78",
-        "E": "84"
+        "A": "[C(3,1)·C(9,3)] / C(12,4)",
+        "B": "[C(3,1)·C(9,3)] / C(12,3)",
+        "C": "[3·C(9,3)] / C(12,4)",
+        "D": "[C(3,1)·C(9,3)] / 12⁴",
+        "E": "[C(3,1)·C(9,3)] / C(11,4)"
       },
       "correctAnswer": "A"
     },
     {
       "id": 91,
-      "questionText": "What is the distance between the points (-1, 3) and (5, 11)?",
-      "difficulty": "easy",
-      "options": {
-        "A": "8",
-        "B": "9",
-        "C": "10",
-        "D": "11",
-        "E": "12"
-      },
-      "correctAnswer": "C"
-    },
-    {
-      "id": 92,
-      "questionText": "Drain A empties a tank in 10 hours, drain B empties it in 15 hours. If the tank is full and both drains operate, how long to empty the tank?",
-      "difficulty": "easy",
-      "options": {
-        "A": "5 hours",
-        "B": "6 hours",
-        "C": "7 hours",
-        "D": "8 hours",
-        "E": "9 hours"
-      },
-      "correctAnswer": "B"
-    },
-    {
-      "id": 93,
-      "questionText": "A plane flies 480 miles with a tailwind in 3 hours, then 320 miles against the wind in 4 hours. What is the plane's speed in still air?",
+      "questionText": "How many ways can 8 people be seated around a circular table if 3 specific people must sit together?",
       "difficulty": "medium",
       "options": {
-        "A": "120 mph",
-        "B": "125 mph",
-        "C": "130 mph",
-        "D": "135 mph",
-        "E": "140 mph"
+        "A": "6! · 3!",
+        "B": "7! · 3!",
+        "C": "6! · 2!",
+        "D": "5! · 3!",
+        "E": "7!"
       },
       "correctAnswer": "A"
     },
     {
-      "id": 94,
-      "questionText": "In a class, 60% of students passed the first test and 75% passed the second test. If 45% passed both tests, what percentage passed at least one test?",
+      "id": 92,
+      "questionText": "A class has 15 students: 9 girls and 6 boys. If a team of 5 students is randomly selected, what is the probability that it contains at least 3 girls?",
       "difficulty": "medium",
       "options": {
-        "A": "85%",
-        "B": "87%",
-        "C": "90%",
-        "D": "92%",
-        "E": "95%"
+        "A": "[C(9,3)C(6,2) + C(9,4)C(6,1) + C(9,5)C(6,0)] / C(15,5)",
+        "B": "[C(9,3)C(6,2)] / C(15,5)",
+        "C": "[C(9,3)C(6,2) + C(9,4)C(6,1)] / C(15,5)",
+        "D": "[C(9,3)C(6,2) + C(9,4)C(6,1) + C(9,6)C(6,–1)] / C(15,5)",
+        "E": "[C(9,3)C(6,2) + C(9,4)C(6,1) + C(9,5)C(6,0)] / C(16,5)"
       },
-      "correctAnswer": "C"
+      "correctAnswer": "A"
+    },
+    {
+      "id": 93,
+      "questionText": "In how many ways can 10 different books be distributed among 3 students if each student must receive at least 2 books?",
+      "difficulty": "hard",
+      "options": {
+        "A": "∑… (stars and bars)",
+        "B": "Number of surjections 10→3 with min 2 each",
+        "C": "C(10,2)C(8,2)C(6,6)",
+        "D": "3! · S(10,3)",
+        "E": "∑ (–1)^k C(3,k) (3–k)¹⁰"
+      },
+      "correctAnswer": "B"
+    },
+    {
+      "id": 94,
+      "questionText": "A bag contains 6 red balls and 4 white balls. Three balls are drawn without replacement. What is the probability that the first ball is red, the second is white, and the third is red?",
+      "difficulty": "easy",
+      "options": {
+        "A": "(6/10)·(4/9)·(5/8)",
+        "B": "(6/10)·(4/9)·(6/8)",
+        "C": "(6/10)·(5/9)·(4/8)",
+        "D": "(6/10)·(4/10)·(6/10)",
+        "E": "(6/10)·(4/9)·(5/10)"
+      },
+      "correctAnswer": "A"
     },
     {
       "id": 95,
